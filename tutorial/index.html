@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JPC User Guide</title>
+
+	<link rel="stylesheet" href="styles/publication/sc.publication.css" />
+
+	<script type="text/javascript" src="js/jquery.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="js/ace-builds/src-noconflict/ace.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/publication/jquery.tableofcontents.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="js/publication/jquery.sc.publication.js" charset="utf-8"></script>
+    
+    <script type="text/javascript">//<![CDATA[
+  (function ($) {
+    $(document).ready(function(){
+		
+      $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
+      $.prettifyCodeSnippets("eclipse");
+      //$.prettifyCodeSnippets("solarized_light");
+      $.configureFootnotes();
+
+    })
+
+  })(jQuery);
+
+
+//]]></script>
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-47517517-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</head>
+
+
+
+
+<body>
+
+
+
+<h1>JConverter User Guide</h1>
+
+
+<div id="table_of_content">
+  <strong>Contents</strong>
+  <ol id="table_of_content_entries"></ol>
+</div>
+
+
+<div id="content">
+
+  <h2>Overview</h2> 
+    (work in progress ...)
+  
+  
+  <h2>License</h2>
+
+  JPC is open source, distributed under the terms of this <a href="https://github.com/jpc/jpc/blob/master/LICENSE.txt" title="License">license</a>.
+  
+  
+  <h2>Try it !</h2>
+    
+    <p>
+    JPC sources are available at <a href="https://github.com/jpc/jpc" title="JPC at GitHub">GitHub</a>.
+    </p>
+    <p>
+    In case you are using Maven, it is also available at the <a href="https://oss.sonatype.org/index.html#nexus-search;quick~jpc" title="JPC at the Sonatype Spanshots repository">Sonatype Spanshots repository</a>. Just add this dependency to your POM to include JGum into your project.
+    </p>
+    
+    <p><pre data-editor="xml" data-show-gutter="true">
+&lt;dependency&gt;
+  &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
+  &lt;artifactId&gt;jpc&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</pre></p>
+
+    You may also find interesting taking a look at the <a href="../apidocs/index.html">JPC API documentation</a>.
+
+  <h2 id="contact">Contact</h2>
+  
+    Constructive feedback and criticism, questions or a wish list can be sent to <em>[uclouvain(dot)be (that symbol for emails) sergio(dot)castro]</em> (inversing the order).
+    Or just drop me a line if you want to say hello ! :-)
+  
+</div> <!-- end of content -->
+
+    
+
+</body>
+</html>
