@@ -1,4 +1,4 @@
 java-prolog-connectivity.github.io
 ==================================
 
-JPC documentation.
+[JPC website](http://java-prolog-connectivity.github.com/ "JPC website").
