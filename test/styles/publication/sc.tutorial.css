@@ -1,0 +1,91 @@
+
+body {
+	font: 10pt Arial, sans-serif, Verdana, Helvetica;
+	/*line-height: 1.3em;*/
+}
+
+h1, h2, h3 {
+	line-height: 1.1;
+	font-weight: 700;
+}
+
+h1 {
+	font-size: 1.8em;
+	color: #444444;
+	margin: 0.4em 0 1.4em 0;
+}
+
+h2 {
+	font-size: 1.4em;
+	/*color: #222222;*/
+	margin: 1.4em 0 1.2em 0;
+}
+
+h3 {
+	font-size: 1.2em;
+	color: #111111;
+	margin: 1.2em 0 1em 0;
+}
+
+h4 {
+	font-size: 1.1em;
+	margin: 1em 0 0.8em 0;
+}
+
+a img { /* this selector removes the default blue border displayed in some browsers around an image when it is surrounded by a link */
+	border: none;
+}
+
+/* removes the bottom line in links with images that iexplorer puts */
+.linkWithImg{
+	text-decoration: none;
+}
+
+
+/* ~~ miscellaneous classes ~~ */
+
+.clearfloat { /* this class can be placed on a <br /> or empty div as the final element following the last floated div (within the #main) if the #footer is removed or taken out of the #main */
+	clear:both;
+	height:0;
+	font-size: 1px;
+	line-height: 0px;
+}
+
+.divImg {
+	font-size:80%; 
+	text-align:center;
+	margin: 2em 0 3em;
+}
+
+.blockImage {
+	display: block;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+
+/* ~~ Table of content ~~ */
+
+#table_of_content {
+	background:#F0F0EE;
+	border: solid;
+	border-width: 1px;
+	border-color: gray;
+	padding: 0.5em 0.5em 0em 0.5em;
+	font-size: 9pt;
+}
+
+#table_of_content_entries {
+	color: blue;
+}
+
+#footnotes {
+	margin: 2em 0;
+}
+
+
+/* ~~ ACE ~~ */
+
+/* hiding cursors in ace code editors when they do not have the focus */
+.ace_hidden-cursors {opacity:0}
