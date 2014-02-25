@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JPC Architecture</title>
+
+	<link rel="stylesheet" href="styles/publication/sc.tutorial.css" />
+	<link rel="stylesheet" href="styles/publication/sc.tooglejs.css" />
+
+	<script type="text/javascript" src="js/jquery.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="js/ace-builds/src-noconflict/ace.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/publication/jquery.tableofcontents.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="js/publication/jquery.sc.publication.js" charset="utf-8"></script>
+    
+    <script type="text/javascript">//<![CDATA[
+  (function ($) {
+    $(document).ready(function(){
+		
+      $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
+      $.prettifyCodeSnippets("eclipse");
+      //$.prettifyCodeSnippets("solarized_light");
+      $.configureFootnotes();
+
+    })
+
+  })(jQuery);
+
+
+//]]></script>
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-47515052-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</head>
+
+
+
+
+<body>
+
+
+
+<h1>JPC Architecture</h1>
+
+
+<div id="table_of_content">
+  <strong>Contents</strong>
+  <ol id="table_of_content_entries"></ol>
+</div>
+
+
+<div id="content">
+
+<p>
+This page describes the structure of a hybrid Java-Prolog system making use of JPC and related libraries.
+The main components and their interactions are illustrated in figure 1.
+A description of them follows below.
+</p>
+
+    <div class="divImg">
+      <img src="img/jpc/jpc_logicobjects_architecture.svg" alt="JPC architecture." style="padding-bottom:0.5em;" height="400" />
+      <div id="imglabel:jpc_logicobjects_architecture" >Fig 1. - JPC architecture.</div>
+    </div>
+
+
+
+<h2>Java-Prolog Applications</h2> 
+
+<p>At the top level of our architecture we have hybrid applications consisting of both Java and Prolog components.
+From the user perspective, these applications can be launched either as a Java program with embedded Prolog modules, or as a Prolog program with embedded Java components.
+Such applications can be developed on top of two different layers. With increasing levels of abstractions, these layers are 
+(1) JPC, a library providing manual and explicit integration and 
+(2) LogicObjects, an integration framework (implemented on top of JPC) providing a high degree of integration automation and transparency. 
+The choice of the preferred abstraction layer to use is left to the programmer as it depends on the nature of the application.
+</p>
+
+
+
+<h2>The LogicObjects Framework</h2> 
+
+<p>LogicObjects is an integration frameworks aiming to simplify the integration of hybrid Java-Prolog systems. Its goal is to reach an oblivious integration from both the Java and Prolog perspective.</p>
+<p>Among other features, LogicObjects achieve a transparent and semi-automatic integration of Prolog and Java language by providing a simple mechanism for inferring the appropriate mappings between distinct kinds of Java and Prolog artefacts (e.g., Java methods and Prolog predicates, etc.).</p>
+
+
+
+
+<h2>The JPC Library</h2> 
+
+<p>JPC is a high level inter-operability library for Java and Prolog. 
+The main JPC components are (1) a Prolog VM abstraction, (2) a Java-Prolog conversion API and (3) an embedded Prolog database.</p>
+
+
+<h3>A Prolog VM Abstraction</h3> 
+
+<p>Several integration libraries rely on the notion of a Prolog engine as a convenient abstraction for interacting with a Prolog virtual machine from Java.</p>
+<p>JPC also makes use of such abstraction. A JPC Prolog engine provides a Java programmer with an API for interacting with Prolog.
+At the same time, it attempts to find a compromise between 
+(1) offering convenient features facilitating the interaction from Java programs and 
+(2) not assuming a specific implementation architecture of the underlying Prolog engine.</p>
+
+<p>The JPC abstract Prolog engine is vendor-agnostic and thus requires a driver to connect to a specific Prolog implementation.</p>
+
+<p>As part of our Prolog engine abstraction, we provide a set of classes reifying Prolog data types, inspired by similar <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a> library classes:</p>
+
+<ul>
+	<li><a href="apidocs/org/jpc/term/Term.html" title="Term class">Term</a>: An abstract Prolog term.</li>
+	<li><a href="apidocs/org/jpc/term/Atom.html" title="Atom class">Atom</a>: A sequence of characters representing a Prolog atom.</li>
+	<li><a href="apidocs/org/jpc/term/Compound.html" title="Compound class">Compound</a>: A compound term consisting of a name and a list of arguments.</li>
+	<li><a href="apidocs/org/jpc/term/IntegerTerm.html" title="IntegerTerm class">IntegerTerm</a>: A Prolog integer term.</li>
+	<li><a href="apidocs/org/jpc/term/FloatTerm.html" title="FloatTerm class">FloatTerm</a>: A Prolog float term.</li>
+	<li><a href="apidocs/org/jpc/term/Var.html" title="Var class">Var</a>: A Prolog variable.</li>
+	<li><a href="apidocs/org/jpc/term/JRef.html" title="JRef class">JRef</a>: A Java reference term. A special kind of term wrapping a Java reference.</li>
+</ul>
+
+
+
+
+<h3>A Java-Prolog Conversion API</h3> 
+
+<p>Often, Prolog queries involve more complex data types than simple numeric or atomic primitives.
+In a Java-Prolog system, a common problem is how to represent in a Prolog query an artefact from the object-oriented world, or what is the most adequate representation of a Prolog term in the object-oriented world.
+These problems are often far from trivial in architectures where the Prolog engine is not embedded in a JVM.
+JPC provides a convenient conversion API, inspired in the Google's <a href="https://code.google.com/p/google-gson/" title="Gson: A Java library to convert JSON to Java objects and vice-versa">Gson</a> library, for translating between Java and Prolog artefacts.</p>
+
+
+
+
+
+<h3>An Embedded Prolog Database</h3> 
+
+<p>
+JPC uses an embedded Prolog database running on the JVM and supporting the storage of Java object references (JRef terms) in addition to standard Prolog terms.
+Several core interoperability features rely on this component.
+Although it is currently not intended to be used directly by the programmer, it is mentioned here since it can give an insight on the internal implementation of several JPC features.
+The current implementation lacks, at the moment, many of the features of a full Prolog system.
+It supports assertion and retraction of facts, unification, term indexing and backtracking.
+At the moment, it does not support rules, operators and many other standard and de facto Prolog features.
+Although its current features are enough to support the JPC internal requirements, this engine may evolve in the future towards a standalone embedded Prolog system.
+</p>
+
+
+
+
+
+
+
+
+<h2>JPC Drivers</h2> 
+
+<p>
+Drivers are used to link the JPC abstract Prolog engine to a concrete Prolog engine.
+They can be built from scratch, or on top of existing Java-Prolog bridge libraries for the target Prolog engine.
+Those bridge libraries can be made available by the Prolog engine provider (e.g., JPL) or by third parties (e.g., PDT Connector, InterProlog).
+At the moment, JPC follows the second approach: existing drivers are currently implemented on top of the
+<a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a>, 
+<a href="http://www.declarativa.com/interprolog/" title="InterProlog: a Java front-end and enhancement for Prolog">InterProlog</a>, and 
+<a href="http://sewiki.iai.uni-bonn.de/research/pdt/developers/cookbook/standalone_prolog_connector" title="Standalone PDT connector">PDT Connector</a> libraries.
+</p>
+
+
+
+
+
+
+
+<h2>Prolog Engines</h2> 
+
+<p>
+At the lowest level of our architecture there are the concrete Prolog engines.
+JPC does not make any assumption regarding the architecture of a concrete Prolog engine.
+They may be embedded in a JVM, running as a separate program on a local machine, or even running on a remote server.
+</p>
+
+<p>
+At the moment, JPC is compatible with the 
+<a href="http://www.swi-prolog.org/" title="SWI Prolog">SWI</a>, 
+<a href="http://www.dcc.fc.up.pt/~vsc/Yap/" title="YAP Prolog">YAP</a> and 
+<a href="http://xsb.sourceforge.net/" title="XSB Prolog">XSB</a> Prolog engines.
+</p>
+
+<p>
+Although JPC and LogicObjects can work with "standard" Prolog engines, they also include a significant number of of advanced features that facilitate the integration with Prolog programs written in <a href="http://logtalk.org/" title="Logtalk: An open source object-oriented logic programming language">Logtalk</a>.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+</div> <!-- end of content -->
+
+    
+
+</body>
+</html>
