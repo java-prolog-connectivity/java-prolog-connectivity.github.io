@@ -65,18 +65,165 @@
 <div id="content">
 
 
+<p>
+This guide overviews how to install JPC, its drivers and compatible Prolog engines.
+</p>
+	
 
-	    <p>
-	    In case you are using Maven, it is also available at the <a href="https://oss.sonatype.org/index.html#nexus-search;quick~jpc" title="JPC at the Sonatype Spanshots repository">Sonatype Spanshots repository</a>. Just add this dependency to your POM to include JGum into your project.
-	    </p>
+<h2>Requirements</h2> 
+
+To develop with JPC you require:
+
+<ul>
+	<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" title="Java Download">Java</a> 7 or above.</li>
+	<li>A compatible Prolog engine.</li>
+	<li>Logtalk (optionally).</li>
+</ul>
+
+<p>
+JPC has been tested in OSX 10.8.5 and Ubuntu Linux 12.0.4.
+No tests have been accomplished under Windows, although it should also work there without major issues.
+</p>
+
+
+<h2>Before Starting</h2> 
+
+<p>
+JPC currently uses <a href="http://maven.apache.org/" title="Apache Maven">Maven</a> as its project management tool.
+Therefore, the easiest way to include JPC in a project, its drivers, other dependency libraries and examples is by means of Maven.
+Maven installation instructions can be found <a href="http://maven.apache.org/download.cgi" title="Apache Maven Download">here</a>.
+</p>
+
+<p>
+JPC is still in alpha version so it is not yet in the <a href="http://search.maven.org/" title="Maven central repository">Maven central repository</a> but in the <a href="https://oss.sonatype.org/content/repositories/snapshots/com/github/java-prolog-connectivity/jpc/" title="JPC at the Sonatype Spanshots repository">Sonatype Spanshots repository</a>. Therefore, you will need to add this repository to your project's <a href="https://maven.apache.org/pom.html#What_is_the_POM" title="What is the POM?">POM</a>:
+</p>
+
+
+
+
+
+
+
+<p><pre data-editor="xml" data-show-gutter="true">
+&lt;repositories&gt;
+  &lt;repository&gt;
+    &lt;id&gt;snapshots-repo&lt;/id&gt;
+    &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots&lt;/url&gt;
+    &lt;releases&gt;
+      &lt;enabled&gt;false&lt;/enabled&gt;
+    &lt;/releases&gt;
+    &lt;snapshots&gt;
+      &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;/snapshots&gt;
+  &lt;/repository&gt;
+&lt;/repositories&gt;</pre></p>
+
+<p>
+And declare the Sonatype repository as your POM parent:
+</p>
+
+<p><pre data-editor="xml" data-show-gutter="true">
+&lt;parent&gt;
+  &lt;groupId&gt;org.sonatype.oss&lt;/groupId&gt;
+  &lt;artifactId&gt;oss-parent&lt;/artifactId&gt;
+  &lt;version&gt;7&lt;/version&gt;
+&lt;/parent&gt;</pre></p>
+
+
+<h2>Installing a Prolog Engine</h2> 
+
+<p>
+This section gives pointers to the installation instructions of <a href="architecture.html#compatiblePrologEngines" title="Compatible Prolog engine">JPC compatible Prolog engines</a>.
+</p>
+
+
+<h3>Installing SWI Prolog</h3> 
+
+<p>
+SWI Prolog Installation instructions can be found <a href="http://www.swi-prolog.org/Download.html" title="SWI Prolog installation instructions">here</a>.
+JPC is compatible with the latest stable release (version 6.x) at the moment of writing.
+</p>
+
+
+<h3>Installing YAP Prolog</h3> 
+
+<p>
+YAP Prolog Installation instructions can be found <a href="http://www.dcc.fc.up.pt/~vsc/Yap/downloads.html" title="YAP Prolog installation instructions">here</a>.
+The recommended YAP version is the latest development version 6.3.3.
+You will need to pass the option <code>--with-java</code> to the configuration script.
+</p>
+
+
+<!--
+After some test and fail trials from the author, this sequence of commands compile and install YAP sources with libraries required for JPC.
+
+Download the latest development version with: <code>git clone git://git.code.sf.net/p/yap/yap-6.3</code>
+Several packages are shared with SWI-Prolog and need to be obtained separately. Go to the download directory and proceed as follows: <code>git submodule init</code> and <code>git submodule update</code>
+Create a folder <code>ARCH</code> and go to that folder.
+Execute the following command: <code>CC=gcc-mp-4.4 CXX=g++-mp-4.4 ../configure --prefix=/opt/local --enable-threads --enable-pthread-locking --enable-depth-limit --enable-coroutining --with-java --enable-clpbn-bp=no --enable-tabling --with-gmp=/opt/local && make && sudo make install</code>
+
+Note that this assumes that the gcc44 compiler is available.
+-->
+
+
+<h3>Installing XSB Prolog</h3> 
+
+<p>
+XSB Prolog Installation instructions can be found <a href="http://xsb.sourceforge.net/downloads/downloads.html" title="XSB Prolog installation instructions">here</a>.
+Install XSB from the sources. 
+After compilation, certain dynamic libraries must be generated.
+Go to the <code>MY_XSB_DIR/build</code> directory and execute <code>./makexsb dynmodule</code>.
+</p>
+
+
+<h2>Installing Logtalk</h2> 
+
+<p>
+Although JPC requires just a plain Prolog engine, many optional advanced features rely on <a href="http://logtalk.org/" title="Logtalk: An open source object-oriented logic programming language">Logtalk</a>.
+Logtalk is an object-oriented logic programming language implemented using Prolog as a backend compiler. Installation instructions can be found <a href="http://logtalk.org/download.html" title="Logtalk installation instructions">here</a>.
+</p>
+
+
+
+<h2>Adding JPC to a Project</h2> 
+
+<p>
+In order to include JPC into a project, just add the following dependency to your POM:
+</p>
+
 
 	    <p><pre data-editor="xml" data-show-gutter="true">
-	&lt;dependency&gt;
-	  &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
-	  &lt;artifactId&gt;jpc&lt;/artifactId&gt;
-	  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
-	&lt;/dependency&gt;</pre></p>
-	
+&lt;dependency&gt;
+  &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
+  &lt;artifactId&gt;jpc&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</pre></p>
+
+
+<p>
+Note that including the JPC library is enough for development but for executing your application you still need to add a driver.
+</p>
+
+
+
+<h2>Configuring JPC Drivers</h2> 
+
+<h3>The JPL Based Driver</h3> 
+
+Please read the terms of the <a href="http://www.swi-prolog.org/packages/jpl/java_api/lgpl.html" title="JPL library license">JPL library license</a> before using this driver.
+
+
+<h3>The InterProlog Based Driver</h3> 
+
+Please read the terms of the <a href="http://www.fsf.org/copyleft/lgpl.html" title="InterProlog library license">InterProlog library license</a> before using this driver.
+
+
+<h3>The PDT Connector Based Driver</h3> 
+
+Please read the terms of the <a href="https://sewiki.iai.uni-bonn.de/research/pdt/docs/v0.x/download" title="PDT Connector library license">PDT Connector library license</a> before using this driver.
+
+
+
 	
 	
 	
