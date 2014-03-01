@@ -67,6 +67,8 @@
 
 <p>
 This guide overviews how to install JPC, its drivers and compatible Prolog engines.
+Although we cover the installation of the many distinct artefacts that may be required in an application using JPC,
+typically only a small subset of them are needed (e.g., only one Prolog engine and one JPC driver).
 </p>
 	
 
@@ -76,13 +78,13 @@ To develop with JPC you require:
 
 <ul>
 	<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" title="Java Download">Java</a> 7 or above.</li>
-	<li>A compatible Prolog engine.</li>
-	<li>Logtalk (optionally).</li>
+	<li>A <a href="architecture.html#compatiblePrologEngines" title="Compatible Prolog engine">compatible Prolog engine</a>.</li>
+	<li><a href="http://logtalk.org/" title="Logtalk: An open source object-oriented logic programming language">Logtalk</a> (optionally).</li>
 </ul>
 
 <p>
 JPC has been tested in OSX 10.8.5 and Ubuntu Linux 12.0.4.
-No tests have been accomplished under Windows, although it should also work there without major issues.
+At the moment, no tests have been accomplished under Windows, although it should also work there without major issues.
 </p>
 
 
@@ -95,7 +97,7 @@ Maven installation instructions can be found <a href="http://maven.apache.org/do
 </p>
 
 <p>
-JPC is still in alpha version so it is not yet in the <a href="http://search.maven.org/" title="Maven central repository">Maven central repository</a> but in the <a href="https://oss.sonatype.org/content/repositories/snapshots/com/github/java-prolog-connectivity/jpc/" title="JPC at the Sonatype Spanshots repository">Sonatype Spanshots repository</a>. Therefore, you will need to add this repository to your project's <a href="https://maven.apache.org/pom.html#What_is_the_POM" title="What is the POM?">POM</a>:
+JPC is still in alpha version so it is not yet in the <a href="http://search.maven.org/" title="Maven central repository">Maven central repository</a> but in the <a href="https://oss.sonatype.org/content/repositories/snapshots/com/github/java-prolog-connectivity/jpc/" title="JPC at the Sonatype Spanshots repository">Sonatype Snapshots repository</a>. Therefore, you will need to add this repository to your project's <a href="https://maven.apache.org/pom.html#What_is_the_POM" title="What is the POM?">POM</a>:
 </p>
 
 
@@ -119,7 +121,7 @@ JPC is still in alpha version so it is not yet in the <a href="http://search.mav
 &lt;/repositories&gt;</pre></p>
 
 <p>
-And declare the Sonatype repository as your POM parent:
+And declare the Sonatype repository as your parent POM:
 </p>
 
 <p><pre data-editor="xml" data-show-gutter="true">
@@ -134,24 +136,59 @@ And declare the Sonatype repository as your POM parent:
 
 <p>
 This section gives pointers to the installation instructions of <a href="architecture.html#compatiblePrologEngines" title="Compatible Prolog engine">JPC compatible Prolog engines</a>.
+There are many ways to install those engines. 
+In some cases, the best installation procedure for JPC is not the most obvious installation.
+Hence, this section includes some example installation steps that ensure compatibility with our library.
 </p>
+
 
 
 <h3>Installing SWI Prolog</h3> 
 
 <p>
-SWI Prolog Installation instructions can be found <a href="http://www.swi-prolog.org/Download.html" title="SWI Prolog installation instructions">here</a>.
-JPC is compatible with the latest stable release (version 6.x) at the moment of writing.
+
+<a href="http://www.swi-prolog.org/" title="SWI Prolog">SWI</a> Prolog installation instructions can be found <a href="http://www.swi-prolog.org/Download.html" title="SWI Prolog installation instructions">here</a>.
+JPC is compatible with the latest SWI stable release (version 6.x at the time of writing).
 </p>
+
+<h4>SWI Prolog in Mac OSX</h4>
+
+The SWI version used to test JPC was installed using <a href="http://www.macports.org/" title="Mac Ports">Mac Ports</a>. SWI provides <a href="http://www.swi-prolog.org/build/macos.html" title="SWI Prolog in MAC OSX">detailed instructions</a> about how to accomplish a Mac Ports installation.
+
+
+<h4>SWI Prolog in Linux</h4>
+
+TODO
+
 
 
 <h3>Installing YAP Prolog</h3> 
 
 <p>
-YAP Prolog Installation instructions can be found <a href="http://www.dcc.fc.up.pt/~vsc/Yap/downloads.html" title="YAP Prolog installation instructions">here</a>.
-The recommended YAP version is the latest development version 6.3.3.
-You will need to pass the option <code>--with-java</code> to the configuration script.
+<a href="http://www.dcc.fc.up.pt/~vsc/Yap/" title="YAP Prolog">YAP</a> Prolog installation instructions can be found <a href="http://www.dcc.fc.up.pt/~vsc/Yap/downloads.html" title="YAP Prolog installation instructions">here</a>.
+The recommended YAP version is the latest development version (6.3.3 at the time of writing).
 </p>
+
+<h4>YAP Prolog in Mac OSX</h4>
+
+<p>
+The following command compiles and install YAP:
+</p>
+
+<p><pre data-editor="makefile" data-show-gutter="true">
+../configure --prefix=/opt/local --with-java --enable-threads --enable-pthread-locking --enable-depth-limit --enable-coroutining --enable-clpbn-bp=no --enable-tabling --with-gmp=/opt/local && make && sudo make install
+</pre></p>
+
+
+<p>
+You may change these options as you wish, but you should leave the <code>--with-java</code> option enabled.
+</p>
+
+<h4>YAP Prolog in Linux</h4>
+
+TODO
+
+
 
 
 <!--
@@ -169,11 +206,32 @@ Note that this assumes that the gcc44 compiler is available.
 <h3>Installing XSB Prolog</h3> 
 
 <p>
-XSB Prolog Installation instructions can be found <a href="http://xsb.sourceforge.net/downloads/downloads.html" title="XSB Prolog installation instructions">here</a>.
-Install XSB from the sources. 
-After compilation, certain dynamic libraries must be generated.
-Go to the <code>MY_XSB_DIR/build</code> directory and execute <code>./makexsb dynmodule</code>.
+<a href="http://xsb.sourceforge.net/" title="XSB Prolog">XSB</a> Prolog installation instructions can be found <a href="http://xsb.sourceforge.net/downloads/downloads.html" title="XSB Prolog installation instructions">here</a>.
+The recommended XSB version is the <a href="http://sourceforge.net/p/xsb/src/HEAD/tree/" title="latest development version">latest development version</a>.
 </p>
+
+<h4>XSB Prolog in Mac OSX</h4>
+
+<p>
+To compile and install XSB go to the <code>build</code> directory in the source tree and execute the following commands:
+</p>
+
+<p><pre data-editor="makefile" data-show-gutter="true">
+sudo ./configure -prefix=$SHARED_LIB
+sudo ./makexsb
+./makexsb dynmodule
+sudo ./makexsb install</pre></p>
+
+<p>
+Where <code>$SHARED_LIB</code> is the directory where you want to install XSB. For example: <code>/opt/local/lib/</code>.
+Note that you may need <code>sudo</code> depending on the chosen installation location.
+</p>
+
+<h4>XSB Prolog in Linux</h4>
+
+TODO
+
+
 
 
 <h2>Installing Logtalk</h2> 
@@ -188,11 +246,11 @@ Logtalk is an object-oriented logic programming language implemented using Prolo
 <h2>Adding JPC to a Project</h2> 
 
 <p>
-In order to include JPC into a project, just add the following dependency to your POM:
+In order to include JPC into a project, add the following dependency to your POM:
 </p>
 
 
-	    <p><pre data-editor="xml" data-show-gutter="true">
+<p><pre data-editor="xml" data-show-gutter="true">
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc&lt;/artifactId&gt;
@@ -201,32 +259,115 @@ In order to include JPC into a project, just add the following dependency to you
 
 
 <p>
-Note that including the JPC library is enough for development but for executing your application you still need to add a driver.
+Note that including the JPC library may be enough for development, but for executing your application you still need to add a JPC driver.
 </p>
 
 
 
-<h2>Configuring JPC Drivers</h2> 
+<h2>Configuring JPC Drivers</h2>
+
+<p>
+All the current JPC drivers are open source and distributed under the terms of <a href="http://www.gnu.org/copyleft/lesser.html" title="JPL drivers license">this license</a>.
+</p>
+
+
 
 <h3>The JPL Based Driver</h3> 
+<p>
+The JPL based driver is implemented on top of the <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a> library.
+This driver is compatible with either SWI or YAP Prolog.
+Since JPL is based on <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/jni/" title="JNI">JNI</a>, it is composed of both a Java part and a native C part.
+You need to tell JPC (so it can tell in turn to JPL) where is located the C part.
+Depending on the platform, the native part may be a library with a name similar to <code>libjpl.dylib (OSX)</code>, <code>libjpl.jnilib</code> (Linux) or <code>libjpl.dll</code> (Windows) in your SWI or YAP installation.
+To enable this driver into your project follow these steps:
+</p>
 
+<ul>
+	<li>Add this dependency to your POM:
+		<p><pre data-editor="xml" data-show-gutter="true">
+&lt;dependency&gt;
+  &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
+  &lt;artifactId&gt;jpc-jpl&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</pre></p>
+	</li>
+	<li>Configure the environment variable <code>JPLPATH_SWI</code> (in case you want to connect to SWI) with the SWI directory containing the native part of the JPL library.</li>
+	<li>Configure the environment variable <code>JPLPATH_YAP</code> (in case you want to connect to YAP) with the YAP directory containing the native part of the JPL library.</li>
+</ul>
+
+Note that configuring these environment variables is not necessary if Java is invoked with the parameter <code>java.library.path</code>, like:
+<code>java -Djava.library.path="the_jpl_path"</code>.
+Or, if the path to the Jpl native library is already part of the default search path of libraries in your operative system
+(e.g., if it is included in <code>DYLD_LIBRARY_PATH</code> in OSX, or <code>LD_LIBRARY_PATH</code> in Linux).
+
+
+<!--
 Please read the terms of the <a href="http://www.swi-prolog.org/packages/jpl/java_api/lgpl.html" title="JPL library license">JPL library license</a> before using this driver.
-
+-->
 
 <h3>The InterProlog Based Driver</h3> 
 
+<p>
+The InterProlog based driver is implemented on top of the <a href="http://www.declarativa.com/interprolog/" title="InterProlog: a Java front-end and enhancement for Prolog">InterProlog</a> library. This driver is compatible with XSB Prolog.
+In order to include this driver in your project follow these steps:
+</p>
+
+
+<ul>
+	<li>Download and unzip the <a href="http://www.declarativa.com/interprolog/interprolog2.2a4.zip" title="InterProlog bundle">InterProlog bundle</a>.</li>
+	<li>Go to the directory where the <code>interprolog.jar</code> file is located and install it in your Maven local repository with this command: 
+		<p><pre data-editor="makefile" data-show-gutter="true">
+mvn install:install-file -Dfile=interprolog.jar -DgroupId=com.declarativa.interprolog -DartifactId=interprolog -Dversion=2.2a4 -Dpackaging=jar</pre></p>
+	</li>
+	<li>Add this dependency to your POM:
+		<p><pre data-editor="xml" data-show-gutter="true">
+&lt;dependency&gt;
+  &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
+  &lt;artifactId&gt;jpc-interprolog&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</pre></p>
+	</li>
+	<li>Configure the environment variable <code>XSB_BIN_DIRECTORY</code> with the directory where the XSB binary is located.</li>
+</ul>
+
+<!--
 Please read the terms of the <a href="http://www.fsf.org/copyleft/lgpl.html" title="InterProlog library license">InterProlog library license</a> before using this driver.
+-->
 
 
 <h3>The PDT Connector Based Driver</h3> 
 
+<p>
+The PDT Connector based driver is implemented on top of the <a href="http://sewiki.iai.uni-bonn.de/research/pdt/developers/cookbook/standalone_prolog_connector" title="Standalone PDT connector">PDT Connector</a> library. This driver is compatible with SWI Prolog.
+In order to include this driver in your project follow these steps:
+</p>
+
+	<li>Download the <a href="files/org.cs3.prolog.connector-2.1.0.jar" title="PDT connector jar">PDT connector jar</a>.</li>
+	<li>Go to the directory where the jar was downloaded and install it in your Maven local repository with this command: 
+		<p><pre data-editor="makefile" data-show-gutter="true">
+mvn install:install-file -Dfile=org.cs3.prolog.connector-2.1.0.jar -DgroupId=org.cs3.roots -DartifactId=org.cs3.prolog.connector -Dversion=2.1.0 -Dpackaging=jar</pre></p>
+	</li>
+	<li>Add this dependency to your POM:
+		<p><pre data-editor="xml" data-show-gutter="true">
+&lt;dependency&gt;
+  &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
+  &lt;artifactId&gt;jpc-pdtconnector&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</pre></p>
+	</li>
+	<li>Configure the environment variable <code>SWI_BIN_DIRECTORY</code> with the directory where the SWI binary is located.</li>
+
+<p>
+Note that configuring the last environment variable is optional in most cases.
+If no provided, JPC will not pass any path to PDT (the underlying library of this driver) and the latter will attempt to find the SWI location.
+</p>
+
+
+<!--
 Please read the terms of the <a href="https://sewiki.iai.uni-bonn.de/research/pdt/docs/v0.x/download" title="PDT Connector library license">PDT Connector library license</a> before using this driver.
+-->
 
 
-
-	
-	
-	
 	
   
 </div> <!-- end of content -->
