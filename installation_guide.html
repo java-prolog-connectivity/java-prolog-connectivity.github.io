@@ -83,7 +83,15 @@ To develop with JPC you require:
 </ul>
 
 <p>
-JPC has been tested in OSX 10.8.5 and Ubuntu Linux 12.0.4.
+JPC has been tested in:
+</p>
+
+<ul>
+	<li>MAX OSX: 10.8.5 (Lion) and 10.9.2 (Maverick).</li>
+	<li>Linux: Ubuntu 12.0.4 and 13.0.4.</li>
+</ul>
+
+<p>
 At the moment, no tests have been accomplished under Windows, although it should also work there without major issues.
 </p>
 
@@ -137,8 +145,8 @@ And declare the Sonatype repository as your parent POM:
 <p>
 This section gives pointers to the installation instructions of <a href="architecture.html#compatiblePrologEngines" title="Compatible Prolog engine">JPC compatible Prolog engines</a>.
 There are many ways to install those engines. 
-In some cases, the best installation procedure for JPC is not the most obvious installation.
-Hence, this section includes some example installation steps that ensure compatibility with our library.
+In certain cases, the best installation procedure for JPC is not the most obvious installation.
+Hence, this section often includes some example installation steps that ensure compatibility with our library.
 </p>
 
 
@@ -158,7 +166,7 @@ The SWI version used to test JPC was installed using <a href="http://www.macport
 
 <h4>SWI Prolog in Linux</h4>
 
-TODO
+Instructions for installing SWI in Linux are provided <a href="http://www.swi-prolog.org/build/LinuxDistro.txt" title="SWI in Linux">here</a>.
 
 
 
@@ -213,18 +221,15 @@ The recommended XSB version is the <a href="http://sourceforge.net/p/xsb/src/HEA
 <h4>XSB Prolog in Mac OSX</h4>
 
 <p>
-To compile and install XSB go to the <code>build</code> directory in the source tree and execute the following commands:
+To compile and install XSB go to the <code>build</code> directory in the source tree and execute the following command:
 </p>
 
 <p><pre data-editor="makefile" data-show-gutter="true">
-sudo ./configure -prefix=$SHARED_LIB
-sudo ./makexsb
-./makexsb dynmodule
-sudo ./makexsb install</pre></p>
+sudo ./configure -prefix=$SHARED_LIB && sudo ./makexsb && sudo ./makexsb dynmodule && sudo ./makexsb install</pre></p>
 
 <p>
 Where <code>$SHARED_LIB</code> is the directory where you want to install XSB. For example: <code>/opt/local/lib/</code>.
-Note that you may need <code>sudo</code> depending on the chosen installation location.
+Note that you need <code>sudo</code> depending on the chosen installation location.
 </p>
 
 <h4>XSB Prolog in Linux</h4>
@@ -295,11 +300,12 @@ To enable this driver into your project follow these steps:
 	<li>Configure the environment variable <code>JPLPATH_YAP</code> (in case you want to connect to YAP) with the YAP directory containing the native part of the JPL library.</li>
 </ul>
 
+<!--
 Note that configuring these environment variables is not necessary if Java is invoked with the parameter <code>java.library.path</code>, like:
 <code>java -Djava.library.path="the_jpl_path"</code>.
 Or, if the path to the Jpl native library is already part of the default search path of libraries in your operative system
 (e.g., if it is included in <code>DYLD_LIBRARY_PATH</code> in OSX, or <code>LD_LIBRARY_PATH</code> in Linux).
-
+-->
 
 <!--
 Please read the terms of the <a href="http://www.swi-prolog.org/packages/jpl/java_api/lgpl.html" title="JPL library license">JPL library license</a> before using this driver.

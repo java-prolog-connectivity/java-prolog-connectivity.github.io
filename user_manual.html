@@ -64,39 +64,45 @@
 
 <div id="content">
 
-  <h2>Overview</h2> 
-    (work in progress ...)
-  	JPC is a Java-Prolog interoperability layer providing different levels of abstractions for building systems written in these two languages.
-	Many of its features rely...
-  
-  <h2>License</h2>
+<h2>Overview</h2> 
 
-  JPC is open source, distributed under the terms of this <a href="https://github.com/jpc/jpc/blob/master/LICENSE.txt" title="License">license</a>.
-  
-  
-  <h2>Try it !</h2>
-    
-    <p>
-    JPC sources are available at <a href="https://github.com/jpc/jpc" title="JPC at GitHub">GitHub</a>.
-    </p>
-    <p>
-    In case you are using Maven, it is also available at the <a href="https://oss.sonatype.org/index.html#nexus-search;quick~jpc" title="JPC at the Sonatype Spanshots repository">Sonatype Spanshots repository</a>. Just add this dependency to your POM to include JGum into your project.
-    </p>
-    
-    <p><pre data-editor="xml" data-show-gutter="true">
-&lt;dependency&gt;
-  &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
-  &lt;artifactId&gt;jpc&lt;/artifactId&gt;
-  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;</pre></p>
+<p>
+JPC is a Java-Prolog interoperability layer providing different levels of abstractions for integrating systems written in these two languages.
+This guide presents the different JPC features supporting this integration.
+This document assumes a general understanding of the <a href="architecture.html" title="JPC architecture">JPC architecture</a>.
+In order to try the examples, please refer to the <a href="installation_guide.html" title="JPC Installation guide">JPC installation guide</a>.
+</p>
 
-    You may also find interesting taking a look at the <a href="../apidocs/index.html">JPC API documentation</a>.
 
-  <h2 id="contact">Contact</h2>
-  
-    Constructive feedback and criticism, questions or a wish list can be sent to <em>[uclouvain(dot)be (that symbol for emails) sergio(dot)castro]</em> (inversing the order).
-    Or just drop me a line if you want to say hello ! :-)
-  
+<h2>Creating Prolog Engines</h2> 
+
+<p>
+JPC provides an abstraction of a Prolog engine that can communicate with concrete Prolog engines by means of drivers.
+</p>
+
+<h3>Explicit Instantiation</h3> 
+
+<p>
+The easiest way to instantiate a Prolog engine is by explicitly referencing a JPC driver:
+</p>
+
+
+		<p><pre data-editor="java" data-show-gutter="true">
+PrologEngine engine = new PdtConnectorDriver().createPrologEngine();
+</pre></p>
+
+
+<p>
+This approach, although straightforward, causes a strong coupling between an application and a concrete driver.
+</p>
+
+
+<h3>Configured Prolog Engines</h3> 
+
+
+
+
+
 </div> <!-- end of content -->
 
     
