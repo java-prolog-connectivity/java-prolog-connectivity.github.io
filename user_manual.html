@@ -67,7 +67,7 @@
 <h2>Overview</h2> 
 
 <p>
-JPC is a Java-Prolog interoperability layer providing different levels of abstractions for integrating systems written in these two languages.
+JPC is a Java-Prolog interoperability library providing different levels of abstractions for integrating systems written in these two languages.
 This guide presents the different JPC features supporting this integration.
 This document assumes a general understanding of the <a href="architecture.html" title="JPC architecture">JPC architecture</a>.
 In order to try the examples, please refer to the <a href="installation_guide.html" title="JPC Installation guide">JPC installation guide</a>.
@@ -83,11 +83,11 @@ JPC provides an abstraction of a Prolog engine that can communicate with concret
 <h3>Explicit Instantiation</h3> 
 
 <p>
-The easiest way to instantiate a Prolog engine is by explicitly referencing a JPC driver:
+The easiest way to instantiate a Prolog engine is by explicitly referencing a JPC driver.
+For example, to instantiate a JPC engine using the <a href="installation_guide.html#pdtDriver" title="PDT-based driver">PDT-based driver</a> we could write:
 </p>
 
-
-		<p><pre data-editor="java" data-show-gutter="true">
+<p><pre data-editor="java" data-show-gutter="true">
 PrologEngine engine = new PdtConnectorDriver().createPrologEngine();
 </pre></p>
 
@@ -97,8 +97,81 @@ This approach, although straightforward, causes a strong coupling between an app
 </p>
 
 
-<h3>Configured Prolog Engines</h3> 
+<h3>Categorized Prolog Engines</h3> 
 
+<p>
+JPC allows a programmer to easily categorize an "engine space" (i.e., the space of all possible Prolog engines) according to some developer-chosen criteria.
+This approach, directly inspired on <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">Apache log4j</a> (a well-known logging library), allows to decouple a program from concrete engine implementations.
+</p>
+
+<p>
+Using this technique, engines are organized hierarchically following a naming rule. 
+In this named hierarchy, a name <code>"org.jpc"</code> is said to be the ancestor of the name <code>"org.jpc.Jpc"</code>.
+An engine categorized by means of a name will be inherited, unless overridden, by any of its name descendants.
+This categorization is illustrated by the figure below.
+</p>
+
+<div class="divImg">
+  <img src="img/jpc/jpc_named_hierarchy.svg" alt="Named categorization for engines." style="padding-bottom:0.5em;" height="233" />
+  <div id="imglabel:jpc_named_hierarchy" >Fig 1. - A named categorization for engines.</div>
+</div>
+
+<p>
+Engine spaces can be defined either programmatically or by means of configuration files.
+The latter is the JPC recommended approach.
+</p>
+
+<p>
+A JPC configuration is a <a href="http://json.org/" title="JSON">JSON</a> object.
+One of the attributes of this configuration object is <code>engines</code>, a list of engine configurations.
+The following JPC configuration specifies a Prolog engine categorized under the name <code>"org.jpc"</code>.
+</p>
+
+<p><pre data-editor="json" data-show-gutter="true">
+{
+	engines: [
+	  {
+	    id: "pdt",
+	    categoryNames: ["org.jpc"],
+	    factory: "org.jpc.engine.pdtconnector.PdtConnectorDriver"
+	  }
+	]
+}</pre></p>
+
+
+<p>
+Each engine configuration has the following attributes:
+</p>
+
+<ul>
+	<li><code>id</code>: The identifier of this engine configuration. This attribute is optional if the <code>categoryNames</code> attribute is specified.</li>
+	<li><code>categoryNames</code>: A list of category names to which this engine configuration applies. This attribute is optional if the <code>id</code> attribute is specified.</li>
+	<li><code>factory</code>: The factory class (usually a JPC driver) associated to this engine configuration.</li>
+</ul>
+
+<p>
+Although Prolog engines can be categorized by means of any name, the JPC convention is to categorize them according to the fully qualified name of the class or package where they are used.
+Therefore, an engine categorized for the <code>org.jpc</code> package will be used in the <code>org.jpc.Jpc</code> class.
+Then, to obtain a Prolog engine in an arbitrary class, you need to write:
+</p>
+
+<p><pre data-editor="java" data-show-gutter="true">
+EngineConfigurationManager.getDefault().getPrologEngine(getClass().getCanonicalName()); //returns a Prolog engine categorized for the fully qualified name of this class.
+//or just:
+EngineConfigurationManager.getDefault().getPrologEngine(getClass());</pre></p>
+
+<p>
+Alternatively, a Prolog engine may be instantiated by means of the <code>id</code> of an engine configuration, like: 
+</p>
+
+<p><pre data-editor="java" data-show-gutter="true">
+EngineConfigurationManager.getDefault().getPrologEngineById("pdt");</pre></p>
+
+<p>
+The <code>EngineConfigurationManager.getDefault()</code> method returns a configuration manager instantiated from the default settings file <code>jpc.settings</code>.
+Alternatively, a configuration manager can be instantiated from an arbitrary configuration file by means of: 
+<code>EngineConfigurationManager.createFromFile(&lt;file_name&gt;)</code>.
+</p>
 
 
 
