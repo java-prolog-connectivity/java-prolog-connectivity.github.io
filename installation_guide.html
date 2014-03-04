@@ -67,7 +67,7 @@
 
 <p>
 This guide overviews how to install JPC, its drivers and compatible Prolog engines.
-Although we cover the installation of the many distinct artefacts that may be required in an application using JPC,
+Although this document covers the installation of the many distinct artefacts that may be required in an application using JPC,
 typically only a small subset of them are needed (e.g., only one Prolog engine and one JPC driver).
 </p>
 	
@@ -177,7 +177,7 @@ Instructions for installing SWI in Linux are provided <a href="http://www.swi-pr
 The recommended YAP version is the latest development version (6.3.3 at the time of writing).
 </p>
 
-<h4>YAP Prolog in Mac OSX</h4>
+<h4>YAP Prolog in Mac OSX and Linux</h4>
 
 <p>
 The following command compiles and install YAP:
@@ -191,11 +191,6 @@ The following command compiles and install YAP:
 <p>
 You may change these options as you wish, but you should leave the <code>--with-java</code> option enabled.
 </p>
-
-<h4>YAP Prolog in Linux</h4>
-
-TODO
-
 
 
 
@@ -277,7 +272,7 @@ All the current JPC drivers are open source and distributed under the terms of <
 
 
 
-<h3>The JPL Based Driver</h3> 
+<h3 id="jplDriver">The JPL Based Driver</h3> 
 <p>
 The JPL based driver is implemented on top of the <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a> library.
 This driver is compatible with either SWI or YAP Prolog.
@@ -311,7 +306,7 @@ Or, if the path to the Jpl native library is already part of the default search 
 Please read the terms of the <a href="http://www.swi-prolog.org/packages/jpl/java_api/lgpl.html" title="JPL library license">JPL library license</a> before using this driver.
 -->
 
-<h3>The InterProlog Based Driver</h3> 
+<h3 id="interprologDriver">The InterProlog Based Driver</h3> 
 
 <p>
 The InterProlog based driver is implemented on top of the <a href="http://www.declarativa.com/interprolog/" title="InterProlog: a Java front-end and enhancement for Prolog">InterProlog</a> library. This driver is compatible with XSB Prolog.
@@ -341,7 +336,7 @@ Please read the terms of the <a href="http://www.fsf.org/copyleft/lgpl.html" tit
 -->
 
 
-<h3>The PDT Connector Based Driver</h3> 
+<h3 id="pdtDriver">The PDT Connector Based Driver</h3> 
 
 <p>
 The PDT Connector based driver is implemented on top of the <a href="http://sewiki.iai.uni-bonn.de/research/pdt/developers/cookbook/standalone_prolog_connector" title="Standalone PDT connector">PDT Connector</a> library. This driver is compatible with SWI Prolog.
