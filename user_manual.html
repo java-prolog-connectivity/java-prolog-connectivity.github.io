@@ -94,6 +94,7 @@ PrologEngine engine = new PdtConnectorDriver().createPrologEngine();
 
 <p>
 This approach, although straightforward, causes a strong coupling between an application and a concrete driver.
+An alternative is presented below.
 </p>
 
 
@@ -124,7 +125,7 @@ The latter is the JPC recommended approach.
 <p>
 A JPC configuration is a <a href="http://json.org/" title="JSON">JSON</a> object.
 One of the attributes of this configuration object is <code>engines</code>, a list of engine configurations.
-The following JPC configuration specifies a Prolog engine categorized under the name <code>"org.jpc"</code>.
+The following JPC configuration specifies a Logtalk compatible Prolog engine categorized under the name <code>"org.jpc"</code>.
 </p>
 
 <p><pre data-editor="json" data-show-gutter="true">
@@ -133,7 +134,8 @@ The following JPC configuration specifies a Prolog engine categorized under the 
 	  {
 	    id: "pdt",
 	    categoryNames: ["org.jpc"],
-	    factory: "org.jpc.engine.pdtconnector.PdtConnectorDriver"
+	    factory: "org.jpc.engine.pdtconnector.PdtConnectorDriver",
+	    profile: "org.jpc.engine.profile.LogtalkEngineProfile"
 	  }
 	]
 }</pre></p>
@@ -146,17 +148,18 @@ Each engine configuration has the following attributes:
 <ul>
 	<li><code>id</code>: The identifier of this engine configuration. This attribute is optional if the <code>categoryNames</code> attribute is specified.</li>
 	<li><code>categoryNames</code>: A list of category names to which this engine configuration applies. This attribute is optional if the <code>id</code> attribute is specified.</li>
-	<li><code>factory</code>: The factory class (usually a JPC driver) associated to this engine configuration.</li>
+	<li><code>factory</code>: A <a href="http://en.wikipedia.org/wiki/Factory_pattern" title="Factory pattern">factory</a> of Prolog engines (usually a JPC driver) associated to this engine configuration.</li>
+	<li><code>profile</code>: A <a href="http://en.wikipedia.org/wiki/Decorator_pattern" title="Decorator pattern">decorator</a> that may configure the Prolog engine the first time it is instantiated. This attribute is optional.
 </ul>
 
 <p>
 Although Prolog engines can be categorized by means of any name, the JPC convention is to categorize them according to the fully qualified name of the class or package where they are used.
-Therefore, an engine categorized for the <code>org.jpc</code> package will be used in the <code>org.jpc.Jpc</code> class.
+Therefore, an engine categorized for the <code>org.jpc</code> package will be used in the <code>org.jpc.Jpc</code> class unless overridden (i.e., if another engine has been categorized for the name <code>"org.jpc.Jpc"</code>).
 Then, to obtain a Prolog engine in an arbitrary class, you need to write:
 </p>
 
 <p><pre data-editor="java" data-show-gutter="true">
-EngineConfigurationManager.getDefault().getPrologEngine(getClass().getCanonicalName()); //returns a Prolog engine categorized for the fully qualified name of this class.
+EngineConfigurationManager.getDefault().getPrologEngine(getClass().getCanonicalName()); //returns a Prolog engine categorized for this class fully qualified name.
 //or just:
 EngineConfigurationManager.getDefault().getPrologEngine(getClass());</pre></p>
 
@@ -173,6 +176,29 @@ Alternatively, a configuration manager can be instantiated from an arbitrary con
 <code>EngineConfigurationManager.createFromFile(&lt;file_name&gt;)</code>.
 </p>
 
+
+
+<h2 id="lowLevelAPI">The Querying API</h2> 
+
+
+<h3 id="lowLevelAPI">The Low-Level Querying API</h3> 
+
+<p>
+All the JPC methods that deal explicitly with Prolog terms are part of the low-level API.
+</p>
+
+
+<h3 id="highLevelAPI">The High-Level Querying API</h3> 
+
+<p>
+Methods that abstract from the term representation of arbitrary Java objects are part of the JPC high-level API.
+</p>
+
+<h2>Exception Management</h2> 
+
+
+
+<h2>Reference Management</h2> 
 
 
 

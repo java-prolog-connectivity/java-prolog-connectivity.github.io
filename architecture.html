@@ -116,13 +116,13 @@ At the same time, it attempts to find a compromise between
 <p>As part of our Prolog engine abstraction, we provide a set of classes reifying Prolog data types, inspired by similar <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a> library classes:</p>
 
 <ul>
-	<li><a href="apidocs/org/jpc/term/Term.html" title="Term class">Term</a>: An abstract Prolog term.</li>
-	<li><a href="apidocs/org/jpc/term/Atom.html" title="Atom class">Atom</a>: A sequence of characters representing a Prolog atom.</li>
-	<li><a href="apidocs/org/jpc/term/Compound.html" title="Compound class">Compound</a>: A compound term consisting of a name and a list of arguments.</li>
-	<li><a href="apidocs/org/jpc/term/IntegerTerm.html" title="IntegerTerm class">IntegerTerm</a>: A Prolog integer term.</li>
-	<li><a href="apidocs/org/jpc/term/FloatTerm.html" title="FloatTerm class">FloatTerm</a>: A Prolog float term.</li>
-	<li><a href="apidocs/org/jpc/term/Var.html" title="Var class">Var</a>: A Prolog variable.</li>
-	<li><a href="apidocs/org/jpc/term/JRef.html" title="JRef class">JRef</a>: A Java reference term. A special kind of term wrapping a Java reference.</li>
+	<li><a href="javadocs/org/jpc/term/Term.html" title="Term class">Term</a>: An abstract Prolog term.</li>
+	<li><a href="javadocs/org/jpc/term/Atom.html" title="Atom class">Atom</a>: A sequence of characters representing a Prolog atom.</li>
+	<li><a href="javadocs/org/jpc/term/Compound.html" title="Compound class">Compound</a>: A compound term consisting of a name and a list of arguments.</li>
+	<li><a href="javadocs/org/jpc/term/IntegerTerm.html" title="IntegerTerm class">IntegerTerm</a>: A Prolog integer term.</li>
+	<li><a href="javadocs/org/jpc/term/FloatTerm.html" title="FloatTerm class">FloatTerm</a>: A Prolog float term.</li>
+	<li><a href="javadocs/org/jpc/term/Var.html" title="Var class">Var</a>: A Prolog variable.</li>
+	<li><a href="javadocs/org/jpc/term/JRef.html" title="JRef class">JRef</a>: A Java reference term. A special kind of term wrapping a Java reference.</li>
 </ul>
 
 
@@ -158,7 +158,7 @@ Although its current features are enough to support the JPC internal requirement
 
 
 
-<h2>JPC Drivers</h2> 
+<h2 id="jpcDrivers">JPC Drivers</h2> 
 
 <p>
 Drivers are used to link the JPC abstract Prolog engine to a concrete Prolog engine.
@@ -175,7 +175,7 @@ Native JPC drivers are planned for the future.
 
 
 
-<h2 id='compatiblePrologEngines'>Prolog Engines</h2> 
+<h2 id="compatiblePrologEngines">Prolog Engines</h2> 
 
 <p>
 At the lowest level of our architecture there are the concrete Prolog engines.
