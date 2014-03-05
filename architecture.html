@@ -115,13 +115,13 @@ At the same time, it attempts to find a compromise between
 <p>As part of our Prolog engine abstraction, we provide a set of classes reifying Prolog data types, inspired by similar <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a> library classes:</p>
 
 <ul>
-	<li><a href="javadocs/org/jpc/term/Term.html" title="Term class">Term</a>: An abstract Prolog term.</li>
-	<li><a href="javadocs/org/jpc/term/Atom.html" title="Atom class">Atom</a>: A sequence of characters representing a Prolog atom.</li>
-	<li><a href="javadocs/org/jpc/term/Compound.html" title="Compound class">Compound</a>: A compound term consisting of a name and a list of arguments.</li>
-	<li><a href="javadocs/org/jpc/term/IntegerTerm.html" title="IntegerTerm class">IntegerTerm</a>: A Prolog integer term.</li>
-	<li><a href="javadocs/org/jpc/term/FloatTerm.html" title="FloatTerm class">FloatTerm</a>: A Prolog float term.</li>
-	<li><a href="javadocs/org/jpc/term/Var.html" title="Var class">Var</a>: A Prolog variable.</li>
-	<li><a href="javadocs/org/jpc/term/JRef.html" title="JRef class">JRef</a>: A Java reference term. A special kind of term wrapping a Java reference.</li>
+	<li><a href="/javadocs/org/jpc/term/Term.html" title="Term class">Term</a>: An abstract Prolog term.</li>
+	<li><a href="/javadocs/org/jpc/term/Atom.html" title="Atom class">Atom</a>: A sequence of characters representing a Prolog atom.</li>
+	<li><a href="/javadocs/org/jpc/term/Compound.html" title="Compound class">Compound</a>: A compound term consisting of a name and a list of arguments.</li>
+	<li><a href="/javadocs/org/jpc/term/IntegerTerm.html" title="IntegerTerm class">IntegerTerm</a>: A Prolog integer term.</li>
+	<li><a href="/javadocs/org/jpc/term/FloatTerm.html" title="FloatTerm class">FloatTerm</a>: A Prolog float term.</li>
+	<li><a href="/javadocs/org/jpc/term/Var.html" title="Var class">Var</a>: A Prolog variable.</li>
+	<li><a href="/javadocs/org/jpc/term/JRef.html" title="JRef class">JRef</a>: A Java reference term. A special kind of term wrapping a Java reference.</li>
 </ul>
 
 
@@ -144,7 +144,7 @@ JPC provides a convenient conversion API, inspired in the Google's <a href="http
 JPC uses an embedded Prolog database running on the JVM and supporting the storage of Java object references (JRef terms) in addition to standard Prolog terms.
 Several core interoperability features rely on this component.
 Although it is currently not intended to be used directly by the programmer, it is mentioned here since it can give an insight on the internal implementation of several JPC features.
-The current implementation lacks, at the moment, many of the features of a full Prolog system.
+The current implementation lacks many of the features of a full Prolog system.
 It supports assertion and retraction of facts, unification, term indexing and backtracking.
 At the moment, it does not support rules, operators and many other standard and de facto Prolog features.
 Although its current features are enough to support the JPC internal requirements, this engine may evolve in the future towards a standalone embedded Prolog system.
