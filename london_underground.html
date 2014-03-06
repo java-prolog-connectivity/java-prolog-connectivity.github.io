@@ -58,6 +58,7 @@
 <p>
 This section illustrates a case study that is referenced in the <a href="/user_manual.html" title="JPC user manual">JPC user manual</a>.
 In order to download and install this example refer to the <a href="/installation_guide.html#installingJpcExamples" title="JPC installation guide">installation guide</a>.
+This example requires a basic understanding of <a href="http://logtalk.org/manuals/" title="Logtalk Manuaks">Logtalk</a>.
 </p>
 
 
@@ -75,8 +76,11 @@ In order to download and install this example refer to the <a href="/installatio
 
 <p>
 This example addresses a typical problem that can be implemented easily with a logic language: a querying system about subway lines and stations. 
-This document describes both a concrete implementation in the Prolog side (using <a href="http://logtalk.org/" title="Logtalk">Logtalk</a>) and a set of Java interfaces that model the domain artifacts in the Java side.
-The main entities of our example are shown in figure 1.
+It has been adapted from the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical book">Simply Logical</a> book by <a href="https://www.cs.bris.ac.uk/~flach/index.html" title="Peter Flach">Peter Flach</a>.
+This document describes both a concrete implementation in the Prolog side (using Logtalk) and a set of Java interfaces that model the domain artifacts in the Java side.
+The main entities of our example are shown in figure 1:
+These entities are: subway stations, subway lines connecting those stations and the subway itself.
+In our example, stations are <code>connected</code> to other stations by underground lines. A station is <code>nearby</code> another one if there is at most one station in between them. A station <code>A</code> is <code>reachable</code> from another station <code>B</code> if there exists a list of stations <code>L</code> that form a path going from <code>B</code> to <code>A</code>.
 </p>
 
 
@@ -85,12 +89,11 @@ The main entities of our example are shown in figure 1.
   <div id="imglabel:london_underground" >Fig 1. - The London Underground.</div>
 </div>
 
-<h2>An Implementation in Logtalk</h2> 
+<h2>The Logtalk Entities</h2> 
 
 <p>
 The first stage of the problem consists in expressing our knowledge about the London Underground as a set of logic statements. 
-Most of the code in this section has been adapted from the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical book">Simply Logical</a> book by <a href="https://www.cs.bris.ac.uk/~flach/index.html" title="Peter Flach">Peter Flach</a>.
-However, we introduce an interesting variation: instead of implementing it in plain Prolog as in the original, we use Logtalk, a portable object-oriented layer on top of Prolog.
+Instead of implementing it in plain Prolog as in the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical book">original example</a>, we introduce an interesting variation: we use Logtalk, a portable object-oriented layer on top of Prolog.
 </p>
 
 <p>
@@ -99,35 +102,58 @@ A detailed documentation of these entities is provided <a href="/jpc.examples/lo
 </p>
 
 
+
+<h3>The <code>metro</code> Logtalk Object</h3> 
+
+<p>
+The <a href="/jpc.examples/logtalkdocs/underground_example/metro_0.html" title="The metro/0 Logtalk object"><code>metro/0</code></a> object encapsulates the knowledge about how stations are connected (e.g., the <code>connected/3</code> predicate).
+Note that the <code>connected/3</code> predicate is declared as <a href="http://logtalk.org/manuals/refman/directives/dynamic_1.html" title="The dynamic/1 directive">dynamic</a> (line 5) since new connections can be configured at runtime.
+Plus the rules for the logic predicates <code>nearby/2</code>, <code>reachable/3</code>, <code>line/1</code> and <code>remove_all/0</code>. 
+The messages (queries) that the metro object can respond to are specified by the <code>public/1</code> directive in line 3. Messages in Logtalk are sent using the <code>::/2</code> operator, as illustrated on line 13 for the <code>member/2</code> method.
+</p>
+
+
+<p><pre data-editor="prolog" data-show-gutter="true">
+:- object(metro).
+
+	:- public([connected/3, nearby/2, reachable/3, line/1, remove_all/0]).
+
+    :- dynamic(connected/3).
+
+	nearby(Station1,Station2):-connected(Station1,Station2,_).
+	nearby(Station1,Station2):-connected(Station1,IntermediateStation,Line),connected(IntermediateStation,Station2,Line).
+
+	reachable(Station1,Station2,[]):-connected(Station1,Station2,_).
+	reachable(Station1,Station2,[Z|R]):-connected(Station1,Z,_),reachable(Z,Station2,R).
+
+	line(Name) :- setof(Line, Station1^Station2^connected(Station1,Station2,Line), AllLines), list::member(line(Name), AllLines).
+
+    remove_all :- metro::retractall(connected(_,_,_)).
+    
+:- end_object.</pre></p>
+
+
+
+
 <h3>The <code>line</code> Logtalk Object</h3> 
+
+<p>
+A subway line is modelled by the Logtalk <a href="http://logtalk.org/manuals/userman/features.html#features_parametric" title="Logtalk parametric objects"> parametric object</a> <a href="/jpc.examples/logtalkdocs/underground_example/line_1.html" title="The line/1 Logtalk object"><code>line/1</code></a>.
+The object parameter denotes the name of the line.
+It provides predicates answering connected stations by means of the line object (e.g., <code>connects/2</code>).
+In addition, it allows a programmer to declare new connections between stations by means of the line object (e.g., <code>add_connection/2</code>).
+These Logtalk methods delegate to the <code>metro</code> prototype object.
+</p>
 
 <p><pre data-editor="prolog" data-show-gutter="true">
 :- object(line(_Name)).
 
-	:- info([
-		comment is 'A metro line',
-		parameters is [
-			'Name' - 'The name of the metro line']
-	]).
-	
 	:- public([name/1, connects/2, add_connection/2]).
 
-	:- info(name/1, [
-    	comment is 'Name is the line name.',
-    	argnames is ['Name']
-	]).
 	name(Name) :- parameter(1, Name).
-	
-	:- info(connects/2, [
-    	comment is 'Station1 is connected to Station2 by means of this line.',
-    	argnames is ['Station1', 'Station2']
-	]).
+
 	connects(Station1, Station2) :- self(Self), metro::connected(Station1, Station2, Self).
-	
-	:- info(add_connection/2, [
-    	comment is 'Station1 is now connected to Station2 by means of this line.',
-    	argnames is ['Station1', 'Station2']
-	]).
+
 	add_connection(Station1, Station2) :- self(Self), metro::assertz(connected(Station1, Station2, Self)).
 
 :- end_object.</pre></p>
@@ -136,107 +162,43 @@ A detailed documentation of these entities is provided <a href="/jpc.examples/lo
 
 <h3>The <code>station</code> Logtalk Object</h3> 
 
+<p>
+A subway station is modelled by the Logtalk <a href="http://logtalk.org/manuals/userman/features.html#features_parametric" title="Logtalk parametric objects"> parametric object</a> <a href="/jpc.examples/logtalkdocs/underground_example/station_1.html" title="The station/1 Logtalk object"><code>station/1</code></a>.
+The object parameter denotes the name of the station.
+It provides predicates answering stations connected to this line (e.g., <code>connected/1</code> and <code>connected/2</code>), stations that are nearby this station (e.g., <code>nearby/1</code>) and stations that are reachable from this station (e.g., <code>reachable/1</code> and <code>reachable/2</code>).
+These Logtalk methods delegate to the <code>metro</code> prototype object.
+</p>
 
 <p><pre data-editor="prolog" data-show-gutter="true">
 :- object(station(_Name)).
 
-	:- info([
-		comment is 'A metro station',
-		parameters is [
-			'Name' - 'The name of the station']
-	]).
-	
 	:- public([name/1, connected/1, connected/2, nearby/1, reachable/1, reachable/2]).
 
-	:- info(name/1, [
-    	comment is 'Name is the station name.',
-    	argnames is ['Name']
-	]).
 	name(Name) :- parameter(1, Name).
-	
-	:- info(connected/1, [
-    	comment is 'Station is a connected station.',
-    	argnames is ['Station']
-	]).
+
 	connected(Station) :- connected(Station, _).
-	
-	:- info(connected/2, [
-    	comment is 'Station is a connected station by means of Line.',
-    	argnames is ['Station', 'Line']
-	]).
+
 	connected(Station, L) :- self(Self), metro::connected(Self, Station, L).
-	
-	:- info(nearby/1, [
-    	comment is 'Station is a nearby station.',
-    	argnames is ['Station']
-	]).
+
 	nearby(Station) :- self(Self), metro::nearby(Self, Station).
-	
-	:- info(reachable/1, [
-    	comment is 'Station is a reachable station.',
-    	argnames is ['Station']
-	]).
+
 	reachable(Station) :- reachable(Station, _).
-	
-	:- info(reachable/2, [
-    	comment is 'Station is a reachable station by means of traversing IntermediateStations.',
-    	argnames is ['Station', 'IntermediateStations']
-	]).
+
 	reachable(Station, IntermediateStations) :- self(Self), metro::reachable(Self, Station, IntermediateStations).
 	
 :- end_object.</pre></p>
 
 
 
-<h3>The <code>metro</code> Logtalk Object</h3> 
-
-
-
-<p><pre data-editor="prolog" data-show-gutter="true">
-:- object(metro).
-
-	:- info([
-		comment is 'The London metro. Adapted from the "Simply Logical" book by Peter Flach.'
-	]).
-	:- public([connected/3, nearby/2, reachable/3, line/1, remove_all/0]).
-	
-	:- info(connected/3, [
-    	comment is 'Station1 is connected to Station2 by means of Line.',
-    	argnames is ['Station1', 'Station2', 'Line']
-	]).
-    :- dynamic(connected/3).
-
-	:- info(nearby/2, [
-    	comment is 'Station1 is nearby Station2.',
-    	argnames is ['Station1', 'Station2']
-	]).
-	nearby(Station1,Station2):-connected(Station1,Station2,_).
-	nearby(Station1,Station2):-connected(Station1,IntermediateStation,Line),connected(IntermediateStation,Station2,Line).
-	
-	:- info(reachable/3, [
-    	comment is 'Station2 is reachable from Station1 by means of traversing IntermediateStations.',
-    	argnames is ['Station1', 'Station2', 'IntermediateStations']
-	]).
-	reachable(Station1,Station2,[]):-connected(Station1,Station2,_).
-	reachable(Station1,Station2,[Z|R]):-connected(Station1,Z,_),reachable(Z,Station2,R).
-
-	:- info(line/1, [
-    	comment is 'Name is the name of a Line.',
-    	argnames is ['Name']
-	]).
-	line(Name) :- setof(Line, Station1^Station2^connected(Station1,Station2,Line), AllLines), list::member(line(Name), AllLines).
-   
-   	:- info(remove_all/0, [
-    	comment is 'Removes all the lines.'
-	]).
-    remove_all :- metro::retractall(connected(_,_,_)).
-    
-:- end_object.</pre></p>
-
-
 
 
 <h3>The Loader File</h3> 
+
+<p>
+Typically Logtalk libraries are loaded by means of a loader file.
+This file contains one or more <a href="http://logtalk.org/manuals/refman/predicates/logtalk_load_1.html" title="The logtalk_load/1 predicate"><code>logtalk_load/1</code></a> predicates loading the distinct required entities.
+Assuming these entities are defined in files named <code>metro.lgt</code>, <code>station.lgt</code> and <code>line.lgt</code>, the following script will load our library:
+</p>
 
 <p><pre data-editor="prolog" data-show-gutter="true">
 :- initialization((
@@ -245,9 +207,20 @@ A detailed documentation of these entities is provided <a href="/jpc.examples/lo
 	logtalk_load([metro, station, line])
 )).</pre></p>
 
+<p>
+In addition to load the main entities of the library, the loader also load depending entities (line 3) and perform further configuration (e.g., in line 2, the <a href="http://logtalk.org/manuals/refman/predicates/set_logtalk_flag_2.html" title="The set_logtalk_flag/2 predicate"><code>set_logtalk_flag/2</code></a> directive specifies that dynamic declarations are allowed).
+</p>
 
+<h3 id="configuringUndergroundStructure">Configuring the Underground Structure</h3> 
 
-<h3>Configuring the Underground Structure</h3> 
+<p>
+The previous Logtalk entities implements the logic of our application.
+However, they do not define concrete stations, lines and their relations.
+For this example, we make use of a separate file that contains directives loading some test data.
+This file should be loaded at runtime by means of the <a href="http://logtalk.org/manuals/refman/predicates/logtalk_load_1.html" title="The logtalk_load/1 predicate"><code>logtalk_load/1</code></a> predicate previously discussed.
+The content of this data-loading file is shown below:
+</p>
+
 
 <p><pre data-editor="prolog" data-show-gutter="true">
 :- line(central)::add_connection(station(bond_street),station(oxford_circus)).
@@ -263,13 +236,7 @@ A detailed documentation of these entities is provided <a href="/jpc.examples/lo
 :- line(northern)::add_connection(station(leicester_square),station(charing_cross)).</pre></p>
 
 
-
-
-
-
-
-
-
+<h2>The Java Entities</h2> 
 
 
 
