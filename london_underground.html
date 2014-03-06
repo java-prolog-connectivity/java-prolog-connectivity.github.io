@@ -135,7 +135,8 @@ The messages (queries) that the metro object can respond to are specified by the
 		reachable(IntermediateStation, Station2, IntermediateStations).
 
 	line(Name) :-
-		setof(Line, Station1^Station2^connected(Station1,Station2,Line), AllLines), list::member(line(Name), AllLines).
+		setof(Line, Station1^Station2^connected(Station1,Station2,Line), AllLines),
+		list::member(line(Name), AllLines).
 
     remove_all :-
 		metro::retractall(connected(_,_,_)).
