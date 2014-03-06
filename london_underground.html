@@ -122,15 +122,17 @@ The messages (queries) that the metro object can respond to are specified by the
 
     :- dynamic(connected/3).
 
-	nearby(Station1,Station2) :-
-		connected(Station1,Station2,_).
-	nearby(Station1,Station2) :-
-		connected(Station1,IntermediateStation,Line),connected(IntermediateStation,Station2,Line).
+	nearby(Station1, Station2) :-
+		connected(Station1, Station2, _).
+	nearby(Station1, Station2) :-
+		connected(Station1, IntermediateStation, Line),
+		connected(IntermediateStation, Station2, Line).
 
-	reachable(Station1,Station2,[]) :-
-		connected(Station1,Station2,_).
-	reachable(Station1,Station2,[Z|R]) :-
-		connected(Station1,Z,_),reachable(Z,Station2,R).
+	reachable(Station1, Station2, []) :-
+		connected(Station1, Station2, _).
+	reachable(Station1, Station2, [IntermediateStation| IntermediateStations]) :-
+		connected(Station1, IntermediateStation, _),
+		reachable(IntermediateStation, Station2, IntermediateStations).
 
 	line(Name) :-
 		setof(Line, Station1^Station2^connected(Station1,Station2,Line), AllLines), list::member(line(Name), AllLines).
