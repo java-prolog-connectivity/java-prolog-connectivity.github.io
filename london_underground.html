@@ -113,7 +113,7 @@ The messages (queries) that the metro object can respond to are specified by the
 </p>
 
 
-<p><pre data-editor="logtalk" data-show-gutter="true">
+<p><pre data-editor="prolog" data-show-gutter="true">
 :- object(metro).
 
 	:- public([
@@ -153,7 +153,7 @@ In addition, it allows a programmer to declare new connections between stations 
 These Logtalk methods delegate to the <code>metro</code> prototype object.
 </p>
 
-<p><pre data-editor="logtalk" data-show-gutter="true">
+<p><pre data-editor="prolog" data-show-gutter="true">
 :- object(line(_Name)).
 
 	:- public([
@@ -178,13 +178,13 @@ These Logtalk methods delegate to the <code>metro</code> prototype object.
 <h3>The <code>station</code> Logtalk Object</h3> 
 
 <p>
-A subway station is modelled by the Logtalk <a href="http://logtalk.org/manuals/userman/features.html#features_parametric" title="Logtalk parametric objects"> parametric object</a> <a href="/jpc.examples/logtalkdocs/underground_example/station_1.html" title="The station/1 Logtalk object"><code>station/1</code></a>.
+A subway station is modelled by the Logtalk <a href="http://logtalk.org/manuals/userman/features.html#features_parametric" title="Logtalk parametric objects">parametric object</a> <a href="/jpc.examples/logtalkdocs/underground_example/station_1.html" title="The station/1 Logtalk object"><code>station/1</code></a>.
 The object parameter denotes the name of the station.
 It provides predicates answering stations connected to this line (e.g., <code>connected/1</code> and <code>connected/2</code>), stations that are nearby this station (e.g., <code>nearby/1</code>) and stations that are reachable from this station (e.g., <code>reachable/1</code> and <code>reachable/2</code>).
 These Logtalk methods delegate to the <code>metro</code> prototype object.
 </p>
 
-<p><pre data-editor="logtalk" data-show-gutter="true">
+<p><pre data-editor="prolog" data-show-gutter="true">
 :- object(station(_Name)).
 
 	:- public([
@@ -226,7 +226,7 @@ This file contains one or more <a href="http://logtalk.org/manuals/refman/predic
 Assuming these entities are defined in files named <code>metro.lgt</code>, <code>station.lgt</code> and <code>line.lgt</code>, the following script will load our library:
 </p>
 
-<p><pre data-editor="logtalk" data-show-gutter="true">
+<p><pre data-editor="prolog" data-show-gutter="true">
 :- initialization((
 	set_logtalk_flag(dynamic_declarations, allow),
 	logtalk_load(library(types_loader)),
@@ -248,7 +248,7 @@ The content of this data-loading file is shown below:
 </p>
 
 
-<p><pre data-editor="logtalk" data-show-gutter="true">
+<p><pre data-editor="prolog" data-show-gutter="true">
 :- initialization((
 	line(central)::add_connection(station(bond_street),station(oxford_circus)),
 	line(central)::add_connection(station(oxford_circus),station(tottenham_court_road)),
