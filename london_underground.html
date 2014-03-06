@@ -58,7 +58,7 @@
 <p>
 This section illustrates a case study that is referenced in the <a href="/user_manual.html" title="JPC user manual">JPC user manual</a>.
 In order to download and install this example refer to the <a href="/installation_guide.html#installingJpcExamples" title="JPC installation guide">installation guide</a>.
-This example requires a basic understanding of <a href="http://logtalk.org/manuals/" title="Logtalk Manuaks">Logtalk</a>.
+This example requires a basic understanding of <a href="http://logtalk.org/manuals/index.html" title="Logtalk Manuaks">Logtalk</a>.
 </p>
 
 
@@ -113,22 +113,30 @@ The messages (queries) that the metro object can respond to are specified by the
 </p>
 
 
-<p><pre data-editor="prolog" data-show-gutter="true">
+<p><pre data-editor="logtalk" data-show-gutter="true">
 :- object(metro).
 
-	:- public([connected/3, nearby/2, reachable/3, line/1, remove_all/0]).
+	:- public([
+		connected/3, nearby/2, reachable/3, line/1, remove_all/0
+	]).
 
     :- dynamic(connected/3).
 
-	nearby(Station1,Station2):-connected(Station1,Station2,_).
-	nearby(Station1,Station2):-connected(Station1,IntermediateStation,Line),connected(IntermediateStation,Station2,Line).
+	nearby(Station1,Station2) :-
+		connected(Station1,Station2,_).
+	nearby(Station1,Station2) :-
+		connected(Station1,IntermediateStation,Line),connected(IntermediateStation,Station2,Line).
 
-	reachable(Station1,Station2,[]):-connected(Station1,Station2,_).
-	reachable(Station1,Station2,[Z|R]):-connected(Station1,Z,_),reachable(Z,Station2,R).
+	reachable(Station1,Station2,[]) :-
+		connected(Station1,Station2,_).
+	reachable(Station1,Station2,[Z|R]) :-
+		connected(Station1,Z,_),reachable(Z,Station2,R).
 
-	line(Name) :- setof(Line, Station1^Station2^connected(Station1,Station2,Line), AllLines), list::member(line(Name), AllLines).
+	line(Name) :-
+		setof(Line, Station1^Station2^connected(Station1,Station2,Line), AllLines), list::member(line(Name), AllLines).
 
-    remove_all :- metro::retractall(connected(_,_,_)).
+    remove_all :-
+		metro::retractall(connected(_,_,_)).
     
 :- end_object.</pre></p>
 
@@ -145,16 +153,23 @@ In addition, it allows a programmer to declare new connections between stations 
 These Logtalk methods delegate to the <code>metro</code> prototype object.
 </p>
 
-<p><pre data-editor="prolog" data-show-gutter="true">
+<p><pre data-editor="logtalk" data-show-gutter="true">
 :- object(line(_Name)).
 
-	:- public([name/1, connects/2, add_connection/2]).
+	:- public([
+		name/1, connects/2, add_connection/2
+	]).
 
-	name(Name) :- parameter(1, Name).
+	name(Name) :-
+		parameter(1, Name).
 
-	connects(Station1, Station2) :- self(Self), metro::connected(Station1, Station2, Self).
+	connects(Station1, Station2) :-
+		self(Self),
+		metro::connected(Station1, Station2, Self).
 
-	add_connection(Station1, Station2) :- self(Self), metro::assertz(connected(Station1, Station2, Self)).
+	add_connection(Station1, Station2) :-
+		self(Self),
+		metro::assertz(connected(Station1, Station2, Self)).
 
 :- end_object.</pre></p>
 
@@ -169,22 +184,33 @@ It provides predicates answering stations connected to this line (e.g., <code>co
 These Logtalk methods delegate to the <code>metro</code> prototype object.
 </p>
 
-<p><pre data-editor="prolog" data-show-gutter="true">
+<p><pre data-editor="logtalk" data-show-gutter="true">
 :- object(station(_Name)).
 
-	:- public([name/1, connected/1, connected/2, nearby/1, reachable/1, reachable/2]).
+	:- public([
+		name/1, connected/1, connected/2, nearby/1, reachable/1, reachable/2
+	]).
 
-	name(Name) :- parameter(1, Name).
+	name(Name) :-
+		parameter(1, Name).
 
-	connected(Station) :- connected(Station, _).
+	connected(Station) :-
+		connected(Station, _).
 
-	connected(Station, L) :- self(Self), metro::connected(Self, Station, L).
+	connected(Station, L) :-
+		self(Self),
+		metro::connected(Self, Station, L).
 
-	nearby(Station) :- self(Self), metro::nearby(Self, Station).
+	nearby(Station) :-
+		self(Self),
+		metro::nearby(Self, Station).
 
-	reachable(Station) :- reachable(Station, _).
+	reachable(Station) :-
+		reachable(Station, _).
 
-	reachable(Station, IntermediateStations) :- self(Self), metro::reachable(Self, Station, IntermediateStations).
+	reachable(Station, IntermediateStations) :-
+		self(Self),
+		metro::reachable(Self, Station, IntermediateStations).
 	
 :- end_object.</pre></p>
 
@@ -200,7 +226,7 @@ This file contains one or more <a href="http://logtalk.org/manuals/refman/predic
 Assuming these entities are defined in files named <code>metro.lgt</code>, <code>station.lgt</code> and <code>line.lgt</code>, the following script will load our library:
 </p>
 
-<p><pre data-editor="prolog" data-show-gutter="true">
+<p><pre data-editor="logtalk" data-show-gutter="true">
 :- initialization((
 	set_logtalk_flag(dynamic_declarations, allow),
 	logtalk_load(library(types_loader)),
@@ -222,18 +248,20 @@ The content of this data-loading file is shown below:
 </p>
 
 
-<p><pre data-editor="prolog" data-show-gutter="true">
-:- line(central)::add_connection(station(bond_street),station(oxford_circus)).
-:- line(central)::add_connection(station(oxford_circus),station(tottenham_court_road)).
-:- line(jubilee)::add_connection(station(bond_street),station(green_park)).
-:- line(jubilee)::add_connection(station(green_park),station(charing_cross)).
-:- line(piccadilly)::add_connection(station(green_park),station(piccadilly_circus)).
-:- line(piccadilly)::add_connection(station(piccadilly_circus),station(leicester_square)).
-:- line(victoria)::add_connection(station(green_park),station(oxford_circus)).
-:- line(bakerloo)::add_connection(station(oxford_circus),station(piccadilly_circus)).
-:- line(bakerloo)::add_connection(station(piccadilly_circus),station(charing_cross)).
-:- line(northern)::add_connection(station(tottenham_court_road),station(leicester_square)).
-:- line(northern)::add_connection(station(leicester_square),station(charing_cross)).</pre></p>
+<p><pre data-editor="logtalk" data-show-gutter="true">
+:- initialization((
+	line(central)::add_connection(station(bond_street),station(oxford_circus)),
+	line(central)::add_connection(station(oxford_circus),station(tottenham_court_road)),
+	line(jubilee)::add_connection(station(bond_street),station(green_park)),
+	line(jubilee)::add_connection(station(green_park),station(charing_cross)),
+	line(piccadilly)::add_connection(station(green_park),station(piccadilly_circus)),
+	line(piccadilly)::add_connection(station(piccadilly_circus),station(leicester_square)),
+	line(victoria)::add_connection(station(green_park),station(oxford_circus)),
+	line(bakerloo)::add_connection(station(oxford_circus),station(piccadilly_circus)),
+	line(bakerloo)::add_connection(station(piccadilly_circus),station(charing_cross)),
+	line(northern)::add_connection(station(tottenham_court_road),station(leicester_square)),
+	line(northern)::add_connection(station(leicester_square),station(charing_cross))
+)).</pre></p>
 
 
 <h2>The Java Entities</h2> 
