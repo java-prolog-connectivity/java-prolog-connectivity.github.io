@@ -55,12 +55,6 @@
 
 <h1>The London Underground Case Study</h1>
 
-<p>
-This section illustrates a case study that is referenced in the <a href="/user_manual.html" title="JPC user manual">JPC user manual</a>.
-In order to download and install this example refer to the <a href="/installation_guide.html#installingJpcExamples" title="JPC installation guide">installation guide</a>.
-This example requires a basic understanding of <a href="http://logtalk.org/manuals/index.html" title="Logtalk Manuaks">Logtalk</a>.
-</p>
-
 
 <div id="table_of_content">
   <strong>Contents</strong>
@@ -71,22 +65,34 @@ This example requires a basic understanding of <a href="http://logtalk.org/manua
 
 <div id="content">
 
+<h2>Before Starting</h2> 
+
+<p>
+This section illustrates a case study that is referenced in the <a href="/user_manual.html" title="JPC user manual">JPC user manual</a>.
+It requires a basic understanding of <a href="http://logtalk.org/manuals/index.html" title="Logtalk Manuaks">Logtalk</a>.
+In order to download and install this example refer to the <a href="/installation_guide.html#installingJpcExamples" title="JPC installation guide">JPC installation guide</a>.
+</p>
+	
 
 <h2>Introduction</h2> 
 
 <p>
-This example addresses a typical problem that can be implemented easily with a logic language: a querying system about subway lines and stations. 
+Our case study addresses a typical problem that can be implemented easily with a logic language: a querying system about subway lines and stations. 
 It has been adapted from the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical book">Simply Logical</a> book by <a href="https://www.cs.bris.ac.uk/~flach/index.html" title="Peter Flach">Peter Flach</a>.
 This document describes both a concrete implementation in the Prolog side (using Logtalk) and a set of Java interfaces that model the domain artifacts in the Java side.
+</p>
+
+<p>
 The main entities of our example are shown in figure 1:
-These entities are: subway stations, subway lines connecting those stations and the subway itself.
-In our example, stations are <code>connected</code> to other stations by underground lines. A station is <code>nearby</code> another one if there is at most one station in between them. A station <code>A</code> is <code>reachable</code> from another station <code>B</code> if there exists a list of stations <code>L</code> that form a path going from <code>B</code> to <code>A</code>.
+These entities are: subway stations, subway lines connecting those stations and the subway itself (referred as <code>metro</code> in the figure).
+Relevant relations between these entities are:
+Stations are <code>connected</code> to other stations by underground lines. A station is <code>nearby</code> another one if there is at most one station in between. A station <code>A</code> is <code>reachable</code> from another station <code>B</code> if there exists a list of stations <code>L</code> that form a path going from <code>B</code> to <code>A</code>.
 </p>
 
 
 <div class="divImg">
   <img src="img/examples/london_underground.png" alt="The London Underground." style="padding-bottom:0.5em;" height="400" />
-  <div id="imglabel:london_underground" >Fig 1. - The London Underground.</div>
+  <div id="imglabel:london_underground" >Fig 1. - The London Underground (adapted from the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical book">Simply Logical</a> book).</div>
 </div>
 
 <h2>The Logtalk Entities</h2> 
@@ -221,7 +227,7 @@ These Logtalk methods delegate to the <code>metro</code> prototype object.
 
 
 
-<h3>The Loader File</h3> 
+<h3>The Logtalk Loader File</h3> 
 
 <p>
 Typically Logtalk libraries are loaded by means of a loader file.
@@ -274,7 +280,7 @@ In the Java side, we define the
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Line.html" title="The Line class"><code>Line</code></a> and 
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> 
 interfaces in correspondence with the <a href="/jpc.examples/logtalkdocs/underground_example/" title="The Underground System Entities in Logtalk">Logtalk entities</a> described before, as illustrated by figure 2 (not all methods are shown).
-A complete documentation of these interfaces can be found <a href="/jpc.examples/javadocs/" title="Java side documentation">here</a>.
+A complete documentation of these interfaces can be found in the online <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/package-summary.html" title="Java side documentation">example documentation</a>.
 </p>
 
 
