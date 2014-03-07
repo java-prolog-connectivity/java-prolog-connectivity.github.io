@@ -105,7 +105,7 @@ At the moment, no tests have been accomplished under Windows, although it should
 <p>
 JPC currently uses <a href="http://maven.apache.org/" title="Apache Maven">Maven</a> as its project management tool.
 Therefore, the easiest way to include JPC in a project, its drivers, other dependency libraries and examples is by means of Maven.
-Maven installation instructions can be found <a href="http://maven.apache.org/download.cgi" title="Apache Maven Download">here</a>.
+Maven <a href="http://maven.apache.org/download.cgi" title="Apache Maven Download">download and installation instructions</a> are provided in its website.
 </p>
 
 <p>
@@ -158,9 +158,8 @@ Hence, this section often includes some example installation steps that ensure c
 <h3>Installing SWI Prolog</h3> 
 
 <p>
-
-<a href="http://www.swi-prolog.org/" title="SWI Prolog">SWI</a> Prolog installation instructions can be found <a href="http://www.swi-prolog.org/Download.html" title="SWI Prolog installation instructions">here</a>.
-JPC is compatible with the latest SWI stable release (version 6.x at the time of writing).
+JPC is compatible with the latest <a href="http://www.swi-prolog.org/" title="SWI Prolog">SWI</a> stable release (version 6.x at the time of writing).
+<a href="http://www.swi-prolog.org/Download.html" title="SWI Prolog installation instructions">Installation instructions</a> for multiple platforms are provided by the SWI website.
 </p>
 
 <h4>SWI Prolog in Mac OS X</h4>
@@ -170,21 +169,23 @@ The SWI version used to test JPC was installed using <a href="http://www.macport
 
 <h4>SWI Prolog in Linux</h4>
 
-Instructions for installing SWI in Linux are provided <a href="http://www.swi-prolog.org/build/LinuxDistro.txt" title="SWI in Linux">here</a>.
-
+To generate the required <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">Java interoperability library</a>, SWI Prolog should be compiled from sources in Linux.
+The SWI site provides information about the <a href="http://www.swi-prolog.org/build/LinuxDistro.txt" title="Required dependencies">required packages</a> needed before starting the installation and <a href="http://www.swi-prolog.org/git.html" title="SWI sources">how to download the sources</a>.
+Afterwards, build and install both the SWI core and the tools according to the <a href="http://www.swi-prolog.org/build/unix.html" title="Building and installing SWI sources">provided instructions</a>.
 
 
 <h3>Installing YAP Prolog</h3> 
 
 <p>
-<a href="http://www.dcc.fc.up.pt/~vsc/Yap/" title="YAP Prolog">YAP</a> Prolog installation instructions can be found <a href="http://www.dcc.fc.up.pt/~vsc/Yap/downloads.html" title="YAP Prolog installation instructions">here</a>.
-The recommended YAP version is the latest development version (6.3.3 at the time of writing).
+JPC is compatible with the latest <a href="http://www.dcc.fc.up.pt/~vsc/Yap/" title="YAP Prolog">YAP</a> development version (version 6.3.3 at the time of writing).
+<a href="http://www.dcc.fc.up.pt/~vsc/Yap/downloads.html" title="YAP Prolog installation instructions">Installation instructions</a> for multiple platforms are provided by the YAP website.
 </p>
 
 <h4>YAP Prolog in Mac OS X and Linux</h4>
 
 <p>
-The following command compiles and install YAP:
+Follow the instructions provided by the YAP website, taking care of adding the <code>--with-java</code> option when running the configuration script.
+For example, the following command (executed in the <code>ARCH</code> folder as described in the YAP manual) compiles and install YAP generating the required <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">Java interoperability library</a>:
 </p>
 
 <p><pre data-editor="makefile" data-show-gutter="true">
@@ -193,7 +194,7 @@ The following command compiles and install YAP:
 
 
 <p>
-You may change these options as you wish, but you should leave the <code>--with-java</code> option enabled.
+You may change these options as you wish, but remember to leave the <code>--with-java</code> option enabled.
 </p>
 
 
@@ -213,8 +214,8 @@ Note that this assumes that the gcc44 compiler is available.
 <h3>Installing XSB Prolog</h3> 
 
 <p>
-<a href="http://xsb.sourceforge.net/" title="XSB Prolog">XSB</a> Prolog installation instructions can be found <a href="http://xsb.sourceforge.net/downloads/downloads.html" title="XSB Prolog installation instructions">here</a>.
-The recommended XSB version is the <a href="http://sourceforge.net/p/xsb/src/HEAD/tree/" title="latest development version">latest development version</a>.
+JPC is compatible with the latest <a href="http://sourceforge.net/p/xsb/src/HEAD/tree/" title="XSB Prolog">XSB</a> development version. <!-- (version 3.4.0 at the time of writing)-->
+<a href="http://xsb.sourceforge.net/downloads/downloads.html" title="XSB Prolog installation instructions">Installation instructions</a> for multiple platforms are provided by the XSB website.
 </p>
 
 <h4>XSB Prolog in Mac OS X and Linux</h4>
@@ -224,11 +225,11 @@ To compile and install XSB go to the <code>build</code> directory in the source 
 </p>
 
 <p><pre data-editor="makefile" data-show-gutter="true">
-sudo ./configure -prefix=$SHARED_LIB && sudo ./makexsb && sudo ./makexsb dynmodule && sudo ./makexsb install</pre></p>
+./configure -prefix=$SHARED_LIB && ./makexsb && ./makexsb dynmodule && ./makexsb install</pre></p>
 
 <p>
 Where <code>$SHARED_LIB</code> is the directory where you want to install XSB. For example: <code>/opt/local/lib/</code>.
-Note that you need <code>sudo</code> depending on the chosen installation location.
+Note that you may need <code>sudo</code> depending on the chosen installation location.
 </p>
 
 
@@ -238,7 +239,8 @@ Note that you need <code>sudo</code> depending on the chosen installation locati
 
 <p>
 Although JPC requires just a plain Prolog engine, many optional advanced features rely on <a href="http://logtalk.org/" title="Logtalk: An open source object-oriented logic programming language">Logtalk</a>.
-Logtalk is an object-oriented logic programming language implemented using Prolog as a backend compiler. Installation instructions can be found <a href="http://logtalk.org/download.html" title="Logtalk installation instructions">here</a>.
+Logtalk is an object-oriented logic programming language implemented using Prolog as a backend compiler. 
+The Logtalk website provides detailed <a href="http://logtalk.org/download.html" title="Logtalk installation instructions">installation instructions</a> together with many other resources.
 </p>
 
 
@@ -259,7 +261,7 @@ In order to include JPC into a project, add the following dependency to your POM
 
 
 <p>
-Note that including the JPC library may be enough for development, but for executing your application you still need to add a JPC driver.
+Note that including the JPC library may be enough for development, but for executing your application you still need one or more JPC drivers.
 </p>
 
 
@@ -302,6 +304,10 @@ Or, if the path to the Jpl native library is already part of the default search 
 (e.g., if it is included in <code>DYLD_LIBRARY_PATH</code> in OSX, or <code>LD_LIBRARY_PATH</code> in Linux).
 -->
 
+<p>
+With this driver, only one Prolog session can be opened per JVM.
+</p>
+
 <!--
 Please read the terms of the <a href="http://www.swi-prolog.org/packages/jpl/java_api/lgpl.html" title="JPL library license">JPL library license</a> before using this driver.
 -->
@@ -330,6 +336,10 @@ mvn install:install-file -Dfile=interprolog.jar -DgroupId=com.declarativa.interp
 	</li>
 	<li>Configure the environment variable <code>XSB_BIN_DIRECTORY</code> with the directory where the XSB binary is located.</li>
 </ul>
+
+<p>
+This driver supports multiple Prolog sessions.
+</p>
 
 <!--
 Please read the terms of the <a href="http://www.fsf.org/copyleft/lgpl.html" title="InterProlog library license">InterProlog library license</a> before using this driver.
@@ -363,6 +373,9 @@ Note that configuring the last environment variable is optional in most cases.
 If no provided, JPC will not pass any path to PDT (the underlying library of this driver) and the latter will attempt to find the SWI location.
 </p>
 
+<p>
+This driver supports multiple Prolog sessions.
+</p>
 
 <!--
 Please read the terms of the <a href="https://sewiki.iai.uni-bonn.de/research/pdt/docs/v0.x/download" title="PDT Connector library license">PDT Connector library license</a> before using this driver.
