@@ -103,10 +103,15 @@ Instead of implementing it in plain Prolog as in the <a href="https://www.cs.bri
 </p>
 
 <p>
-In the rest of this section we overview how these artifacts are modelled as distinct Logtalk entities.
-A detailed documentation of these entities is provided <a href="/jpc.examples/logtalkdocs/underground_example/" title="The Underground System Entities in Logtalk">here</a>.
+In the rest of this section we overview how the <a href="/jpc.examples/logtalkdocs/underground_example/" title="The Underground System Entities in Logtalk">artifacts in our example</a> are modelled as <a href="http://logtalk.org/manuals/userman/objects.html" title="Logtalk objects">Logtalk objects</a>.
+Figure 2 shows an overview of the different entities in our example and their dependencies.
 </p>
 
+
+<div class="divImg">
+  <img src="/jpc.examples/logtalkdocs/underground_example/metro_lib_entity_diagram.svg" alt="The Logtalk entity diagram." style="padding-bottom:0.5em;" height="800" />
+  <div id="imglabel:london_underground" >Fig 2. - The Logtalk entity diagram.</div>
+</div>
 
 
 <h3>The <code>metro</code> Logtalk Object</h3> 
@@ -279,14 +284,14 @@ In the Java side, we define the
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Metro.html" title="The Metro class"><code>Metro</code></a>,
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Line.html" title="The Line class"><code>Line</code></a> and 
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> 
-interfaces in correspondence with the <a href="/jpc.examples/logtalkdocs/underground_example/" title="The Underground System Entities in Logtalk">Logtalk entities</a> described before, as illustrated by figure 2 (not all methods are shown).
+interfaces in correspondence with the <a href="/jpc.examples/logtalkdocs/underground_example/" title="The Underground System Entities in Logtalk">Logtalk entities</a> described before, as illustrated by figure 3 (not all methods are shown).
 A complete documentation of these interfaces can be found in the online <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/package-summary.html" title="Java side documentation">example documentation</a>.
 </p>
 
 
 <div class="divImg">
   <img src="img/examples/interaction.svg" alt="Java-Prolog interaction." style="padding-bottom:0.5em;" height="300" />
-  <div id="imglabel:london_underground" >Fig 2. - Java Prolog interaction.</div>
+  <div id="imglabel:london_underground" >Fig 3. - Java Prolog interaction.</div>
 </div>
 
 
