@@ -104,13 +104,13 @@ Instead of implementing it in plain Prolog as in the <a href="https://www.cs.bri
 
 <p>
 In the rest of this section we overview how the <a href="/jpc.examples/logtalkdocs/underground_example/" title="The Underground System Entities in Logtalk">artifacts in our example</a> are modelled as <a href="http://logtalk.org/manuals/userman/objects.html" title="Logtalk objects">Logtalk objects</a>.
-Figure 2 shows an overview of the different entities in our example and their dependencies.
+Figure 2 shows an overview of such objects and their dependencies.
 </p>
 
 
 <div class="divImg">
   <img src="/jpc.examples/logtalkdocs/underground_example/metro_lib_entity_diagram.svg" alt="The Logtalk entity diagram." style="padding-bottom:0.5em;" height="800" />
-  <div id="imglabel:london_underground" >Fig 2. - The Logtalk entity diagram.</div>
+  <div id="imglabel:london_underground" >Fig 2. - The Logtalk entities diagram for the London underground example.</div>
 </div>
 
 
@@ -120,8 +120,10 @@ Figure 2 shows an overview of the different entities in our example and their de
 The <a href="/jpc.examples/logtalkdocs/underground_example/metro_0.html" title="The metro/0 Logtalk object"><code>metro/0</code></a> object encapsulates the knowledge about how stations are connected (e.g., the <code>connected/3</code> predicate).
 Note that the <code>connected/3</code> predicate is declared as <a href="http://logtalk.org/manuals/refman/directives/dynamic_1.html" title="The dynamic/1 directive">dynamic</a> (line 5) since new connections can be configured at runtime.
 Plus the rules for the logic predicates <code>nearby/2</code>, <code>reachable/3</code>, <code>line/1</code> and <code>remove_all/0</code>. 
-The messages (queries) that the metro object can respond to are specified by the <code>public/1</code> directive in line 3. Messages in Logtalk are sent using the <code>::/2</code> operator, as illustrated on line 13 for the <code>member/2</code> method.
+The messages (queries) that the metro object can respond to are specified by the <code>public/1</code> directive in line 3. <a href="http://logtalk.org/manuals/userman/messages.html" title="Logtalk messages">Messages in Logtalk</a> are sent using the <code>::/2</code> operator, as illustrated on line 23 for the <a href="http://logtalk.org/library/listp_0.html" title="The member/2 predicate at the Listp protocol"><code>member/2</code></a> method.
 </p>
+
+
 
 
 <p><pre data-editor="prolog" data-show-gutter="true">
@@ -247,7 +249,7 @@ Assuming these entities are defined in files named <code>metro.lgt</code>, <code
 )).</pre></p>
 
 <p>
-In addition to load the main entities of the library, the loader also loads depending entities (e.g., the <code>types_loader</code> Logtalk library is loaded in line 2).
+In addition to load the main entities of the library, the loader also loads depending entities (e.g., the <code>types</code> library is loaded in line 2).
 </p>
 
 <h3 id="configuringUndergroundStructure">Configuring the Underground Structure</h3> 
@@ -280,12 +282,11 @@ The content of this data-loading file is shown below:
 <h2>The Java Entities</h2> 
 
 <p>
-In the Java side, we define the 
+In <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/package-summary.html" title="Java side documentation">the Java side</a>, we define the 
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Metro.html" title="The Metro class"><code>Metro</code></a>,
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Line.html" title="The Line class"><code>Line</code></a> and 
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> 
 interfaces in correspondence with the <a href="/jpc.examples/logtalkdocs/underground_example/" title="The Underground System Entities in Logtalk">Logtalk entities</a> described before, as illustrated by figure 3 (not all methods are shown).
-A complete documentation of these interfaces can be found in the online <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/package-summary.html" title="Java side documentation">example documentation</a>.
 </p>
 
 
