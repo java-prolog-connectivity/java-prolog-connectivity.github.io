@@ -55,7 +55,6 @@
 
 <h1>JPC User Guide</h1>
 
-
 <div id="table_of_content">
   <strong>Contents</strong>
   <ol id="table_of_content_entries"></ol>
@@ -68,9 +67,8 @@
 
 <p>
 JPC is a Java-Prolog interoperability library providing different levels of abstractions for integrating systems written in these two languages.
-This guide presents the different JPC features supporting this integration.
-This document assumes a general understanding of the <a href="architecture.html" title="JPC architecture">JPC architecture</a>.
-In order to try the examples, please refer to the <a href="installation_guide.html" title="JPC Installation guide">JPC installation guide</a>.
+This guide presents the different JPC features supporting this integration, assuming a general understanding of the <a href="architecture.html" title="JPC architecture">JPC architecture</a>.
+In order to download and try the examples discussed here, refer to the <a href="installation_guide.html#installingJpcExamples" title="JPC Installation guide">JPC installation guide</a>.
 </p>
 
 
@@ -93,7 +91,7 @@ PrologEngine engine = new PdtConnectorDriver().createPrologEngine();
 
 
 <p>
-This approach, although straightforward, causes a strong coupling between an application and a concrete driver.
+This approach, although straightforward and good enough for many scenarios, causes a strong coupling between an application and a concrete driver.
 An alternative is presented below.
 </p>
 
@@ -101,8 +99,12 @@ An alternative is presented below.
 <h3>Categorized Prolog Engines</h3> 
 
 <p>
+Several techniques and conventions presented in this section are inspired on <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">Apache log4j</a>, a well-known logging library.	
+</p>
+
+<p>
 JPC allows to easily categorize an "engine space" (i.e., the space of all possible Prolog engines) according to some developer-chosen criteria.
-This approach, directly inspired on <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">Apache log4j</a> (a well-known logging library), allows to decouple a program from concrete engine implementations.
+This approach allows to decouple a Java program from concrete engine implementations and provides fine grained control on the Prolog engines that should be used to accomplish a given task.
 </p>
 
 <p>
@@ -171,9 +173,9 @@ Alternatively, a Prolog engine may be instantiated by means of the <code>id</cod
 EngineConfigurationManager.getDefault().getPrologEngineById("pdt");</pre></p>
 
 <p>
-The <code>EngineConfigurationManager.getDefault()</code> method returns a configuration manager instantiated from the default settings file <code>jpc.settings</code>.
-Alternatively, a configuration manager can be instantiated from an arbitrary configuration file by means of: 
-<code>EngineConfigurationManager.createFromFile(&lt;file_name&gt;)</code>.
+The <a href="/javadocs/org/jpc/util/config/EngineConfigurationManager.html#getDefault()" title="EngineConfigurationManager.getDefault()"><code>EngineConfigurationManager.getDefault()</code></a> method returns a configuration manager instantiated from the default settings file <code>jpc.settings</code>.
+Alternatively, a configuration manager can be instantiated from an arbitrary configuration file by means of
+<a href="/javadocs/org/jpc/util/config/EngineConfigurationManager.html#createFromFile(java.lang.String)" title="EngineConfigurationManager.createFromFile(String)"><code>EngineConfigurationManager.createFromFile(&lt;file_name&gt;)</code></a>.
 </p>
 
 
@@ -182,22 +184,21 @@ Alternatively, a configuration manager can be instantiated from an arbitrary con
 
 <h2 id="conversionAPI">The Conversion API</h2> 
 
-<h3 id="conversionOverview">Conversion API Overview</h3> 
-
 <p>
-JPC provides an API for converting between Java Objects into their Prolog term representation and back.
+JPC provides an API, inspired by <a href="https://code.google.com/p/google-gson/" title="Google's Gson">Google's Gson</a>, for converting between Java Objects into their Prolog term representation and back.
 This conversion API can work with any kind of objects, including those whose source code is not available.
 It provides constructs for:
 </p>
 
 <ul>
-	<li>Defining (bidirectional) Java-Prolog conversion functions (converters).</li>
-	<li>Inferring the best target type of a conversion operation (type solvers).</li>
-	<li>(Optionally) instantiating conversion target types (factories).</li>
+	<li>Defining (bidirectional) Java-Prolog conversion functions (<a href="#implementingConverters" title="JPC converters">converters</a>).</li>
+	<li>Inferring the best target type of a conversion operation (<a href="#implementingTypeSolvers" title="JPC type solvers">type solvers</a>).</li>
+	<li>(Optionally) instantiating conversion target types (<a href="#implementingFactories" title="JPC factories">factories</a>).</li>
 </ul>
 
+
 <p>
-Several examples in this section and in the rest of this tutorial refer to our <a href="/london_underground.html" title="London underground example">London underground case study</a>.
+Several examples in this section and in the rest of this tutorial refer to the <a href="/london_underground.html" title="London underground example">London underground case study</a>.
 </p>
 
 
@@ -206,7 +207,7 @@ Several examples in this section and in the rest of this tutorial refer to our <
 <p>
 Our primary library class is a conversion context, modelled by the <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> class.
 This context encapsulates a bidirectional conversion strategy for a set of Java objects and Prolog terms.
-A converter is configured in term of converters, type solvers, factories and other conversion artefacts.
+A context is configured in term of converters, type solvers, factories and other conversion artefacts.
 Figure 2 illustrates its main components.
 </p>
 
@@ -216,22 +217,22 @@ Figure 2 illustrates its main components.
 </div>
 
 <p>
-In order to facilitate the configuration of a <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> instance, there is also a <a href="/javadocs/org/jpc/JpcBuilder.html" title="JpcBuilder class"><code>JpcBuilder</code></a> class with a straightforward fluent API for configuring its properties. This configuration involves the registration of different conversion artefacts (e.g., <a href="#implementingConverters" title="Converters">converters</a>, <a href="#implementingTypeSolvers" title="Type solvers">type solvers</a> and <a href="#implementingFactories" title="Factories">factories</a>).
+In order to facilitate the configuration of a <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> instance, there is also a <a href="/javadocs/org/jpc/JpcBuilder.html" title="JpcBuilder class"><code>JpcBuilder</code></a> class with a straightforward fluent API for configuring its properties. This configuration involves the registration of custom conversion artefacts (e.g., <a href="#implementingConverters" title="Converters">converters</a>, <a href="#implementingTypeSolvers" title="Type solvers">type solvers</a> and <a href="#implementingFactories" title="Factories">factories</a>).
 The example below shows how to configure a builder to create a <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> context that knows how to convert objects from the <a href="/london_underground.html" title="London underground example"><code>London underground case study</code></a>.
 </p>
 
 
 
-<p><pre data-editor="java" data-show-gutter="true">
+<p><pre id="metroCustomConverter" data-editor="java" data-show-gutter="true">
 public static final Jpc jpc = JpcBuilder.create()
     .register(new MetroConverter())
     .register(new LineConverter())
     .register(new StationConverter()).build();</pre></p>
 
 <p>
-JPC is bundled with a predefined catalog of converters that support a considerable number of common conversions, to minimise the amount of code to be written when defining new conversions.
-In addition, it can be extended with custom conversions.
+In addition, JPC is bundled with a predefined catalog of converters that support a considerable number of common conversions. This minimises the amount of code to be written when defining new conversions.
 </p>
+
 
 
 <h3 id="implementingConverters">Implementing Converters</h3> 
@@ -344,8 +345,9 @@ assertEquals(new Atom("1"),      jpc.toTerm("1"));    //String to Atom
 assertEquals(new IntegerTerm(1), jpc.toTerm(1));      //Integer to IntegerTerm
 assertEquals(new FloatTerm(1),   jpc.toTerm(1D));     //Double to FloatTerm</pre></p>
 
-
+<p>
 Pre-defined conversions of Prolog terms to Java types are shown below.
+</p>
 
 <p><pre data-editor="java" data-show-gutter="true">
 assertEquals(true, jpc.fromTerm(new Atom("true")));   //Atom to Boolean
@@ -357,17 +359,20 @@ assertEquals(1D,   jpc.fromTerm(new FloatTerm(1)));   //FloatTerm to Double</pre
 
 <h3 id="typedConversions">Typed Conversions</h3> 
 
+<p>
 The <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> class conversion methods can receive as a second parameter the expected type of the converted object.
 Some examples of Java-Prolog conversions that specify the expected Prolog term type are shown below.
 In line 1, the <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html" title="Integer class"><code>Integer</code></a> 1 is converted to an <a href="/javadocs/org/jpc/term/Atom.html" title="Atom class"><code>Atom</code></a> instead of an <a href="/javadocs/org/jpc/term/IntegerTerm.html" title="IntegerTerm class"><code>IntegerTerm</code></a>. This is because we specify the <a href="/javadocs/org/jpc/term/Atom.html" title="Atom class"><code>Atom</code></a> class as the target conversion type.
 In line 2, the string <code>"1"</code> is converted to an <a href="/javadocs/org/jpc/term/IntegerTerm.html" title="IntegerTerm class"><code>IntegerTerm</code></a>. 
-
+</p>
 
 <p><pre data-editor="java" data-show-gutter="true">assertEquals(new Atom("1"), jpc.toTerm(1, Atom.class));               //Integer to Atom
 assertEquals(new IntegerTerm(1), jpc.toTerm("1", IntegerTerm.class)); //String to IntegerTerm</pre></p>
 
+<p>
 Below there are examples of Prolog-Java conversions that specify the expected Java type.
-
+</p>
+	
 <p><pre data-editor="java" data-show-gutter="true">
 assertEquals(1, jpc.fromTerm(new Atom("1"), Integer.class));         //Atom to Integer
 assertEquals("1", jpc.fromTerm(new IntegerTerm(1), String.class));   //IntegerTerm to String
@@ -377,10 +382,12 @@ assertEquals('c', jpc.fromTerm(new Atom("c"), Character.class));     //Atom to C
 
 <h3 id="multiValuedConversions">Multi-Valued Conversions</h3> 
 
+<p>
 The default Jpc catalog of converters also provides conversions for multi-valued data types such as arrays, collections, and maps. Below there is an example showing a conversion of an array object with a string and an integer element: <code>{"apple", 10}</code>.
 Its result is a Prolog term list having as elements an atom and an integer term: <code>[apple, 10]</code>.
 Alternatively, we could have used a list instead of an array. We would have obtained exactly the same result by replacing line 1 by:
 <code>Term term = jpc.toTerm(asList("apple", 10));</code> 
+</p>
 
 <p><pre data-editor="java" data-show-gutter="true">
 Term term = jpc.toTerm(new Object[]{"apple", 10});
@@ -390,9 +397,11 @@ new Compound(".", asList(new Atom("apple"),  // equivalent to .(apple, .(10, [])
 	new Atom("[]"))))), 
 term);</pre></p>		
 
+<p>
 A slightly more complex example is illustrated below. First, a Java map is instantiated (lines 1-6).
 The default term conversion is applied on line 7, generating a Prolog list with two key-value pairs: <code>[apple:10, orange:20]</code>. This result is tested on lines 9-10.
-
+</p>
+	
 <p><pre data-editor="java" data-show-gutter="true">
 Map&lt;String, Integer&gt; 
 map = new LinkedHashMap&lt;String, Integer&gt;() {{
@@ -408,12 +417,14 @@ assertEquals(new Compound(":", asList(new Atom("orange"), new IntegerTerm(20))),
 
 <h3 id="genericTypesSupport">Generic Types Support</h3> 
 
+<p>
 JPC provides extensive support for generic types. 
 Consider the example below.
 A Prolog list term is created on line 1. We use the <a href="https://code.google.com/p/guava-libraries/wiki/ReflectionExplained" title="TypeToken class"><code>TypeToken</code></a> class (from Google's <a href="https://code.google.com/p/guava-libraries/" title="Google's Guava library"><code>Guava library</code></a>) to obtain an instance of the parameterised type <code>List&lt;String&gt;</code> (line 2).
 Then we give this type as a hint to the converter (line 3) and we verify on lines 4 and 5 that the elements of the Java <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html" title="List class"><code>List</code></a>
 are indeed instances of <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html" title="String class"><code>String</code></a>, as it was specified on line 3.
-
+</p>
+	
 <p><pre data-editor="java" data-show-gutter="true">
 Term listTerm = listTerm(new Atom("1"), new Atom("2"));
 Type type = new TypeToken&lt;List&lt;String&gt;&gt;(){}.getType();
@@ -421,9 +432,11 @@ List&lt;String&gt; list = jpc.fromTerm(listTerm, type);
 assertEquals("1", list.get(0));
 assertEquals("2", list.get(1));</pre></p>
 
+<p>
 In the previous example, the type passed to the converter was redundant, since elements in the Prolog list are atoms, which are converted by default to <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html" title="String class"><code>String</code></a> instances in Java. 
 Consider, however, the example below. The main change w.r.t. the previous example is that the type we send as a hint is now <code>List&lt;Integer&gt;</code> (line 3).
 This instructs the converter to instantiate a list where all its elements are integers, as demonstrated on lines 4 and 5.
+</p>
 
 <p><pre data-editor="java" data-show-gutter="true">Map<String, Integer> 
 Term listTerm = listTerm(new Atom("1"), new Atom("2"));
@@ -436,12 +449,13 @@ assertEquals(2, list.get(1));</pre></p>
 
 <h3 id="typeInferenceExample">Inference of Conversion Target Types</h3> 
 
+<p>
 <a href="#implementingTypeSolvers" title="Implementing type solvers"><code>Before</code></a> we showed the implementation of a default type solver responsible of determining if the best conversion type of a term is an instance of <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html" title="Map class"><code>Map</code></a>.
 Below we show a conversion example that relies on such type solver. On line 3 we create a list term from two previously created compound terms.
 We convert it to a Java map on line 4 and test its values on lines 5 and 6.
 As expected, our library infers that the best Java type of the term should be a <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.html" title="Map class"><code>Map</code></a>.
 This is because the type solver finds that all the elements in the Prolog list (<code>[apple-10, orange,20]</code>) are compounds with an arity of 2 and with functor <code>'-'</code>, which are mapped by default to map entries (i.e., instances of the <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Map.Entry.html" title="Map.Entry class"><code>Map.Entry</code></a> class).
-
+</p>
 
 
 <p><pre data-editor="java" data-show-gutter="true">
@@ -452,32 +466,39 @@ Map map = jpc.fromTerm(listTerm);
 assertEquals(10L, map.get("apple"));
 assertEquals(20L, map.get("orange"));</pre></p>
 	
-
+<p>
 Alternatively, line 4 could be replaced by <code>List list = jpc.fromTerm(listTerm, List.class);</code> This type hint explicitly given by the programmer has higher priority that the one inferred by the type solver. 
 In this case, the result would therefore be a list of map entries since the Prolog list would be converted to a Java list (i.e., an instance of a class implementing <a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html" title="List class"><code>List</code></a>), but the default conversion of each term in the list (a compound with arity 2 and functor <code>'-'</code>) would still be a map entry object.
+</p>
 
+<p>
 Note that JPC leaves to the programmer the responsibility of providing enough information (i.e., a target type) in case where ambiguities are possible. 
 For example, the previous type solver may answer false negatives if it cannot conclude something from the structure of members in the list (i.e., the list term is empty).
 If the programmer always specify the intended conversion type the possible ambiguity disappears.
+</p>
+
+<h3 id="customConversions">Custom Conversions</h3> 
 
 
+<a href="#conversionContext" title="List class"><code>List</code></a>
 
-\subsection{Custom Conversions}
-\label{customConversions}
-
+<p>
 The previous examples employed only predefined converters.
-Using a custom conversion context as defined in listing \ref{lst:jpcBuilder}, we revisit the \lstinline{Station} class shown in listing \ref{lst:stationJpl}.
+Assuming the custom conversion context defined <a href="#metroCustomConverter" title="Undeground example custom converter"><code>before</code></a>, we revisit the \lstinline{Station} class shown in listing \ref{lst:stationJpl}.
 Listing \ref{lst:stationJpc} shows a new implementation of such class.
 Using our library, the \lstinline{connected(Line)} method was reduced from 14 to 7 lines of code.
 In addition, the methods \lstinline{asTerm()} and \lstinline{create(Term)} are not in the \lstinline{Station} class anymore since they have been encapsulated into a converter class.
 Note that terms are easily created according to a conversion context. In line 5, the last argument of the compound is an instance of \lstinline{Line}. The conversion of this object to a term is done automatically by our framework. Conversely, in listing \ref{lst:stationJpl} (line 17), we were forced to invoke an explicit conversion when we requested the term representation of the line object.
 The same applies in line 6, where the \lstinline{Station} instance denoted by the \lstinline{this} keyword is automatically transformed to its term representation.
+</p>
 
+<p>
 A \lstinline{Query} object is instantiated on line 7 from an object abstracting a Prolog engine. %(as briefly discussed in section \ref{architecture}). 
 Note that this object may (optionally) receive a context.
 The advantage of making a query instance aware of a conversion context becomes clear on line 8.
 To better understand this, recall from section \ref{prologVMAbstraction} that a Prolog solution is represented as a map binding variable names to terms. On line 8, the invocation of the \lstinline{selectObject(String)} method encapsulates the original query in an adapter, where each solution of this query adapter is an object whose term representation is given in the argument of \lstinline{selectObject}, taking into account the bindings of any variables in the solution.
 In our example, the solution object is expressed as the Prolog variable \lstinline{Station}, which has been bound to a term representing an instance of \lstinline{Station}. The conversion of this term to a \lstinline{Station} object is transparently accomplished by our library.
+</p>
 
 <p><pre data-editor="java" data-show-gutter="true">
 public class Station {
@@ -491,13 +512,14 @@ public class Station {
 	}
 }</pre></p>
 
+<p>
 The previous example makes use of a deterministic query. % by means of the \lstinline{oneSolution()} method. 
 The \lstinline{Query} class (and query adapters) interface also supports non-deterministic queries (i.e., backtracking over solutions).
 Internally, this relies on the concrete implementation of the chosen JPC driver. As already mentioned in section \ref{prologVMAbstraction}, this discussion has been left out of the scope of this work.
+</p>
 
 
-\subsection{Term-Quantified Converters}
-\label{termQuantifiedConverterExample}
+<h3 id="termQuantifiedConverterExample">Term-Quantified Converters</h3> 
 
 In section \ref{termQuantifiedConverters} we discussed that the domain of Prolog to Java artefact converters is, in some cases, better quantified using terms.
 Listing \ref{lst:helloWorldConverter} shows a straightforward implementation of the \lstinline{HelloConverter} mentioned in that section: it returns a Java \lstinline{String} containing the name of the compound to convert, a white space, and the compound first argument (line 3).
@@ -509,12 +531,13 @@ class HelloConverter implements FromTermConverter&lt;Compound, String&gt; {
 	}
 }</pre></p>
 
+<p>
 Listing \ref{lst:termQuantifiedConverter} shows a concrete example of the registration and usage of this converter.
 In line 3, we make use of the \lstinline{JpcBuilder} class to register the \lstinline{HelloConverter} converter.
 Note that we pass both an instance of the converter and the term quantifying its domain (\lstinline{hello(_)}).
 This is internally translated to an assert in the embedded JPC Prolog database, where the \lstinline{HelloConverter} converter is associated to a domain term with functor \lstinline{hello/1}.
 In line 6 we verify that the result of converting the compound term \lstinline{hello(world)} is the Java \lstinline{String} ``\lstinline{hello world}'', as specified by the domain quantified converter.
-
+</p>
 
 <p><pre data-editor="java" data-show-gutter="true">
 JpcBuilder builder = JpcBuilder.create();
@@ -522,8 +545,7 @@ Compound helloCompound = new Compound("hello",  asList(Var.ANONYMOUS_VAR));
 builder.register(new HelloConverter(), helloCompound);
 Jpc jpc = builder.build();
 Compound helloWorldCompound = new Compound("hello",  asList(new Atom("world")));
-assertEquals("hello world", jpc.fromTerm(helloWorldCompound));
-</pre></p>
+assertEquals("hello world", jpc.fromTerm(helloWorldCompound));</pre></p>
 
 
 
