@@ -152,14 +152,18 @@ JPC is compatible with the latest <a href="http://www.swi-prolog.org/" title="SW
 
 <h4>SWI Prolog in Mac OS X</h4>
 
+<p>
 The SWI version used to test JPC was installed using <a href="http://www.macports.org/" title="Mac Ports">Mac Ports</a>. SWI provides <a href="http://www.swi-prolog.org/build/macos.html" title="SWI Prolog in Mac OS X">detailed instructions</a> about how to accomplish a Mac Ports installation.
-
+</p>
 
 <h4>SWI Prolog in Linux</h4>
 
-To generate the required <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">Java interoperability library</a>, SWI Prolog should be compiled from sources in Linux.
+<p>
+To generate the <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">required Java interoperability library</a>, SWI Prolog should be compiled from sources in Linux.
 The SWI site provides information about the <a href="http://www.swi-prolog.org/build/LinuxDistro.txt" title="Required dependencies">required packages</a> needed before starting the installation and <a href="http://www.swi-prolog.org/git.html" title="SWI sources">how to download the sources</a>.
 Afterwards, build and install both the SWI core and the tools according to the <a href="http://www.swi-prolog.org/build/unix.html" title="Building and installing SWI sources">provided instructions</a>.
+Note that for a 32-bits OS you may need to <a href="http://www.codecompiling.net/node/137" title="Installing SWI in a 32-bits OS">run the configuration script with <code>--enable-shared</code></a>. 
+</p>
 
 
 <h3>Installing YAP Prolog</h3> 
@@ -173,7 +177,7 @@ JPC is compatible with the latest <a href="http://www.dcc.fc.up.pt/~vsc/Yap/" ti
 
 <p>
 Follow the instructions provided by the YAP website, taking care of adding the <code>--with-java</code> option when running the configuration script.
-For example, the following command (executed in the <code>ARCH</code> folder as described in the YAP manual) compiles and install YAP generating the required <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">Java interoperability library</a>:
+For example, the following command (executed in the <code>ARCH</code> folder as described in the YAP manual) compiles and install YAP generating the <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">required Java interoperability library</a>:
 </p>
 
 <p><pre data-editor="makefile" data-show-gutter="true">
@@ -183,6 +187,7 @@ For example, the following command (executed in the <code>ARCH</code> folder as 
 
 <p>
 You may change these options as you wish, but remember to leave the <code>--with-java</code> option enabled.
+Also, you may need to add <code>--enable-shared</code> for 32-bits OS.
 </p>
 
 
@@ -213,7 +218,7 @@ To compile and install XSB go to the <code>build</code> directory in the source 
 </p>
 
 <p><pre data-editor="makefile" data-show-gutter="true">
-./configure -prefix=$SHARED_LIB && ./makexsb && ./makexsb dynmodule && ./makexsb install</pre></p>
+./configure -prefix=$SHARED_LIB && ./makexsb && sudo ./makexsb dynmodule && sudo ./makexsb install</pre></p>
 
 <p>
 Where <code>$SHARED_LIB</code> is the directory where you want to install XSB. For example: <code>/opt/local/lib/</code>.
