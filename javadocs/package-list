@@ -34,5 +34,4 @@ org.jpc.util.concurrent
 org.jpc.util.config
 org.jpc.util.engine
 org.jpc.util.engine.supported
-org.jpc.util.naming
 org.jpc.util.salt
