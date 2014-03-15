@@ -80,20 +80,24 @@ typically only a small subset of them are needed (e.g., only one Prolog engine a
 
 To develop with JPC you require:
 
+<div class="divList">
 <ul>
 	<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" title="Java Download">Java</a> 7 or above.</li>
 	<li>A <a href="architecture.html#compatiblePrologEngines" title="Compatible Prolog engine">compatible Prolog engine</a>.</li>
 	<li><a href="http://logtalk.org/" title="Logtalk: An open source object-oriented logic programming language">Logtalk</a> (optionally).</li>
 </ul>
+</div>
 
 <p>
 JPC has been tested in:
 </p>
 
+<div class="divList">
 <ul>
 	<li>Mac OS X: 10.8.5 (Mountain Lion) and 10.9.2 (Mavericks)</li>
 	<li>Linux: Ubuntu 12.0.4 and 13.0.4</li>
 </ul>
+</div>
 
 <p>
 At the moment, no tests have been accomplished under Windows, although it should also work there without major issues.
@@ -113,7 +117,7 @@ JPC is still in alpha version so it is not yet in the <a href="http://search.mav
 To access this repository, you will need to add this to your Maven configuration file <code>~/.m2/settings.xml</code>:
 </p>
 
-<p><pre data-editor="xml" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="xml" data-show-gutter="true">
 &lt;profiles&gt;
   &lt;profile&gt;
      &lt;id&gt;allow-snapshots&lt;/id&gt;
@@ -127,7 +131,7 @@ To access this repository, you will need to add this to your Maven configuration
        &lt;/repository&gt;
      &lt;/repositories&gt;
    &lt;/profile&gt;
-&lt;/profiles&gt;</pre></p>
+&lt;/profiles&gt;</pre></div>
 
 
 
@@ -180,9 +184,9 @@ Follow the instructions provided by the YAP website, taking care of adding the <
 For example, the following command (executed in the <code>ARCH</code> folder as described in the YAP manual) compiles and install YAP generating the <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">required Java interoperability library</a>:
 </p>
 
-<p><pre data-editor="makefile" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="makefile" data-show-gutter="true">
 ../configure --prefix=/opt/local --with-java --enable-threads --enable-pthread-locking --enable-depth-limit --enable-coroutining --enable-clpbn-bp=no --enable-tabling --with-gmp=/opt/local && make && sudo make install
-</pre></p>
+</pre></div>
 
 
 <p>
@@ -217,8 +221,8 @@ JPC is compatible with the latest <a href="http://sourceforge.net/p/xsb/src/HEAD
 To compile and install XSB go to the <code>build</code> directory in the source tree and execute the following command:
 </p>
 
-<p><pre data-editor="makefile" data-show-gutter="true">
-./configure -prefix=$SHARED_LIB && ./makexsb && sudo ./makexsb dynmodule && sudo ./makexsb install</pre></p>
+<div class="codeEditor"><pre data-editor="makefile" data-show-gutter="true">
+./configure -prefix=$SHARED_LIB && ./makexsb && sudo ./makexsb dynmodule && sudo ./makexsb install</pre></div>
 
 <p>
 Where <code>$SHARED_LIB</code> is the directory where you want to install XSB. For example: <code>/opt/local/lib/</code>.
@@ -245,12 +249,12 @@ In order to include JPC into a project, add the following dependency to your <a 
 </p>
 
 
-<p><pre data-editor="xml" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="xml" data-show-gutter="true">
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc&lt;/artifactId&gt;
   &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;</pre></p>
+&lt;/dependency&gt;</pre></div>
 
 
 <p>
@@ -277,18 +281,20 @@ Depending on the platform, the native part may be a library with a name similar 
 To enable this driver into your project follow these steps:
 </p>
 
+<div class="divList">
 <ul>
 	<li>Add this dependency to your POM:
-		<p><pre data-editor="xml" data-show-gutter="true">
+		<div class="codeEditor"><pre data-editor="xml" data-show-gutter="true">
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc-jpl&lt;/artifactId&gt;
   &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;</pre></p>
+&lt;/dependency&gt;</pre></div>
 	</li>
 	<li>Configure the environment variable <code>JPLPATH_SWI</code> (in case you want to connect to SWI) with the SWI directory containing the native part of the JPL library.</li>
 	<li>Configure the environment variable <code>JPLPATH_YAP</code> (in case you want to connect to YAP) with the YAP directory containing the native part of the JPL library.</li>
 </ul>
+</div>
 
 <!--
 Note that configuring these environment variables is not necessary if Java is invoked with the parameter <code>java.library.path</code>, like:
@@ -313,22 +319,24 @@ In order to include this driver in your project follow these steps:
 </p>
 
 
+<div class="divList">
 <ul>
 	<li>Download and unzip the <a href="http://www.declarativa.com/interprolog/interprolog2.2a4.zip" title="InterProlog bundle">InterProlog bundle</a>.</li>
 	<li>Go to the directory where the <code>interprolog.jar</code> file is located and install it in your Maven local repository with this command: 
-		<p><pre data-editor="makefile" data-show-gutter="true">
-mvn install:install-file -Dfile=interprolog.jar -DgroupId=com.declarativa.interprolog -DartifactId=interprolog -Dversion=2.2a4 -Dpackaging=jar</pre></p>
+		<div class="codeEditor"><pre data-editor="makefile" data-show-gutter="true">
+mvn install:install-file -Dfile=interprolog.jar -DgroupId=com.declarativa.interprolog -DartifactId=interprolog -Dversion=2.2a4 -Dpackaging=jar</pre></div>
 	</li>
 	<li>Add this dependency to your POM:
-		<p><pre data-editor="xml" data-show-gutter="true">
+		<div class="codeEditor"><pre data-editor="xml" data-show-gutter="true">
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc-interprolog&lt;/artifactId&gt;
   &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;</pre></p>
+&lt;/dependency&gt;</pre></div>
 	</li>
 	<li>Configure the environment variable <code>XSB_BIN_DIRECTORY</code> with the directory where the XSB binary is located.</li>
 </ul>
+</div>
 
 <p>
 This driver supports multiple Prolog sessions.
@@ -346,20 +354,24 @@ The PDT Connector based driver is implemented on top of the <a href="http://sewi
 In order to include this driver in your project follow these steps:
 </p>
 
+<div class="divList">
+<ul>
 	<li>Download the <a href="files/org.cs3.prolog.connector-2.1.0.jar" title="PDT connector jar">PDT connector jar</a>.</li>
 	<li>Go to the directory where the jar was downloaded and install it in your Maven local repository with this command: 
-		<p><pre data-editor="makefile" data-show-gutter="true">
-mvn install:install-file -Dfile=org.cs3.prolog.connector-2.1.0.jar -DgroupId=org.cs3.roots -DartifactId=org.cs3.prolog.connector -Dversion=2.1.0 -Dpackaging=jar</pre></p>
+		<div class="codeEditor"><pre data-editor="makefile" data-show-gutter="true">
+mvn install:install-file -Dfile=org.cs3.prolog.connector-2.1.0.jar -DgroupId=org.cs3.roots -DartifactId=org.cs3.prolog.connector -Dversion=2.1.0 -Dpackaging=jar</pre></div>
 	</li>
 	<li>Add this dependency to your POM:
-		<p><pre data-editor="xml" data-show-gutter="true">
+		<div class="codeEditor"><pre data-editor="xml" data-show-gutter="true">
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc-pdtconnector&lt;/artifactId&gt;
   &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;</pre></p>
+&lt;/dependency&gt;</pre></div>
 	</li>
 	<li>Configure the environment variable <code>SWI_BIN_DIRECTORY</code> with the directory where the SWI binary is located.</li>
+</ul>
+</div>
 
 <p>
 Note that configuring the last environment variable is optional in most cases.
@@ -384,12 +396,12 @@ You can download some usage examples of JPC adding the following dependency to y
 </p>
 
 
-<p><pre data-editor="xml" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="xml" data-show-gutter="true">
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc-examples&lt;/artifactId&gt;
   &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;</pre></p>
+&lt;/dependency&gt;</pre></div>
 
 
 
