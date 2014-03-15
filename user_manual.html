@@ -66,8 +66,8 @@
 <h2>Introduction</h2> 
 
 <p>
-JPC is a Java-Prolog interoperability library providing different levels of abstractions for integrating systems written in these two languages.
-This guide presents the different JPC features supporting this integration, assuming a general understanding of the <a href="architecture.html" title="JPC architecture">JPC architecture</a>.
+JPC is a Java-Prolog interoperability library providing different layers of integration abstractions.
+This guide presents the different JPC features supporting the integration of Java-Prolog systems, assuming a general understanding of the <a href="architecture.html" title="JPC architecture">JPC architecture</a>.
 </p>
 
 <p>
@@ -84,7 +84,8 @@ In order to download and try the examples discussed here, please refer to the <a
 <h2>Creating Prolog Engines</h2> 
 
 <p>
-JPC provides an abstraction of a Prolog engine that can communicate with concrete Prolog engines by means of drivers.
+JPC provides an abstraction of a Prolog engine that can interoperate with concrete Prolog engines by means of drivers.
+This section describes how to instantiate such engines.
 </p>
 
 <h3>Explicit Instantiation</h3> 
@@ -94,9 +95,9 @@ The easiest way to instantiate a Prolog engine is by explicitly referencing a JP
 For example, to instantiate a JPC engine using the <a href="installation_guide.html#pdtDriver" title="PDT-based driver">PDT-based driver</a> we could write:
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 PrologEngine engine = new PdtConnectorDriver().createPrologEngine();
-</pre></p>
+</pre></div>
 
 
 <p>
@@ -112,13 +113,13 @@ Several techniques and conventions presented in this section are inspired on <a 
 </p>
 
 <p>
-JPC allows to easily categorize an "engine space" (i.e., the space of all possible Prolog engines) according to some developer-chosen criteria.
+JPC allows to easily categorize an <q>engine space</q> (i.e., the space of all possible Prolog engines) according to some developer-chosen criteria.
 This approach allows to decouple a Java program from concrete engine implementations and provides fine grained control on the Prolog engines that should be used to accomplish a given task.
 </p>
 
 <p>
-Using this technique, engines are organized hierarchically following a naming rule. 
-In this named hierarchy, a name <code>"org.jpc"</code> is said to be the ancestor of the name <code>"org.jpc.Jpc"</code>.
+Using this technique, engines are categorized hierarchically following a naming rule. 
+In this hierarchy, a name <code>"org.jpc"</code> is said to be the ancestor of the name <code>"org.jpc.Jpc"</code>.
 An engine categorized by means of a name will be inherited, unless overridden, by any of its name descendants.
 This categorization is illustrated by the figure below.
 </p>
@@ -129,39 +130,42 @@ This categorization is illustrated by the figure below.
 </div>
 
 <p>
-An engine space can be defined either programmatically or by means of a configuration file.
+An engine space can be defined either programmatically or by means of a settings file.
 The latter is the JPC recommended approach.
 </p>
 
 <p>
-A JPC configuration is a <a href="http://json.org/" title="JSON">JSON</a> object.
+A JPC configuration can be represented (e.g., in a settings file) as a <a href="http://json.org/" title="JSON">JSON</a> object.
 One of the attributes of this configuration object is <code>engines</code>, a list of engine configurations.
 The following JPC configuration specifies a Logtalk compatible Prolog engine categorized under the name <code>"org.jpc"</code>.
 </p>
 
-<p><pre data-editor="json" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="json" data-show-gutter="true">
 {
 	"engines": [
 	  {
 	    "id": "pdt",
 	    "categoryNames": ["org.jpc"],
-	    "factory": "org.jpc.engine.pdtconnector.PdtConnectorDriver",
+	    "factoryClass": "org.jpc.engine.pdtconnector.PdtConnectorDriver",
 	    "profile": "org.jpc.engine.profile.LogtalkEngineProfile"
 	  }
 	]
-}</pre></p>
+}</pre></div>
 
 
 <p>
 Each engine configuration has the following attributes:
 </p>
 
+<div class="divList">
 <ul>
 	<li><code>id</code>: The identifier of this engine configuration. This attribute is optional if the <code>categoryNames</code> attribute is specified.</li>
 	<li><code>categoryNames</code>: A list of category names to which this engine configuration applies. This attribute is optional if the <code>id</code> attribute is specified.</li>
-	<li><code>factory</code>: A <a href="http://en.wikipedia.org/wiki/Factory_pattern" title="Factory pattern">factory</a> of Prolog engines (usually a JPC driver) associated to this engine configuration.</li>
-	<li><code>profile</code>: A <a href="http://en.wikipedia.org/wiki/Decorator_pattern" title="Decorator pattern">decorator</a> that may configure the Prolog engine the first time it is instantiated. This attribute is optional.
+	<li><code>factoryClass</code>: A <a href="http://en.wikipedia.org/wiki/Factory_pattern" title="Factory pattern">factory</a> of Prolog engines (usually a JPC driver) associated to this engine configuration.</li>
+	<li><code>factoryMethod</code>: A (static or instance) method in the factory class that creates a Prolog engine. If no specified, the factory class should implement the <a href="/javadocs/org/jpc/engine/prolog/driver/PrologEngineFactory.html" title="PrologEngineFactory class"><code>PrologEngineFactory</code></a> interface. This attribute is optional.</li>
+	<li><code>profile</code>: A <a href="http://en.wikipedia.org/wiki/Decorator_pattern" title="Decorator pattern">decorator</a> that may configure the Prolog engine the first time it is instantiated. It must be a class implementing the <a href="/javadocs/org/jpc/engine/profile/PrologEngineProfile.html" title="PrologEngineProfile class"><code>PrologEngineProfile</code></a> interface. This attribute is optional.</li>
 </ul>
+</div>
 
 <p>
 Although Prolog engines can be categorized by means of any name, the JPC convention is to categorize them according to the fully qualified name of the class or package where they are used.
@@ -169,24 +173,31 @@ Therefore, an engine categorized for the <code>org.jpc</code> package will be us
 Then, to obtain a Prolog engine in an arbitrary class, you need to write:
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">
-EngineConfigurationManager.getDefault().getPrologEngine(getClass().getCanonicalName()); //returns a Prolog engine categorized for this class fully qualified name.
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+import static org.jpc.engine.prolog.PrologEngines.getPrologEngine;
+...
+getPrologEngine(getClass().getCanonicalName()); //returns a Prolog engine categorized for this class fully qualified name.
 //or just:
-EngineConfigurationManager.getDefault().getPrologEngine(getClass());</pre></p>
+getPrologEngine(getClass());</pre></div>
 
 <p>
 Alternatively, a Prolog engine may be instantiated by means of the <code>id</code> of an engine configuration, like: 
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">
-EngineConfigurationManager.getDefault().getPrologEngineById("pdt");</pre></p>
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+import static org.jpc.engine.prolog.PrologEngines.getPrologEngineById;
+...
+getPrologEngineById("pdt");</pre></div>
 
 <p>
-The <a href="/javadocs/org/jpc/util/config/EngineConfigurationManager.html#getDefault()" title="EngineConfigurationManager.getDefault()"><code>EngineConfigurationManager.getDefault()</code></a> method returns a configuration manager instantiated from the default settings file <code>jpc.settings</code>.
-Alternatively, a configuration manager can be instantiated from an arbitrary configuration file by means of
-<a href="/javadocs/org/jpc/util/config/EngineConfigurationManager.html#createFromFile(java.lang.String)" title="EngineConfigurationManager.createFromFile(String)"><code>EngineConfigurationManager.createFromFile(&lt;file_name&gt;)</code></a>.
+The engines obtained in the previous examples are instantiated from the default settings file <code>jpc.settings</code> in the root package.
+Alternatively, engines can be instantiated from an arbitrary settings file as in this example:
 </p>
 
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+import org.jpc.util.config.EngineConfigurationManager;
+...
+EngineConfigurationManager.createFromFile(&lt;file_name&gt;).getPrologEngine(getClass());</pre></div>
 
 
 
@@ -199,12 +210,13 @@ This conversion API can work with any kind of objects, including those whose sou
 It provides constructs for:
 </p>
 
+<div class="divList">
 <ul>
 	<li>Defining (bidirectional) Java-Prolog conversion functions (<a href="#implementingConverters" title="JPC converters">converters</a>).</li>
 	<li>Inferring the best target type of a conversion operation (<a href="#implementingTypeSolvers" title="JPC type solvers">type solvers</a>).</li>
 	<li>(Optionally) instantiating conversion target types (<a href="#implementingFactories" title="JPC factories">factories</a>).</li>
 </ul>
-
+</div>
 
 <p>
 Several examples in this section and in the rest of this tutorial refer to the <a href="/london_underground.html" title="London underground example">London underground case study</a>.
@@ -255,7 +267,7 @@ The <a href="jpc.examples/javadocs/org/jpc/examples/metro/model/hlapi/converters
 
 
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 public class StationConverter implements 
 		ToTermConverter&lt;Station, Compound&gt;, 
 		FromTermConverter&lt;Compound, Station&gt;  {
@@ -269,7 +281,7 @@ public class StationConverter implements
 		String stationName = ((Atom)term.arg(1)).getName();
 		return new StationJpc(stationName);
 	}
-}</pre></p>
+}</pre></div>
 
 
 
@@ -287,7 +299,7 @@ If it is unable to assign a type to the term it signals it throwing a <a href="/
 </p>
 
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 public class MapTypeSolver implements TypeSolver&lt;Compound&gt; {
 	@Override public Type getType(Compound term) {
 		if(term.isList()) {
@@ -307,7 +319,7 @@ public class MapTypeSolver implements TypeSolver&lt;Compound&gt; {
 	private boolean isMapEntry(Term term) {
 		...
 	}
-}</pre></p>
+}</pre></div>
 
 
 
@@ -324,13 +336,13 @@ An example of this factory is showed below.
 
 
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 public class MapFactory implements Factory&lt;Map&lt;?,?&gt;&gt;() {
 	@Override
 	public Map&lt;?,?&gt; instantiate(Type type) {
 		return new HashMap&lt;&gt;();
 	}
-}</pre></p>
+}</pre></div>
 
 
 
@@ -347,23 +359,23 @@ The simplest way to use our library is by means of the <a href="/javadocs/org/jp
 Below there is a list of successful assertions that illustrates some pre-defined conversions of Java types to Prolog terms. 
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 assertEquals(new Atom("true"),   jpc.toTerm(true));   //Boolean to Atom
 assertEquals(new Atom("c"),      jpc.toTerm('c'));    //Character to Atom
 assertEquals(new Atom("1"),      jpc.toTerm("1"));    //String to Atom
 assertEquals(new IntegerTerm(1), jpc.toTerm(1));      //Integer to IntegerTerm
-assertEquals(new FloatTerm(1),   jpc.toTerm(1D));     //Double to FloatTerm</pre></p>
+assertEquals(new FloatTerm(1),   jpc.toTerm(1D));     //Double to FloatTerm</pre></div>
 
 <p>
 Pre-defined conversions of Prolog terms to Java types are shown below.
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 assertEquals(true, jpc.fromTerm(new Atom("true")));   //Atom to Boolean
 assertEquals("c",  jpc.fromTerm(new Atom("c")));      //Atom to String
 assertEquals("1",  jpc.fromTerm(new Atom("1")));      //Atom to String
 assertEquals(1L,   jpc.fromTerm(new IntegerTerm(1))); //IntegerTerm to Long
-assertEquals(1D,   jpc.fromTerm(new FloatTerm(1)));   //FloatTerm to Double</pre></p>
+assertEquals(1D,   jpc.fromTerm(new FloatTerm(1)));   //FloatTerm to Double</pre></div>
 
 
 <h3 id="typedConversions">Typed Conversions</h3> 
@@ -375,18 +387,18 @@ In line 1, the <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integ
 In line 2, the string <code>"1"</code> is converted to an <a href="/javadocs/org/jpc/term/IntegerTerm.html" title="IntegerTerm class"><code>IntegerTerm</code></a>. 
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">assertEquals(new Atom("1"), jpc.toTerm(1, Atom.class));               //Integer to Atom
-assertEquals(new IntegerTerm(1), jpc.toTerm("1", IntegerTerm.class)); //String to IntegerTerm</pre></p>
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">assertEquals(new Atom("1"), jpc.toTerm(1, Atom.class));               //Integer to Atom
+assertEquals(new IntegerTerm(1), jpc.toTerm("1", IntegerTerm.class)); //String to IntegerTerm</pre></div>
 
 <p>
 Below there are examples of Prolog-Java conversions that specify the expected Java type.
 </p>
 	
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 assertEquals(1, jpc.fromTerm(new Atom("1"), Integer.class));         //Atom to Integer
 assertEquals("1", jpc.fromTerm(new IntegerTerm(1), String.class));   //IntegerTerm to String
 assertEquals("true", jpc.fromTerm(new Atom("true"), String.class));  //Atom to String
-assertEquals('c', jpc.fromTerm(new Atom("c"), Character.class));     //Atom to Character</pre></p>
+assertEquals('c', jpc.fromTerm(new Atom("c"), Character.class));     //Atom to Character</pre></div>
 
 
 <h3 id="multiValuedConversions">Multi-Valued Conversions</h3> 
@@ -398,20 +410,20 @@ Alternatively, we could have used a list instead of an array. We would have obta
 <code>Term term = jpc.toTerm(asList("apple", 10));</code> 
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 Term term = jpc.toTerm(new Object[]{"apple", 10});
 assertEquals(
 new Compound(".", asList(new Atom("apple"),  // equivalent to .(apple, .(10, []))
 	new Compound(".", asList(new IntegerTerm(10), 
 	new Atom("[]"))))), 
-term);</pre></p>		
+term);</pre></div>		
 
 <p>
 A slightly more complex example is illustrated below. First, a Java map is instantiated (lines 1-6).
 The default term conversion is applied on line 7, generating a Prolog list with two key-value pairs: <code>[apple:10, orange:20]</code>. This result is tested on lines 9-10.
 </p>
 	
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 Map&lt;String, Integer&gt; 
 map = new LinkedHashMap&lt;String, Integer&gt;() {{
 // LinkedHashMap preserves insertion order
@@ -421,7 +433,7 @@ map = new LinkedHashMap&lt;String, Integer&gt;() {{
 Term term = jpc.toTerm(map);
 List&lt;Term&gt; listTerm = term.asList();  // converts a Prolog list term to a list of terms
 assertEquals(new Compound(":", asList(new Atom("apple"), new IntegerTerm(10))), listTerm.get(0));
-assertEquals(new Compound(":", asList(new Atom("orange"), new IntegerTerm(20))), listTerm.get(1));</pre></p>
+assertEquals(new Compound(":", asList(new Atom("orange"), new IntegerTerm(20))), listTerm.get(1));</pre></div>
 	
 
 <h3 id="genericTypesSupport">Generic Types Support</h3> 
@@ -434,12 +446,12 @@ Then we give this type as a hint to the converter (line 3) and we verify on line
 are indeed instances of <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html" title="String class"><code>String</code></a>, as it was specified on line 3.
 </p>
 	
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 Term listTerm = listTerm(new Atom("1"), new Atom("2"));
 Type type = new TypeToken&lt;List&lt;String&gt;&gt;(){}.getType();
 List&lt;String&gt; list = jpc.fromTerm(listTerm, type);
 assertEquals("1", list.get(0));
-assertEquals("2", list.get(1));</pre></p>
+assertEquals("2", list.get(1));</pre></div>
 
 <p>
 In the previous example, the type passed to the converter was redundant, since elements in the Prolog list are atoms, which are converted by default to <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html" title="String class"><code>String</code></a> instances in Java. 
@@ -447,12 +459,12 @@ Consider, however, the example below. The main change w.r.t. the previous exampl
 This instructs the converter to instantiate a list where all its elements are integers, as demonstrated on lines 4 and 5.
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">Map<String, Integer> 
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">Map<String, Integer> 
 Term listTerm = listTerm(new Atom("1"), new Atom("2"));
 Type type = new TypeToken&lt;List&lt;Integer&gt;&gt;(){}.getType();
 List&lt;Integer&gt; list = jpc.fromTerm(listTerm, type); 
 assertEquals(1, list.get(0));
-assertEquals(2, list.get(1));</pre></p>	
+assertEquals(2, list.get(1));</pre></div>	
 
 
 
@@ -467,13 +479,13 @@ This is because the type solver finds that all the elements in the Prolog list (
 </p>
 
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 Compound c1 = new Compound("-", asList(new Atom("apple"), new IntegerTerm(10)));
 Compound c2 = new Compound("-", asList(new Atom("orange"), new IntegerTerm(20)));
 Term listTerm = listTerm(c1, c2); // creates a list term from a list of terms
 Map map = jpc.fromTerm(listTerm);
 assertEquals(10L, map.get("apple"));
-assertEquals(20L, map.get("orange"));</pre></p>
+assertEquals(20L, map.get("orange"));</pre></div>
 	
 <p>
 Alternatively, line 4 could be replaced by <code>List list = jpc.fromTerm(listTerm, List.class);</code> This type hint explicitly given by the programmer has higher priority that the one inferred by the type solver. 
@@ -509,7 +521,7 @@ To better understand this, recall from section \ref{prologVMAbstraction} that a 
 In our example, the solution object is expressed as the Prolog variable \lstinline{Station}, which has been bound to a term representing an instance of \lstinline{Station}. The conversion of this term to a \lstinline{Station} object is transparently accomplished by our library.
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 public class Station {
 	...
 	public Station connected(Line line) {
@@ -519,7 +531,7 @@ public class Station {
 		Query query = getPrologEngine().query(objectMessage, jpcContext);
 		return query.&lt;Station&gt;selectObject(stationVarName).oneSolution();
 	}
-}</pre></p>
+}</pre></div>
 
 <p>
 The previous example makes use of a deterministic query. % by means of the \lstinline{oneSolution()} method. 
@@ -533,12 +545,12 @@ Internally, this relies on the concrete implementation of the chosen JPC driver.
 In section \ref{termQuantifiedConverters} we discussed that the domain of Prolog to Java artefact converters is, in some cases, better quantified using terms.
 Listing \ref{lst:helloWorldConverter} shows a straightforward implementation of the \lstinline{HelloConverter} mentioned in that section: it returns a Java \lstinline{String} containing the name of the compound to convert, a white space, and the compound first argument (line 3).
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 class HelloConverter implements FromTermConverter&lt;Compound, String&gt; {
 	@Override public String fromTerm(Compound term, Type targetType, Jpc context) {
 		return ((Atom)term.getName()).getName() + " " + ((Atom)term.arg(1)).getName();
 	}
-}</pre></p>
+}</pre></div>
 
 <p>
 Listing \ref{lst:termQuantifiedConverter} shows a concrete example of the registration and usage of this converter.
@@ -548,13 +560,13 @@ This is internally translated to an assert in the embedded JPC Prolog database, 
 In line 6 we verify that the result of converting the compound term \lstinline{hello(world)} is the Java \lstinline{String} ``\lstinline{hello world}'', as specified by the domain quantified converter.
 </p>
 
-<p><pre data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 JpcBuilder builder = JpcBuilder.create();
 Compound helloCompound = new Compound("hello",  asList(Var.ANONYMOUS_VAR));
 builder.register(new HelloConverter(), helloCompound);
 Jpc jpc = builder.build();
 Compound helloWorldCompound = new Compound("hello",  asList(new Atom("world")));
-assertEquals("hello world", jpc.fromTerm(helloWorldCompound));</pre></p>
+assertEquals("hello world", jpc.fromTerm(helloWorldCompound));</pre></div>
 
 
 
