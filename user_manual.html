@@ -235,7 +235,70 @@ A JPC query has three possible <a href="/javadocs/org/jpc/query/CursorState.html
 
 <p>
 A <a href="/javadocs/org/jpc/query/Solution.html" title="Solution class">query solution</a> is represented as a map binding logic variables to Prolog terms.
-Keys of this map are strings representing variable names. Values are terms bound to these logic variables.
+Keys of this map are strings representing variable names. Values are terms bound to these logic variables. 
+</p>
+
+
+<p>
+An an example of the low-level querying API, consider the <a href="/london_underground.html" title="London underground example">London underground case study</a>.
+A solution to this problem requires us to provide an implementation for the interfaces 
+<a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Metro.html" title="The Metro class"><code>Metro</code></a>,
+<a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Line.html" title="The Line class"><code>Line</code></a> and 
+<a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a>.
+Since methods in those interfaces frequently need to convert between instances of our <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/package-summary.html" title="Java classes for the London underground case study">Java domain classes</a> and their <a href="/jpc.examples/logtalkdocs/underground_example/" title="Logtalk objects for the London underground case study">Prolog term representation</a>, we implement conversion routines that perform such operations and locate them in the corresponding implementation classes.
+The code listing below shows an extract of the implementation of the <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> interface providing such conversion routines.
+The <code>asTerm()</code> instance method (lines 17-19) returns the representation, as a Prolog term, of the receiver <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> instance.
+The <code>create</code> static method (lines 5-7) returns a new <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> instance from its Prolog term representation.
+Equivalent methods are also implemented in other classes in our domain not showed here.
+</p>
+
+
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+public class StationLLApi implements Station {
+
+	public static final String STATION_FUNCTOR_NAME = "station";
+
+	public static StationLLApi create(Term stationTerm) {
+		return new StationLLApi(((Atom)stationTerm.arg(1)).getName());
+	}
+
+	private final String name;
+	private final PrologEngine prologEngine;
+
+	public StationLLApi(String name) {
+		this.name = name;
+		prologEngine = getPrologEngine(getClass());
+	}
+
+	public Compound asTerm() {
+		return new Compound(STATION_FUNCTOR_NAME, asList(new Atom(getName())));
+	}
+	
+	@Override
+	public Station connected(Line line) {
+		String stationVarName = "Station";
+		Term message = new Compound("connected", asList(new Var(stationVarName), ((LineLLApi)line).asTerm()));
+		Term goal = new Compound(LogtalkConstants.LOGTALK_OPERATOR, asList(asTerm(), message));
+		Query query = prologEngine.query(goal);
+		Term stationTerm = query.oneSolutionOrThrow().get(stationVarName);
+		return create(stationTerm);
+	}
+    ... // other methods declared in the Station interface.
+}</pre></div>
+
+
+
+<p>
+The code also shows the implementation of the <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html#connected(org.jpc.examples.metro.model.Line)" title="The Station.connected(Line) method"><code>connected(Line)</code></a> method
+declared in the <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> interface.
+Line 24 defines a Logtalk message with the form <code>connected(Station, a_line)</code>, where <code>Station</code> is an unbound logic variable and <code>a_line</code> the term representation of the line received as a parameter.
+A goal is created in the next line with the form <code>::(this_station, message</code>), where <code>this_station</code> is the term representation of the <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> instance receiving the method call and <code>message</code> the Logtalk message created on line 24.
+A query is instantiated in line 26 from this goal.
+The binding of the <code>Station</code> Prolog variable corresponding to the first solution is found on line 27, and a new <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> instance is created and returned from this term representation on line 28.
+</p>
+
+<p>
+Next section will set the basis for writing, in a more convenient way, the common conversion operations reviewed in this section.
 </p>
 
 
@@ -278,11 +341,11 @@ The example below shows how to configure a builder to create a <a href="/javadoc
 
 
 
-<p><pre id="metroCustomConverter" data-editor="java" data-show-gutter="true">
+<div class="codeEditor"><pre id="metroCustomConverter" data-editor="java" data-show-gutter="true">
 public static final Jpc jpc = JpcBuilder.create()
     .register(new MetroConverter())
     .register(new LineConverter())
-    .register(new StationConverter()).build();</pre></p>
+    .register(new StationConverter()).build();</pre></div>
 
 <p>
 In addition to custom conversions, JPC is bundled with a predefined catalog of converters that support a considerable number of common conversions. This minimises the amount of code to be written when defining new conversions.
