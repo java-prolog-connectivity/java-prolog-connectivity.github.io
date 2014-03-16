@@ -70,7 +70,7 @@
 <p>
 This section illustrates a case study that is referenced in the <a href="/user_manual.html" title="JPC user manual">JPC user manual</a>.
 It requires a basic understanding of <a href="http://logtalk.org/manuals/index.html" title="Logtalk Manuaks">Logtalk</a>.
-In order to download and install this example refer to the <a href="/installation_guide.html#installingJpcExamples" title="JPC installation guide">JPC installation guide</a>.
+In order to download and install this example please refer to the <a href="/installation_guide.html#installingJpcExamples" title="JPC installation guide">JPC installation guide</a>.
 </p>
 	
 
@@ -78,16 +78,25 @@ In order to download and install this example refer to the <a href="/installatio
 
 <p>
 Our case study addresses a typical problem that can be implemented easily with a logic language: a querying system about subway lines and stations. 
-It has been adapted from the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical book">Simply Logical</a> book by <a href="https://www.cs.bris.ac.uk/~flach/index.html" title="Peter Flach">Peter Flach</a>.
+It has been adapted from the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical. Intelligent Reasoning by Example.">Simply Logical</a> book by <a href="https://www.cs.bris.ac.uk/~flach/index.html" title="Peter Flach">Peter Flach</a>.
 This document describes both a concrete implementation in the Prolog side (using Logtalk) and a set of Java interfaces that model the domain artifacts in the Java side.
 </p>
 
 <p>
 The main entities of our example are shown in figure 1:
-These entities are: subway stations, subway lines connecting those stations and the subway itself (referred as <code>metro</code> in the figure).
+These are: subway stations, subway lines connecting those stations and the subway itself (referred as <code>metro</code> in the figure).
 Relevant relations between these entities are:
-Stations are <code>connected</code> to other stations by underground lines. A station is <code>nearby</code> another one if there is at most one station in between. A station <code>A</code> is <code>reachable</code> from another station <code>B</code> if there exists a list of stations <code>L</code> that form a path going from <code>B</code> to <code>A</code>.
 </p>
+
+<div class="divList">
+<ul>
+	<li><code>Connected stations</code>: Stations are <code>connected</code> to other stations by subway lines.</li>
+	<li><code>Nearby stations</code>: A station is <code>nearby</code> another one if there is at most one station in between.</li>
+	<li><code>Reachable stations</code>: A station <code>A</code> is <code>reachable</code> from another station <code>B</code> if there exists a list of stations <code>L</code> that form a path going from <code>B</code> to <code>A</code>.</li>
+</ul>
+</div>
+
+
 
 
 <div class="divImg">
@@ -99,7 +108,7 @@ Stations are <code>connected</code> to other stations by underground lines. A st
 
 <p>
 The first stage of the problem consists in expressing our knowledge about the London Underground as a set of logic statements. 
-Instead of implementing it in plain Prolog as in the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical book">original example</a>, we introduce an interesting variation: we use Logtalk, a portable object-oriented layer on top of Prolog.
+Instead of implementing it in plain Prolog as in the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical. Intelligent Reasoning by Example.">original example</a>, we introduce an interesting variation: we use Logtalk, a portable object-oriented layer on top of Prolog.
 </p>
 
 <p>
@@ -118,9 +127,9 @@ Figure 2 shows an overview of such objects and their dependencies.
 
 <p>
 The <a href="/jpc.examples/logtalkdocs/underground_example/metro_0.html" title="The metro/0 Logtalk object"><code>metro/0</code></a> object encapsulates the knowledge about how stations are connected (e.g., the <code>connected/3</code> predicate).
-Note that the <code>connected/3</code> predicate is declared as <a href="http://logtalk.org/manuals/refman/directives/dynamic_1.html" title="The dynamic/1 directive">dynamic</a> (line 5) since new connections can be configured at runtime.
+Note that the <code>connected/3</code> predicate is declared as <a href="http://logtalk.org/manuals/refman/directives/dynamic_1.html" title="The dynamic/1 directive">dynamic</a> (line 7) since new connections can be configured at runtime.
 Plus the rules for the logic predicates <code>nearby/2</code>, <code>reachable/3</code>, <code>line/1</code> and <code>remove_all/0</code>. 
-The messages (queries) that the metro object can respond to are specified by the <code>public/1</code> directive in line 3. <a href="http://logtalk.org/manuals/userman/messages.html" title="Logtalk messages">Messages in Logtalk</a> are sent using the <code>::/2</code> operator, as illustrated on line 23 for the <a href="http://logtalk.org/library/listp_0.html#member/2" title="The member/2 predicate at the Listp protocol"><code>member/2</code></a> method.
+The messages (queries) that the metro object can respond to are specified by the <code>public/1</code> directive (lines 3-5). <a href="http://logtalk.org/manuals/userman/messages.html" title="Logtalk messages">Messages in Logtalk</a> are sent using the <code>::/2</code> operator, as illustrated on line 23 for the <a href="http://logtalk.org/library/listp_0.html#member/2" title="The member/2 predicate at the Listp protocol"><code>member/2</code></a> method.
 </p>
 
 
@@ -166,7 +175,7 @@ A subway line is modelled by the Logtalk <a href="http://logtalk.org/manuals/use
 The object parameter denotes the name of the line.
 It provides predicates answering connected stations by means of the line object (e.g., <code>connects/2</code>).
 In addition, it allows a programmer to declare new connections between stations by means of the line object (e.g., <code>add_connection/2</code>).
-These Logtalk methods delegate to the <code>metro</code> prototype object.
+These predicates delegate to the <code>metro</code> Logtalk object.
 </p>
 
 <p><pre data-editor="prolog" data-show-gutter="true">
@@ -197,7 +206,7 @@ These Logtalk methods delegate to the <code>metro</code> prototype object.
 A subway station is modelled by the Logtalk <a href="http://logtalk.org/manuals/userman/features.html#features_parametric" title="Logtalk parametric objects">parametric object</a> <a href="/jpc.examples/logtalkdocs/underground_example/station_1.html" title="The station/1 Logtalk object"><code>station/1</code></a>.
 The object parameter denotes the name of the station.
 It provides predicates answering stations connected to this line (e.g., <code>connected/1</code> and <code>connected/2</code>), stations that are nearby this station (e.g., <code>nearby/1</code>) and stations that are reachable from this station (e.g., <code>reachable/1</code> and <code>reachable/2</code>).
-These Logtalk methods delegate to the <code>metro</code> prototype object.
+These predicates delegate to the <code>metro</code> Logtalk object.
 </p>
 
 <p><pre data-editor="prolog" data-show-gutter="true">
@@ -282,7 +291,7 @@ The content of this data-loading file is shown below:
 <h2>The Java Entities</h2> 
 
 <p>
-In <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/package-summary.html" title="Java side documentation">the Java side</a>, we define the 
+In the <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/package-summary.html" title="Java side documentation">Java side</a>, we define the 
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Metro.html" title="The Metro class"><code>Metro</code></a>,
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Line.html" title="The Line class"><code>Line</code></a> and 
 <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> 
