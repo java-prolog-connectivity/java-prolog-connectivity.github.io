@@ -54,6 +54,7 @@
 
 
 <h1>JPC User Guide</h1>
+(Work in progress).
 
 <div id="table_of_content">
   <strong>Contents</strong>
@@ -77,7 +78,8 @@ If you are reading this guide for first time, it may be a good idea to start wit
 </p>
 
 <p>
-In order to download and try the examples discussed here, please refer to the <a href="installation_guide.html#installingJpcExamples" title="JPC Installation guide">JPC installation guide</a>.
+Several examples in this section refer to the <a href="/london_underground.html" title="London underground example">London underground case study</a>.
+In order to download and try these examples, please refer to the <a href="installation_guide.html#installingJpcExamples" title="JPC Installation guide">JPC installation guide</a>.
 </p>
 
 
@@ -125,7 +127,7 @@ This categorization is illustrated by the figure below.
 </p>
 
 <div class="divImg">
-  <img src="img/jpc/jpc_named_hierarchy.svg" alt="Named categorization for engines." style="padding-bottom:0.5em;" height="233" />
+  <img src="img/jpc/jpc_named_hierarchy.svg" alt="Named categorization for engines." style="padding-bottom:0.5em;" height="243" />
   <div id="imglabel:jpc_named_hierarchy" >Fig 1. - A named categorization for engines.</div>
 </div>
 
@@ -206,10 +208,35 @@ EngineConfigurationManager.createFromFile(&lt;settings_file_name&gt;).getPrologE
 <h2 id="lowLevelAPI">The Low-Level Querying API</h2> 
 
 <p>
-All the JPC methods that deal explicitly with Prolog terms are part of the low-level API.
+This section introduces the JPC low-level API for creating and manipulating Prolog queries.
+This API, inspired by the <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a> library,
+ provides methods that do not perform automatic conversions between Prolog and Java artifacts.
+Instead, a query goal and its results are always expressed by means of Prolog terms.
+An alternative to this approach will be presented <a href="#highLevelAPI" title="The high-level querying API">later</a>.
+</p>
+
+<p>
+In JPC, a Prolog query is reified as a Java class named <a href="/javadocs/org/jpc/query/Query.html" title="Query class">Query</a>. 
+This class provides methods for executing 
+<a href="/javadocs/org/jpc/query/Query.html#oneSolutionOrThrow()" title="Query.oneSolutionOrThrow() method">deterministic</a>, 
+<a href="/javadocs/org/jpc/query/Cursor.html#oneSolution()" title="Cursor.oneSolution() method">semi-deterministic</a> and 
+<a href="/javadocs/org/jpc/query/Query.html#next()" title="Query.next() method">non-deterministic</a> queries.
+
+A JPC query has three possible <a href="/javadocs/org/jpc/query/CursorState.html" title="CursorState class">states</a>: 
+<code>READY</code>, <code>OPEN</code> and <code>EXHAUSTED</code>. Figure 2 illustrates the transition between these states by means of a state diagram chart for a JPC query. As shown in the figure, independently of its current state, the <a href="/javadocs/org/jpc/query/Cursor.html#close()" title="Cursor.close() method">close()</a> method always takes it to the <code>READY</code> state. Any attempt to invoke a method that is illegal in the current state raises an <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/IllegalStateException.html" title="IllegalStateException class"><code>IllegalStateException</code></a> exception.
 </p>
 
 
+<div class="divImg">
+  <img src="img/jpc/query_state_diagram.svg" alt="State diagram chart of a JPC query." style="padding-bottom:0.5em;" height="460" />
+  <div id="imglabel:query_state_diagram" >Fig 2. - State diagram chart of a JPC query.</div>
+</div>
+
+
+<p>
+A <a href="/javadocs/org/jpc/query/Solution.html" title="Solution class">query solution</a> is represented as a map binding logic variables to Prolog terms.
+Keys of this map are strings representing variable names. Values are terms bound to these logic variables.
+</p>
 
 
 <h2 id="conversionAPI">The Conversion API</h2> 
@@ -228,9 +255,6 @@ It provides constructs for:
 </ul>
 </div>
 
-<p>
-Several examples in this section and in the rest of this tutorial refer to the <a href="/london_underground.html" title="London underground example">London underground case study</a>.
-</p>
 
 
 <h3 id="conversionContext">The JPC Context</h3> 
@@ -239,12 +263,12 @@ Several examples in this section and in the rest of this tutorial refer to the <
 The primary JPC class is a conversion context, modelled by the <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> class.
 This context encapsulates a bidirectional conversion strategy for a set of Java objects and Prolog terms.
 A context is configured in term of converters, type solvers, factories and other conversion artefacts.
-Figure 2 illustrates its main components and a typical interaction with a user of the library.
+Figure 3 illustrates its main components and a typical interaction with a user of the library.
 </p>
 
 <div class="divImg">
-  <img src="img/jpc/jpc_context.svg" alt="The JPC Context." style="padding-bottom:0.5em;" height="180" />
-  <div id="imglabel:jpc_context" >Fig 2. - The JPC Context.</div>
+  <img src="img/jpc/jpc_context.svg" alt="The JPC Context." style="padding-bottom:0.5em;" height="190" />
+  <div id="imglabel:jpc_context" >Fig 3. - The JPC Context.</div>
 </div>
 
 <p>
