@@ -84,7 +84,7 @@ To develop with JPC you require:
 <ul>
 	<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" title="Java Download">Java</a> 7 or above.</li>
 	<li>A <a href="architecture.html#compatiblePrologEngines" title="Compatible Prolog engine">compatible Prolog engine</a>.</li>
-	<li><a href="http://logtalk.org/" title="Logtalk: An open source object-oriented logic programming language">Logtalk</a> (optionally).</li>
+	<li><a href="http://logtalk.org/" title="Logtalk: An open source object-oriented logic programming language">Logtalk</a> (optional for Java to Prolog, required for Prolog to Java).</li>
 </ul>
 </div>
 
@@ -185,8 +185,7 @@ For example, the following command (executed in the <code>ARCH</code> folder as 
 </p>
 
 <div class="codeEditor"><pre data-editor="makefile" data-show-gutter="true">
-../configure --prefix=/opt/local --with-java --enable-threads --enable-pthread-locking --enable-depth-limit --enable-coroutining --enable-clpbn-bp=no --enable-tabling --with-gmp=/opt/local && make && sudo make install
-</pre></div>
+../configure --prefix=/opt/local --with-java --enable-threads --enable-pthread-locking --enable-depth-limit --enable-coroutining --enable-clpbn-bp=no --enable-tabling --with-gmp=/opt/local && make && sudo make install</pre></div>
 
 
 <p>
@@ -293,6 +292,7 @@ To enable this driver into your project follow these steps:
 	</li>
 	<li>Configure the environment variable <code>JPLPATH_SWI</code> (in case you want to connect to SWI) with the SWI directory containing the native part of the JPL library.</li>
 	<li>Configure the environment variable <code>JPLPATH_YAP</code> (in case you want to connect to YAP) with the YAP directory containing the native part of the JPL library.</li>
+	<li>For developing Prolog to Java applications, you need to add to the library search path of your OS the directory where the JVM library <code> libjvm</code> is located. For example, in OSX this may be accomplished adding to the <code>DYLD_LIBRARY_PATH</code> environment variable a path similar to  <code>$JAVA_HOME/Contents/Home/jre/lib</code>. In Linux, you may add to the <code>LD_LIBRARY_PATH</code> environment variable a path similar to <code>$JAVA_HOME/jre/lib/amd64/server</code> (assuming a 64 bits installation).</li>
 </ul>
 </div>
 
@@ -304,7 +304,7 @@ Or, if the path to the Jpl native library is already part of the default search 
 -->
 
 <p>
-With this driver, only one Prolog session can be opened per JVM.
+With this driver, only one Prolog session can be opened per JVM in Java to Prolog applications.
 </p>
 
 <!--
