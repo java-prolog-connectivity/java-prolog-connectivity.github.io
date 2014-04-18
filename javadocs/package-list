@@ -3,12 +3,14 @@ org.jpc.converter
 org.jpc.converter.catalog
 org.jpc.converter.catalog.datetime
 org.jpc.converter.catalog.error
+org.jpc.converter.catalog.io
 org.jpc.converter.catalog.jrefterm
 org.jpc.converter.catalog.list
 org.jpc.converter.catalog.map
+org.jpc.converter.catalog.net
 org.jpc.converter.catalog.primitive
-org.jpc.converter.catalog.reification
-org.jpc.converter.catalog.reification.type
+org.jpc.converter.catalog.reflection
+org.jpc.converter.catalog.reflection.reification
 org.jpc.converter.catalog.serialized
 org.jpc.converter.typesolver
 org.jpc.converter.typesolver.catalog
