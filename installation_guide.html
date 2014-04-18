@@ -266,11 +266,13 @@ Note that including the JPC library may be enough for development, but for execu
 
 <p>
 All the current JPC drivers are open source and distributed under the terms of <a href="http://www.gnu.org/copyleft/lesser.html" title="JPL drivers license">this license</a>.
+For convenience, both installation instructions for Maven users and <a href="http://stackoverflow.com/questions/11947037/what-is-an-uber-jar" title="Uber-Jars">Uber-Jars</a> containing each driver with its dependences are provided.
 </p>
 
 
 
 <h3 id="jplDriver">The JPL Based Driver</h3> 
+
 
 <h4 id="jplDriverArchitecture">Driver Architecture</h4> 
 
@@ -283,25 +285,37 @@ Depending on the platform, the native part may be a library with a name similar 
 </p>
 
 
-<h4 id="jplDriverInstallation">Installation Instructions</h4> 
+<h4 id="jplDriverMaven">Maven users</h4> 
 
 <p>
-To enable this driver into your project follow these steps:
+Add this dependency to your POM:
 </p>
 
-<div class="divList">
-<ul>
-	<li>Add this dependency to your POM:
 		<div class="codeEditor"><pre data-editor="xml" data-show-gutter="true">
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc-jpl&lt;/artifactId&gt;
   &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</pre></div>
+
+
+<h4 id="jplDriverDownload">Download the Driver Uber-Jar</h4> 
+
+
+
+<h4 id="jplDriverInstallation">Installation Instructions</h4> 
+
+<p>
+To enable this driver follow these steps:
+</p>
+
+<div class="divList">
+<ul>
+	<li>
+		
 	</li>
 	<li>Configure the environment variable <code>JPLPATH_SWI</code> (in case you want to connect to SWI) with the SWI directory containing the native part of the JPL library.</li>
 	<li>Configure the environment variable <code>JPLPATH_YAP</code> (in case you want to connect to YAP) with the YAP directory containing the native part of the JPL library.</li>
-	<li>For developing Prolog to Java applications, you need to add to the library search path of your OS the directory where the JVM library <code> libjvm</code> is located. </li>
 </ul>
 </div>
 
