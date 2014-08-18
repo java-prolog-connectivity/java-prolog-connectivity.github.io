@@ -150,14 +150,14 @@ Example of predefined conversions are shown below:
 Jpc jpc = JpcBuilder.create().build(); // a default conversion context
 
 //Java to Prolog
-jpc.toTerm(true);    // ==> new Atom("true")
-jpc.toTerm("1");     // ==> new Atom("1")
-jpc.toTerm(1);       // ==> new IntegerTerm(1)
+jpc.toTerm(true);                  // ==> new Atom("true")
+jpc.toTerm("1");                   // ==> new Atom("1")
+jpc.toTerm(1);                     // ==> new IntegerTerm(1)
 
 //Prolog to Java
-new Atom("true");    // ==> true
-new Atom("1");       // ==> "1"
-new IntegerTerm(1);  // ==> 1L</pre></div>
+jpc.fromTerm(new Atom("true"));    // ==> true
+jpc.fromTerm(new Atom("1"));       // ==> "1"
+jpc.fromTerm(new IntegerTerm(1));  // ==> 1L</pre></div>
 
 
 <p>
@@ -200,7 +200,10 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
 
 <h2>Conclusions</h2> 
 
-
+<p>
+This paper provides a short overview over the JPC and LogicObjects libraries. 
+Further information can be found in the online documentation.
+</p>
 
 
 
