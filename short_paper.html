@@ -69,8 +69,8 @@
 
       <div id="fn:ucl">
 	    (1)
-  	    <a title="Université catholique de Louvain" href="http://www.uclouvain.be/">Université catholique de Louvain</a>.
-	    <a title="Institute of Information and Communication Technologies, Electronics and Applied Mathematics" href="http://www.uclouvain.be/icteam/">ICTEAM</a>.
+  	    <a title="Université catholique de Louvain" href="http://www.uclouvain.be/">Université catholique de Louvain</a>,
+	    <a title="Institute of Information and Communication Technologies, Electronics and Applied Mathematics" href="http://www.uclouvain.be/icteam/">ICTEAM</a>,
 	    <a title="Computing Science Engineering Department" href="http://www.uclouvain.be/ingi/">INGI</a>.
       </div>
   
@@ -120,11 +120,11 @@ We describe an approach based on the notion of automatic inter-language conversi
 </p>
 
 
-<h2>Inter-Language Conversions</h2> 
+<h2>Inter-Language Conversions with JPC</h2> 
 
 <p>
 At the core of our approach lies an extensible and fine-grained mechanism for mapping between artefacts in the Prolog and Java wold.
-A concrete implementation of it is provided by means of the JPC library.
+A concrete implementation of it is provided by means of the JPC (Java-Prolog Connectivity) library.
 JPC has been inspired by a well-known library for accomplishing context-dependent conversions between Java and JSON artefacts: the Google's Gson library.
 As part of our design philosohpy we include several design goals of Gson extra-polated to our domain. Among others:
 </p>
@@ -137,7 +137,7 @@ As part of our design philosohpy we include several design goals of Gson extra-p
 	<li>Includes a considerable catalog of pre-defined bi-directional converters.</li>
 	<li>Allows to extend the default conversion strategy by means of custom converters.</li>
 	<li>A conversion strategy is encapsulated as a reified conversion context.</li>
-	<li>Convenient for objects with deep hierarchies that may contain generic classes.</li>
+	<li>Supports objects with deep hierarchies that may contain generic classes.</li>
 	<li>Type-guided conversions. A Prolog list may be converted to a Java Array, List or Map, according to the expected conversion type, if any.</li>
 </ul>
 </div>
@@ -188,12 +188,45 @@ Jpc jpc = builder.build(); //custom conversion context
 Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectObject("P").oneSolutionOrThrow(); //the term bound to P is automatically converted to an instance of class Person</pre></div>
 
 
-<h2>Automatic Integration from the Java Perspective</h2> 
+
+<h2>Automatic Integration with LogicObjects</h2> 
+
+LogicObjects is an integration framework for Java and Prolog built on top of the JPC library.
+
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+@LObject(name="person", args={"name"})
+abstract class Person {
+	private final String name;
+	
+	public Person(String name) {this.name = name;}
+
+	@LMethod(args = {"LSolution"})
+	public abstract long salary();
+	
+	public int experience() {
+		...
+	}
+
+}</pre></div>
+
+
+<div class="codeEditor"><pre data-editor="prolog" data-show-gutter="true">
+:- object(person(_Name) imports jobject).
+
+	:- public(salary/1).
+	salary(S) :- ...
+
+:- end_object.</pre></div>
+
+
+
+
+<h3>Automatic Integration from the Java Perspective</h3> 
  
  
  
 
-<h2>Automatic Integration from the Prolog Perspective</h2> 
+<h3>Automatic Integration from the Prolog Perspective</h3> 
 
 
 
