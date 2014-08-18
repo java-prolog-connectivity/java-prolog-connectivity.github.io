@@ -142,8 +142,24 @@ As part of our design philosohpy we include several design goals of Gson extra-p
 </div>
 
 
+Example of predefined conversions are shown below:
 
-FEW EXAMPLES OF INTER-LANGUAGE CONVERSIONS HERE
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+Jpc jpc = JpcBuilder.create().build();
+
+//Java to Prolog
+jpc.toTerm(true);    // ==> new Atom("true")
+jpc.toTerm("1");     // ==> new Atom("1")
+jpc.toTerm(1);       // ==> new IntegerTerm(1)
+
+//Prolog to Java
+new Atom("true");    // ==> true
+new Atom("1");       // ==> "1"
+new IntegerTerm(1);  // ==> 1L</pre></div>
+
+
+
+CUSTOM CONVERSION EXAMPLE FOLLOWS
 
 
 
