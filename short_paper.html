@@ -124,7 +124,8 @@ We describe an approach based on the notion of automatic inter-language conversi
 
 <p>
 At the core of our approach lies an extensible and fine-grained mechanism for mapping between artefacts in the Prolog and Java wold.
-This mechanism has been inspired by a well-known library for accomplishing context-dependent conversions between Java and JSON artefacts: the Google's Gson library.
+A concrete implementation of it is provided by means of the JPC library.
+JPC has been inspired by a well-known library for accomplishing context-dependent conversions between Java and JSON artefacts: the Google's Gson library.
 As part of our design philosohpy we include several design goals of Gson extra-polated to our domain. Among others:
 </p>
 
@@ -141,11 +142,12 @@ As part of our design philosohpy we include several design goals of Gson extra-p
 </ul>
 </div>
 
-
+<p>
 Example of predefined conversions are shown below:
+</p>
 
 <div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
-Jpc jpc = JpcBuilder.create().build();
+Jpc jpc = JpcBuilder.create().build(); // a default conversion context
 
 //Java to Prolog
 jpc.toTerm(true);    // ==> new Atom("true")
@@ -158,9 +160,32 @@ new Atom("1");       // ==> "1"
 new IntegerTerm(1);  // ==> 1L</pre></div>
 
 
+<p>
+A conversion context can be extended with custom converters.
+Consider the simple converter below:
+</p>
 
-CUSTOM CONVERSION EXAMPLE FOLLOWS
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+public class PersonConverter implements FromTermConverter&lt;Compound, Person&gt; {
 
+	@Override public Person fromTerm(Compound term, Type type, Jpc context) {
+		String personName = ((Atom)term.arg(1)).getName();
+		return new Person(personName);
+	}
+	
+}</pre></div>
+
+<p>
+This converter can be registered into a conversion context.
+The conversion context can be then employed to instantiate a query that facilitates the transparent conversion between Prolog terms and Java objects.
+</p>
+
+
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+JpcBuilder builder = JpcBuilder.create().registerConverter(new PersonConverter(), 
+														   new Functor("person"), 1).asTerm()); // the converter is associated with terms of the form: person(_)
+Jpc jpc = builder.build(); //custom conversion context
+Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectObject("P").oneSolutionOrThrow(); //the term bound to P is automatically converted to an instance of class Person</pre></div>
 
 
 <h2>Automatic Integration from the Java Perspective</h2> 
