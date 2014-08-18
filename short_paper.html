@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>A Linguistic Integration Approach for Java and Prolog</title>
+
+	<link rel="stylesheet" href="/styles/publication/sc.tutorial.css" />
+	<link rel="stylesheet" href="/styles/publication/sc.tooglejs.css" />
+
+	<script type="text/javascript" src="/js/jquery.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/js/ace-builds/src-noconflict/ace.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/publication/jquery.tableofcontents.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/js/publication/jquery.sc.publication.js" charset="utf-8"></script>
+    
+    <script type="text/javascript">//<![CDATA[
+  (function ($) {
+    $(document).ready(function(){
+		
+      $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
+      $.prettifyCodeSnippets("eclipse");
+      //$.prettifyCodeSnippets("solarized_light");
+      $.configureFootnotes();
+
+    })
+
+  })(jQuery);
+
+
+//]]></script>
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-47515052-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</head>
+
+
+
+
+<body>
+
+
+<div>
+
+  
+
+  <div style="text-align: center">
+
+    <div><h1 style="margin: 0.4em 0 0.2em 0;">An Integration Approach for Java and Prolog <br/> based on Automatic Inter-Language Conversions</h1></div>
+    <div>
+      Sergio Castro <sup> <a rel="footnote" href="#fn:ucl">1</a> </sup>, 
+      Kim Mens <sup> <a rel="footnote" href="#fn:ucl">1</a> </sup> and 
+      Paulo Moura <sup> <a rel="footnote" href="#fn:inescporto">2</a> </sup>
+    </div>
+
+    <div id="affiliations">
+
+      <div id="fn:ucl">
+	    (1)
+  	    <a title="Université catholique de Louvain" href="http://www.uclouvain.be/">Université catholique de Louvain</a>.
+	    <a title="Institute of Information and Communication Technologies, Electronics and Applied Mathematics" href="http://www.uclouvain.be/icteam/">ICTEAM</a>.
+	    <a title="Computing Science Engineering Department" href="http://www.uclouvain.be/ingi/">INGI</a>.
+      </div>
+  
+      <div id="fn:inescporto">
+  	    (2)
+  	    <a title="Center for Research in Advanced Computing Systems" href="http://www.inescporto.pt/">Center for Research in Advanced Computing Systems, INESC-TEC</a>.
+      </div>
+
+    </div> <!-- end of affiliations -->
+
+  </div>
+
+</div>
+	
+	
+
+
+
+
+
+
+
+<div id="table_of_content">
+  <strong>Contents</strong>
+  <ol id="table_of_content_entries"></ol>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="content">
+
+<h2>Introduction</h2> 
+
+<p>
+Although numerous approaches allow to integrate Java and Prolog programs, few of them make an emphasis on the transparency and automation regarding the integration concern.
+We describe an approach based on the notion of automatic inter-language conversions that tackles this problem.
+</p>
+
+
+<h2>Inter-Language Conversions</h2> 
+
+<p>
+At the core of our approach lies an extensible and fine-grained mechanism for mapping between artefacts in the Prolog and Java wold.
+This mechanism has been inspired by a well-known library for accomplishing context-dependent conversions between Java and JSON artefacts: the Google's Gson library.
+As part of our design philosohpy we include several design goals of Gson extra-polated to our domain. Among others:
+</p>
+
+
+<div class="divList">
+<ul>
+	<li>Allows arbitrary objects to be converted to and from Prolog terms. </li>
+	<li>Works with pre-existing objects that cannot or should not be modified (e.g., no sources available). </li>
+	<li>Includes a considerable catalog of pre-defined bi-directional converters.</li>
+	<li>Allows to extend the default conversion strategy by means of custom converters.</li>
+	<li>A conversion strategy is encapsulated as a reified conversion context.</li>
+	<li>Convenient for objects with deep hierarchies that may contain generic classes.</li>
+	<li>Type-guided conversions. A Prolog list may be converted to a Java Array, List or Map, according to the expected conversion type, if any.</li>
+</ul>
+</div>
+
+
+
+FEW EXAMPLES OF INTER-LANGUAGE CONVERSIONS HERE
+
+
+
+<h2>Automatic Integration from the Java Perspective</h2> 
+ 
+ 
+ 
+
+<h2>Automatic Integration from the Prolog Perspective</h2> 
+
+
+
+
+<h2>Conclusions</h2> 
+
+
+
+
+
+
+</div> <!-- end of content -->
+
+    
+
+</body>
+</html>
