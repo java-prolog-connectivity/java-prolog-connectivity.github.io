@@ -142,6 +142,8 @@ As part of our design philosohpy we include several design goals of Gson extra-p
 </ul>
 </div>
 
+<h3>Pre-Defined Conversions</h3> 
+
 <p>
 Example of predefined conversions are shown below:
 </p>
@@ -153,12 +155,28 @@ Jpc jpc = JpcBuilder.create().build(); // a default conversion context
 jpc.toTerm(true);                  // ==> new Atom("true")
 jpc.toTerm("1");                   // ==> new Atom("1")
 jpc.toTerm(1);                     // ==> new IntegerTerm(1)
+jpc.toTerm(1D);                    // ==> new FloatTerm(1)
 
 //Prolog to Java
 jpc.fromTerm(new Atom("true"));    // ==> true
 jpc.fromTerm(new Atom("1"));       // ==> "1"
-jpc.fromTerm(new IntegerTerm(1));  // ==> 1L</pre></div>
+jpc.fromTerm(new IntegerTerm(1));  // ==> 1L
+jpc.fromTerm(new FloatTerm(1));    // ==> 1D</pre></div>
 
+
+<h3>Type-Guided Conversions</h3> 
+
+Examples of type guided conversions are shown below:
+
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+Term listTerm = listTerm(new Atom("1"), new Atom("2")); //Prolog list -> ['1', '2']
+List<?> list = jpc.fromTerm(listTerm, List.class); //list of strings
+String[] array = jpc.fromTerm(listTerm, new String[]{}.getClass()); //array of strings
+Type type = new TypeToken&lt;List&lt;Integer&gt;&gt;(){}.getType(); //reification of the List&lt;Integer&gt; type
+list = jpc.fromTerm(listTerm, type); //list of integers</pre></div>
+
+
+<h3>Custom Conversions</h3> 
 
 <p>
 A conversion context can be extended with custom converters.
@@ -185,13 +203,34 @@ The conversion context can be then employed to instantiate a query that facilita
 JpcBuilder builder = JpcBuilder.create().registerConverter(new PersonConverter(), 
 														   new Functor("person"), 1).asTerm()); // the converter is associated with terms of the form: person(_)
 Jpc jpc = builder.build(); //custom conversion context
-Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectObject("P").oneSolutionOrThrow(); //the term bound to P is automatically converted to an instance of class Person</pre></div>
+Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectObject("P").oneSolutionOrThrow(); //the term bound to P is automatically converted to an instance of class Person </pre></div>
 
 
 
 <h2>Automatic Integration with LogicObjects</h2> 
 
+<p>
 LogicObjects is an integration framework for Java and Prolog built on top of the JPC library.
+It allows to define hybrid entities which partial implementations in Java and Prolog.
+Although to a certain extent LogicObjects is compatible with plain Prolog, to get the best of it, it is recommended to install on the Prolog side Logtalk, an object-oriented layer for Prolog.
+</p>
+
+<p>
+Figure one shows the definition of a <code>Person</code> entity.
+This entity has a dual expression. In the Java world, it takes the form of an instance of the <code>Person</code> class. On the Prolog world, it is reified as the Logtalk parametric object <code>person/1</code>.
+In this example, the implementation is scattered in the two worlds (the method <code>experience()</code> is defined in Java and the predicate <code>salary/1</code> in Prolog). 
+However, it is also possible to create entities that are completely defined either in Java or Prolog, but still accessible from the foreign language.
+</p>
+
+
+<div class="divImg">
+  <img src="img/examples/interaction_person.svg" alt="The Person entity." style="padding-bottom:0.5em;" height="220" />
+  <div id="imglabel:interaction_person" >Fig 1. - A dual representation of a Person entity.</div>
+</div>
+
+<p>
+In the rest of this section we review the integration from both language perspectives.
+</p>
 
 <div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 @LObject(name="person", args={"name"})
@@ -201,7 +240,7 @@ abstract class Person {
 	public Person(String name) {this.name = name;}
 
 	@LMethod(args = {"LSolution"})
-	public abstract long salary();
+	public abstract int salary();
 	
 	public int experience() {
 		...
@@ -221,12 +260,12 @@ abstract class Person {
 
 
 
-<h3>Automatic Integration from the Java Perspective</h3> 
+<h3>Integration from the Java Perspective</h3> 
  
  
  
 
-<h3>Automatic Integration from the Prolog Perspective</h3> 
+<h3>Integration from the Prolog Perspective</h3> 
 
 
 
