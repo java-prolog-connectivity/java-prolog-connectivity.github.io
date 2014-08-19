@@ -118,9 +118,15 @@
   Although numerous approaches allow to integrate Java and Prolog programs, few of them make an emphasis on the transparency and automation regarding the integration concern.
   We describe an approach based on the notion of automatic inter-language conversions that tackles this problem.
   </p>
+  
+  <!--
+  <p>
+  In the first part of this article we introduce JPC, a Java library for accomplishing bi-directional conversions between Java objects and Prolog terms.
+  In the second part we introduce the LogicObjects framework, which facilitates the creation of hybrid systems 
+  </p>
+  -->
 
-
-  <h2>Inter-Language Conversions with JPC</h2> 
+  <h2>Preparing the Ground: Inter-Language Conversions with JPC</h2> 
 
   <p>
   At the core of our approach lies an extensible and fine-grained mechanism for mapping between artefacts in the Prolog and Java wold.
@@ -208,7 +214,7 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
 
 
 
-  <h2>Automatic Integration with LogicObjects</h2> 
+  <h2>Automatic Integration of Hybrid Applications with LogicObjects</h2> 
 
   <p>
   LogicObjects is an integration framework for Java and Prolog built on top of the JPC library.
@@ -268,11 +274,15 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
   The <code>@LMethod</code> annotation provides mapping information regarding a specific routine.
   In this case, the <code>salary()</code> Java method is mapped to a predicate having the same name.
   As arguments, it will have the unbound logic variable <code>LSolution</code>.
+  Therefore, an invocation of the <code>salary()</code> method on a person with name <code>"mary"</code> will be interpreted as querying the Prolog goal <code>person(mary)::salary(LSolution)</code>.
   </p>
+  
+  
   
   <p>
   LogicObjects provide several heuristics for determining the return value in Java of a routine implemented on the Prolog side.
-  One of them consists on inspecting the names of the unbound logic variables. In case it encounters an occurrence of a variable named <code>LSolution</code>, it will consider the return value of the method the conversion to a Java object of the term bound to such a variable. By default, the query is interpreted as deterministic. Hence, only the first solution is considered. However, this can be customised by means of other Java annotations (e.g., to compose all the solutions in a container such as an instance of <code>java.util.List</code>).
+  One of them consists on inspecting the names of the unbound logic variables. In case it encounters an occurrence of a variable named <code>LSolution</code>, it will consider as the return value of the method the conversion to a Java object of the term bound to such a variable. 
+  Note that by default a query is interpreted as deterministic. Hence, only its first solution is considered. However, this can be customised by means of other Java annotations (e.g., to compose all the solutions in a container such as an instance of <code>java.util.List</code>).
   </p>
   
   <p>
@@ -305,9 +315,39 @@ System.out.println("Salary: " + person.salary());</pre></div>
 
   <p>
   Any Logtalk object importing the <code>jobject</code> category, will delegate to the Java side any message not understood. 
+  For example, a Logtalk call <code>person(mary)::experience</code>, will be interpreted in Java as <code>new Person("mary").experience</code>.
+  If the programmer 
   </p>
 
-
+  <p>
+  If the return value of a Java method is required on the Prolog side, distinct mechanisms are available, all of them relying on the notion of a <emph>return specifier</emph>.
+  The following Logtalk method invocations are equivalent:
+  </p>
+  
+<div class="codeEditor"><pre data-editor="prolog" data-show-gutter="true">
+person(mary)::experience(return(term(E))). %return value specified as an argument of the method.
+jobject(person(mary), return(term(E)))::experience. %return value specified as an argument of the jobject/2 Logtalk object.
+person(mary)::experience return(term(E)). %return value specified by means of the return operator.</pre></div>
+  
+  <p>
+  A return specifier assigns a semantics to a Java method returned value in Prolog. They consist of a compound term that wraps as one of its descendants a term representing a Java object.
+  Some examples follow:
+</p>
+  
+  
+  <div class="divList">
+  <ul>
+	<li><code>term(R)</code>: <code>R</code> is the default conversion to a term of the returned object.</li>
+	<li><code>jserialized(R)</code>: <code>R</code> is a term representation of the serialisation of the returned object.</li>
+	<li><code>jref(R)</code>: <code>R</code> is an opaque term representation of a Java reference. The reference remains valid as long as the term exists somewhere in the Prolog database.</li>
+	<li><code>weak(jref(R))</code>: <code>R</code> is an opaque term representation of a Java reference. The reference remains valid as long as the reference is not garbage-collected on the Java world.</li>
+	<li><code>strong(jref(R))</code>: <code>R</code> is an opaque term representation of a Java reference. The reference remains valid as long as the reference representation is not explicitly forgotten.</li>
+  </ul>
+  </div>
+  
+  
+  
+  
   <h2>Compatibility</h2> 
 
   <p>
