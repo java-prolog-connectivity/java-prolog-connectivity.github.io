@@ -162,72 +162,6 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{279.47704925437341, 150.22834766549386}, {129.4147309247661, 17}}</string>
-			<key>Class</key>
-			<string>ShapedGraphic</string>
-			<key>FitText</key>
-			<string>Clip</string>
-			<key>Flow</key>
-			<string>Clip</string>
-			<key>FontInfo</key>
-			<dict>
-				<key>Color</key>
-				<dict>
-					<key>b</key>
-					<string>0.0745098</string>
-					<key>g</key>
-					<string>0.0745098</string>
-					<key>r</key>
-					<string>0.0745098</string>
-				</dict>
-				<key>Font</key>
-				<string>Helvetica</string>
-				<key>Size</key>
-				<real>12</real>
-			</dict>
-			<key>ID</key>
-			<integer>58</integer>
-			<key>Magnets</key>
-			<array>
-				<string>{1, 1}</string>
-				<string>{1, -1}</string>
-				<string>{-1, -1}</string>
-				<string>{-1, 1}</string>
-				<string>{0, 1}</string>
-				<string>{0, -1}</string>
-				<string>{1, 0}</string>
-				<string>{-1, 0}</string>
-				<string>{-0.5, -0.233518}</string>
-				<string>{-0.49144199, 0.26006298999999999}</string>
-				<string>{0.50711799000000002, -0.22408600000000001}</string>
-				<string>{0.50711799000000002, 0.26717900999999999}</string>
-				<string>{-0.27430999, -0.47402799000000001}</string>
-				<string>{0.27977999999999997, -0.47847801000000001}</string>
-				<string>{0.29393801000000003, 0.54304397000000004}</string>
-				<string>{-0.28623198999999999, 0.55380397999999997}</string>
-			</array>
-			<key>Shape</key>
-			<string>Rectangle</string>
-			<key>Style</key>
-			<dict>
-				<key>shadow</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-			</dict>
-			<key>Text</key>
-			<dict>
-				<key>Align</key>
-				<integer>0</integer>
-				<key>VerticalPad</key>
-				<integer>0</integer>
-			</dict>
-			<key>TextPlacement</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>Bounds</key>
 			<string>{{150.06231832960731, 150.22834766549386}, {129.4147309247661, 17}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
@@ -618,7 +552,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{279.52295074562659, 167.22834766549386}, {129.4147309247661, 32}}</string>
+			<string>{{279.52295074562659, 150.22834766549386}, {129.4147309247661, 49.000000000000028}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -682,10 +616,10 @@
 {\colortbl;\red255\green255\blue255;\red19\green19\blue19;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\slleading40
 
-\f0\fs24 \cf2 experience/1
+\f0\fs24 \cf2 \
+experience/1
 \f1 \cf0 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\slleading40
-\cf0 \ul salary/1}</string>
+\ul salary/1}</string>
 				<key>VerticalPad</key>
 				<integer>0</integer>
 			</dict>
@@ -808,7 +742,7 @@
 {\colortbl;\red255\green255\blue255;\red19\green19\blue19;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\slleading40
 
-\f0\fs24 \cf0 \ul \ulc0 int experience()\cf0 \ulnone \
+\f0\fs24 \cf0 \ul \ulc0 int experience()\ulnone \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\slleading40
 
 \f1 \cf2 int salary()}</string>
@@ -980,7 +914,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2014-08-19 13:37:04 +0000</string>
+	<string>2014-08-19 16:24:51 +0000</string>
 	<key>Modifier</key>
 	<string>Sergio Castro</string>
 	<key>NotesVisible</key>
