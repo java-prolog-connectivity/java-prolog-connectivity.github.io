@@ -125,11 +125,18 @@
 
   <p>
   Non-trivial applications can profit from implementing their components in the language that is most appropriate for expressing them
-  <sup> <a rel="footnote" href="#fn:Cale01">3</a> </sup> <sup> <a rel="footnote" href="#fn:2014-jelia-calejo">4</a> </sup> <sup> <a rel="footnote" href="#fn:conf/lpe/WielemakerA02">5</a> </sup>
-  <sup> <a rel="footnote" href="#fn:DHondt2004">6</a> </sup> <sup> <a rel="footnote" href="#fn:Mernik:2005:DDL:1118890.1118892">7</a> </sup> <sup> <a rel="footnote" href="#fn:Omicini:1994fk">8</a> </sup>.
+  <sup> <a rel="footnote" href="#fn:Cale01">3</a> </sup> 
+  <sup> <a rel="footnote" href="#fn:2014-jelia-calejo">4</a> </sup> 
+  <sup> <a rel="footnote" href="#fn:conf/lpe/WielemakerA02">5</a> </sup>
+  <sup> <a rel="footnote" href="#fn:Mernik:2005:DDL:1118890.1118892">7</a> </sup>
+  <sup> <a rel="footnote" href="#fn:DHondt2004">8</a> </sup>.
+
+
 
   However, integrating modules written in different languages is not trivial when such languages belong to different paradigms
-  <sup> <a rel="footnote" href="#fn:Brichau02towardslinguistic">9</a> </sup> <sup> <a rel="footnote" href="#fn:Gybels2003">10</a> </sup>.
+  <sup> <a rel="footnote" href="#fn:Omicini:1994fk">9</a> </sup>
+  <sup> <a rel="footnote" href="#fn:Brichau02towardslinguistic">10</a> </sup> 
+  <sup> <a rel="footnote" href="#fn:Gybels2003">11</a> </sup>.
   </p>
 
   <p>
@@ -148,7 +155,7 @@
 
   <p>
   At the core of our approach lies an extensible and fine-grained mechanism for mapping between artefacts in the Prolog and Java wold.
-  A concrete implementation of it is provided by means of the <a href="http://java-prolog-connectivity.github.com/" title="The JPC library">JPC</a> (Java-Prolog Connectivity) library.
+  A concrete implementation is provided by means of the <a href="http://java-prolog-connectivity.github.com/" title="The JPC library">JPC</a> (Java-Prolog Connectivity) library.
   </p>
   
   <p>
@@ -225,8 +232,9 @@ list = jpc.fromTerm(listTerm, type); //list of integers</pre></div>
 
   <p>
   A conversion context can be extended with custom converters.
+  A converter is just a class implementing the <code>FromTermConverter</code> and/or <code>ToTermConverter</code> interfaces.
   When registered into a conversion context, a converter adds to the pre-defined conversions a new mapping of artefacts.
-  As an example, consider the simple converter below:
+  As an example, consider a converter that knows how to convert a Prolog term to an instance of the <code>Person</code> class:
   </p>
 
 <div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
@@ -240,8 +248,7 @@ public class PersonConverter implements FromTermConverter&lt;Compound, Person&gt
 }</pre></div>
 
   <p>
-  This converter knows how to convert a Prolog term to an instance of the <code>Person</code> class.
-  The following example illustrates how a custom conversion context extended with the <code>PersonConverter</code> can be employed to facilitate the interpretation of a query result as a Java object with a minimum anount of code:
+  The following code snippet illustrates how a custom conversion context extended with the <code>PersonConverter</code> can be employed to facilitate the interpretation of a query result as a Java object with a minimum anount of code:
   </p>
 
 
@@ -445,14 +452,18 @@ person(mary)::experience return(term(E)). %return value specified by means of th
   	Object-Oriented Software Construction. Meyer, B. Prentice-Hall, Inc. 1988.
   </li>
   
-  <li id="fn:DHondt2004">
-  	Seamless integration of rule-based knowledge and object-oriented functionality with linguistic symbiosis. D'Hondt, M., Gybels, K. and Jonckers, V. Proceedings of the 2004 ACM symposium on Applied computing. New York, USA. 2004.
-  </li>
-  
   <li id="fn:Mernik:2005:DDL:1118890.1118892">
   	When and How to Develop Domain-specific Languages. Mernik, M, Heering, J. and Sloane, A. M. ACM Comput. Surv. V. 37, N. 4, Pages 316-344. New York, USA. December 2005.
   </li>
   
+  <li id="fn:DHondt2004">
+  	Seamless integration of rule-based knowledge and object-oriented functionality with linguistic symbiosis. D'Hondt, M., Gybels, K. and Jonckers, V. Proceedings of the 2004 ACM symposium on Applied computing. New York, USA. 2004.
+  </li>
+  
+  <li id="fn:Omicini:1994fk">
+  	Object-oriented computations in logic programming. Omicini, A. and Natali, A. Object-Oriented Programming. Lecture Notes in Computer Science. V. 821, Pages 194-212. 1994.
+  </li>
+
   <li id="fn:Brichau02towardslinguistic">
   	Towards Linguistic Symbiosis of an Object-Oriented and a Logic Programming Language. Brichau, J. Gybels, K and Wuyts, R. In Jörg Striegnitz, Kei Davis, and Yannis Smaragdakis, editors, Proceedings of the Workshop on Multiparadigm Programming with Object-Oriented Languages. 2002.
   </li>
