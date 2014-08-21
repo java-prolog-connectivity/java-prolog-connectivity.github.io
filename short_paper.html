@@ -58,7 +58,13 @@
 
   <div style="text-align: center">
 
+	<div><h1 style="margin: 0.4em 0 0.2em 0;">LogicObjects: Enabling the Automatic Integration of Hybrid Java-Prolog Entities</h1></div>
+	<!-- 
+    <div><h1 style="margin: 0.4em 0 0.2em 0;">LogicObjects: Towards the Automatic Integration of Hybrid Java-Prolog Entities</h1></div>
+	-->
+	<!-- 
     <div><h1 style="margin: 0.4em 0 0.2em 0;">An Automatic Integration Approach for Java and Prolog <br/> based on Inter-Language Conversions</h1></div>
+	-->
     <div>
       Sergio Castro <sup> <a rel="footnote" href="#fn:ucl">1</a> </sup>, 
       Kim Mens <sup> <a rel="footnote" href="#fn:ucl">1</a> </sup> and 
@@ -124,16 +130,15 @@
   </p>
 
   <p>
-  Non-trivial applications can profit from implementing their components in the language that is most appropriate for expressing them
+  Non-trivial applications can profit from implementing their components, or distinct routines of the same entity, in the language that is most appropriate for expressing them
   <sup> <a rel="footnote" href="#fn:Cale01">3</a> </sup> 
   <sup> <a rel="footnote" href="#fn:2014-jelia-calejo">4</a> </sup> 
-  <sup> <a rel="footnote" href="#fn:conf/lpe/WielemakerA02">5</a> </sup>
   <sup> <a rel="footnote" href="#fn:Mernik:2005:DDL:1118890.1118892">7</a> </sup>
   <sup> <a rel="footnote" href="#fn:DHondt2004">8</a> </sup>.
 
 
 
-  However, integrating modules written in different languages is not trivial when such languages belong to different paradigms
+  However, the integration of programs written in different languages is not trivial when such languages belong to different paradigms
   <sup> <a rel="footnote" href="#fn:Omicini:1994fk">9</a> </sup>
   <sup> <a rel="footnote" href="#fn:Brichau02towardslinguistic">10</a> </sup> 
   <sup> <a rel="footnote" href="#fn:Gybels2003">11</a> </sup>.
@@ -194,7 +199,7 @@ Jpc jpc = builder.build(); // a default conversion context</pre></div>
 
   <p>
   Once a conversion context has been instantiated, it can be employed to convert between Java and Prolog artefacts.
-  By default, a conversion context can accomplish common conversions (e.g., conversions between primitives) without a further configuration.
+  By default, a conversion context can accomplish common conversions (e.g., conversions between primitives) without further configuration.
   Some of these pre-defined conversions are shown below:
   </p>
 
