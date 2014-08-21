@@ -1,0 +1,315 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>The London Underground Case Study</title>
+
+	<link rel="stylesheet" href="/styles/publication/sc.tutorial.css" />
+	<link rel="stylesheet" href="/styles/publication/sc.tooglejs.css" />
+
+	<script type="text/javascript" src="/js/jquery.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/js/ace-builds/src-noconflict/ace.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/publication/jquery.tableofcontents.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/js/publication/jquery.sc.publication.js" charset="utf-8"></script>
+    
+    <script type="text/javascript">//<![CDATA[
+  (function ($) {
+    $(document).ready(function(){
+		
+      $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
+      $.prettifyCodeSnippets("eclipse");
+      //$.prettifyCodeSnippets("solarized_light");
+      $.configureFootnotes();
+
+    })
+
+  })(jQuery);
+
+
+//]]></script>
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-47515052-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</head>
+
+
+
+
+
+<body>
+
+
+<h1>The MapQuery Case Study</h1>
+
+
+<div id="table_of_content">
+  <strong>Contents</strong>
+  <ol id="table_of_content_entries"></ol>
+</div>
+
+
+
+<div id="content">
+
+<h2>Before Starting</h2> 
+
+<p>
+This section illustrates a case study showing how to interact with Java from Prolog.
+It requires a basic understanding of <a href="http://logtalk.org/manuals/index.html" title="Logtalk Manuaks">Logtalk</a>.
+
+In order to download and install this example please refer to the <a href="/installation_guide.html#installingJpcExamples" title="JPC installation guide">JPC installation guide</a>.
+</p>
+	
+
+<h2>Introduction</h2> 
+
+<p>
+Our case study addresses a typical problem that can be implemented easily with a logic language: a querying system about subway lines and stations. 
+It has been adapted from the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical. Intelligent Reasoning by Example.">Simply Logical</a> book by <a href="https://www.cs.bris.ac.uk/~flach/index.html" title="Peter Flach">Peter Flach</a>.
+This document describes both a concrete implementation in the Prolog side (using Logtalk) and a set of Java interfaces that model the domain artifacts in the Java side.
+</p>
+
+<p>
+The main entities of our example are shown in figure 1:
+These are: subway stations, subway lines connecting those stations and the subway itself (referred as <code>metro</code> in the figure).
+Relevant relations between these entities are:
+</p>
+
+<div class="divList">
+<ul>
+	<li><code>Connected stations</code>: Stations are <code>connected</code> to other stations by subway lines.</li>
+	<li><code>Nearby stations</code>: A station is <code>nearby</code> another one if there is at most one station in between.</li>
+	<li><code>Reachable stations</code>: A station <code>A</code> is <code>reachable</code> from another station <code>B</code> if there exists a list of stations <code>L</code> that form a path going from <code>B</code> to <code>A</code>.</li>
+</ul>
+</div>
+
+
+
+
+<div class="divImg">
+  <img src="img/examples/london_underground.png" alt="The London Underground." style="padding-bottom:0.5em;" height="400" />
+  <div id="imglabel:london_underground" >Fig 1. - The London Underground (adapted from the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical book">Simply Logical</a> book).</div>
+</div>
+
+<h2>The Logtalk Entities</h2> 
+
+<p>
+The first stage of the problem consists in expressing our knowledge about the London Underground as a set of logic statements. 
+Instead of implementing it in plain Prolog as in the <a href="https://www.cs.bris.ac.uk/~flach/SimplyLogical.html" title="Simply Logical. Intelligent Reasoning by Example.">original example</a>, we introduce an interesting variation: we use Logtalk, a portable object-oriented layer on top of Prolog.
+</p>
+
+<p>
+In the rest of this section we overview how the <a href="/jpc.examples/logtalkdocs/underground_example/" title="The Underground System Entities in Logtalk">artifacts in our example</a> are modelled as <a href="http://logtalk.org/manuals/userman/objects.html" title="Logtalk objects">Logtalk objects</a>.
+Figure 2 shows an overview of such objects and their dependencies.
+</p>
+
+
+<div class="divImg">
+  <img src="/jpc.examples/logtalkdocs/underground_example/metro_lib_entity_diagram.svg" alt="The Logtalk entity diagram." style="padding-bottom:0.5em;" height="800" />
+  <div id="imglabel:london_underground" >Fig 2. - The Logtalk entities diagram for the London underground example.</div>
+</div>
+
+
+<h3>The <code>metro</code> Logtalk Object</h3> 
+
+<p>
+The <a href="/jpc.examples/logtalkdocs/underground_example/metro_0.html" title="The metro/0 Logtalk object"><code>metro/0</code></a> object encapsulates the knowledge about how stations are connected (e.g., the <code>connected/3</code> predicate).
+Note that the <code>connected/3</code> predicate is declared as <a href="http://logtalk.org/manuals/refman/directives/dynamic_1.html" title="The dynamic/1 directive">dynamic</a> (line 7) since new connections can be configured at runtime.
+Plus the rules for the logic predicates <code>nearby/2</code>, <code>reachable/3</code>, <code>line/1</code> and <code>remove_all/0</code>. 
+The messages (queries) that the metro object can respond to are specified by the <code>public/1</code> directive (lines 3-5). <a href="http://logtalk.org/manuals/userman/messages.html" title="Logtalk messages">Messages in Logtalk</a> are sent using the <code>::/2</code> operator, as illustrated on line 23 for the <a href="http://logtalk.org/library/listp_0.html#member/2" title="The member/2 predicate at the Listp protocol"><code>member/2</code></a> method.
+</p>
+
+
+
+
+<p><pre data-editor="prolog" data-show-gutter="true">
+:- object(metro).
+
+	:- public([
+		connected/3, nearby/2, reachable/3, line/1, remove_all/0
+	]).
+
+    :- dynamic(connected/3).
+
+	nearby(Station1, Station2) :-
+		connected(Station1, Station2, _).
+	nearby(Station1, Station2) :-
+		connected(Station1, IntermediateStation, Line),
+		connected(IntermediateStation, Station2, Line).
+
+	reachable(Station1, Station2, []) :-
+		connected(Station1, Station2, _).
+	reachable(Station1, Station2, [IntermediateStation| IntermediateStations]) :-
+		connected(Station1, IntermediateStation, _),
+		reachable(IntermediateStation, Station2, IntermediateStations).
+
+	line(Name) :-
+		setof(Line, Station1^Station2^connected(Station1,Station2,Line), AllLines),
+		list::member(line(Name), AllLines).
+
+    remove_all :-
+		metro::retractall(connected(_,_,_)).
+    
+:- end_object.</pre></p>
+
+
+
+
+<h3>The <code>line</code> Logtalk Object</h3> 
+
+<p>
+A subway line is modelled by the Logtalk <a href="http://logtalk.org/manuals/userman/features.html#features_parametric" title="Logtalk parametric objects"> parametric object</a> <a href="/jpc.examples/logtalkdocs/underground_example/line_1.html" title="The line/1 Logtalk object"><code>line/1</code></a>.
+The object parameter denotes the name of the line.
+It provides predicates answering connected stations by means of the line object (e.g., <code>connects/2</code>).
+In addition, it allows a programmer to declare new connections between stations by means of the line object (e.g., <code>add_connection/2</code>).
+These predicates delegate to the <code>metro</code> Logtalk object.
+</p>
+
+<p><pre data-editor="prolog" data-show-gutter="true">
+:- object(line(_Name)).
+
+	:- public([
+		name/1, connects/2, add_connection/2
+	]).
+
+	name(Name) :-
+		parameter(1, Name).
+
+	connects(Station1, Station2) :-
+		self(Self),
+		metro::connected(Station1, Station2, Self).
+
+	add_connection(Station1, Station2) :-
+		self(Self),
+		metro::assertz(connected(Station1, Station2, Self)).
+
+:- end_object.</pre></p>
+
+
+
+<h3>The <code>station</code> Logtalk Object</h3> 
+
+<p>
+A subway station is modelled by the Logtalk <a href="http://logtalk.org/manuals/userman/features.html#features_parametric" title="Logtalk parametric objects">parametric object</a> <a href="/jpc.examples/logtalkdocs/underground_example/station_1.html" title="The station/1 Logtalk object"><code>station/1</code></a>.
+The object parameter denotes the name of the station.
+It provides predicates answering stations connected to this line (e.g., <code>connected/1</code> and <code>connected/2</code>), stations that are nearby this station (e.g., <code>nearby/1</code>) and stations that are reachable from this station (e.g., <code>reachable/1</code> and <code>reachable/2</code>).
+These predicates delegate to the <code>metro</code> Logtalk object.
+</p>
+
+<p><pre data-editor="prolog" data-show-gutter="true">
+:- object(station(_Name)).
+
+	:- public([
+		name/1, connected/1, connected/2, nearby/1, reachable/1, reachable/2
+	]).
+
+	name(Name) :-
+		parameter(1, Name).
+
+	connected(Station) :-
+		connected(Station, _).
+
+	connected(Station, L) :-
+		self(Self),
+		metro::connected(Self, Station, L).
+
+	nearby(Station) :-
+		self(Self),
+		metro::nearby(Self, Station).
+
+	reachable(Station) :-
+		reachable(Station, _).
+
+	reachable(Station, IntermediateStations) :-
+		self(Self),
+		metro::reachable(Self, Station, IntermediateStations).
+	
+:- end_object.</pre></p>
+
+
+
+
+
+<h3>The Logtalk Loader File</h3> 
+
+<p>
+Typically Logtalk libraries are loaded by means of a loader file.
+This file contains one or more <a href="http://logtalk.org/manuals/refman/predicates/logtalk_load_1.html" title="The logtalk_load/1 predicate"><code>logtalk_load/1</code></a> predicates loading the distinct required entities.
+Assuming these entities are defined in files named <code>metro.lgt</code>, <code>station.lgt</code> and <code>line.lgt</code>, the following script will load our library:
+</p>
+
+<p><pre data-editor="prolog" data-show-gutter="true">
+:- initialization((
+	logtalk_load(library(types_loader)),
+	logtalk_load([metro, station, line])
+)).</pre></p>
+
+<p>
+In addition to load the main entities of the library, the loader also loads depending entities (e.g., the <code>types</code> library is loaded in line 2).
+</p>
+
+<h3 id="configuringUndergroundStructure">Configuring the Underground Structure</h3> 
+
+<p>
+The previous Logtalk entities implements the logic of our application.
+However, they do not define concrete stations, lines and their relations.
+For this example, we make use of a separate file that contains directives loading some test data.
+This file should be loaded at runtime by means of the <a href="http://logtalk.org/manuals/refman/predicates/logtalk_load_1.html" title="The logtalk_load/1 predicate"><code>logtalk_load/1</code></a> predicate previously discussed.
+The content of this data-loading file is shown below:
+</p>
+
+
+<p><pre data-editor="prolog" data-show-gutter="true">
+:- initialization((
+	line(central)::add_connection(station(bond_street),station(oxford_circus)),
+	line(central)::add_connection(station(oxford_circus),station(tottenham_court_road)),
+	line(jubilee)::add_connection(station(bond_street),station(green_park)),
+	line(jubilee)::add_connection(station(green_park),station(charing_cross)),
+	line(piccadilly)::add_connection(station(green_park),station(piccadilly_circus)),
+	line(piccadilly)::add_connection(station(piccadilly_circus),station(leicester_square)),
+	line(victoria)::add_connection(station(green_park),station(oxford_circus)),
+	line(bakerloo)::add_connection(station(oxford_circus),station(piccadilly_circus)),
+	line(bakerloo)::add_connection(station(piccadilly_circus),station(charing_cross)),
+	line(northern)::add_connection(station(tottenham_court_road),station(leicester_square)),
+	line(northern)::add_connection(station(leicester_square),station(charing_cross))
+)).</pre></p>
+
+
+<h2>The Java Entities</h2> 
+
+<p>
+In the <a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/package-summary.html" title="Java side documentation">Java side</a>, we define the 
+<a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Metro.html" title="The Metro class"><code>Metro</code></a>,
+<a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Line.html" title="The Line class"><code>Line</code></a> and 
+<a href="/jpc.examples/javadocs/org/jpc/examples/metro/model/Station.html" title="The Station class"><code>Station</code></a> 
+interfaces in correspondence with the <a href="/jpc.examples/logtalkdocs/underground_example/" title="The Underground System Entities in Logtalk">Logtalk entities</a> described before, as illustrated by figure 3 (not all methods are shown).
+</p>
+
+
+<div class="divImg">
+  <img src="img/examples/interaction.svg" alt="Java-Prolog interaction." style="padding-bottom:0.5em;" height="300" />
+  <div id="imglabel:london_underground" >Fig 3. - Java Prolog interaction.</div>
+</div>
+
+
+
+</div> <!-- end of content -->
+
+    
+
+</body>
+</html>
