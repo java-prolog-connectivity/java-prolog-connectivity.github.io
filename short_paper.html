@@ -405,17 +405,19 @@ System.out.println("Salary: " + person.salary()); //automatic delegation to Prol
 
   <p>
   If the return value of a Java method is required on the Prolog side, distinct mechanisms are available, all of them relying on the notion of a <emph>return specifier</emph>.
-  The following Logtalk method invocations are equivalent:
+  A return specifier is a compound term assigning a semantics to the value returned from a Java method.
+  The following Logtalk method invocations are equivalent, all of them employing the <code>term(ReturnedValue)</code> return specifier:
   </p>
   
 <div class="codeEditor"><pre data-editor="prolog" data-show-gutter="true">
 person(mary)::experience(return(term(E))). %return value specified as an argument of the method.
-jobject(person(mary), return(term(E)))::experience. %return value specified as an argument of the jobject/2 Logtalk object.
+jobject(person(mary), term(E))::experience. %return value specified as an argument of the jobject/2 Logtalk object.
 person(mary)::experience return(term(E)). %return value specified by means of the return operator.</pre></div>
   
   <p>
-  A return specifier assigns a semantics to a Java method returned value in Prolog. It consists of a compound term wrapping as one of its descendants a term representing a Java object.
-  Some examples follow:
+  In the previous example, the object returned from the Java routine will be converted to a term according to the default JPC conversion context.
+  However, several possible ways of interpreting this return value are possible by means of choosing other return specifiers.
+  The following list describes some of the most important ones:
 </p>
   
   
@@ -430,7 +432,7 @@ person(mary)::experience return(term(E)). %return value specified by means of th
   </div>
 
 
-
+<!-- 
   <h2>Compatibility</h2> 
  
   <p>
@@ -444,7 +446,7 @@ person(mary)::experience return(term(E)). %return value specified by means of th
   <a href="http://www.declarativa.com/interprolog/" title="InterProlog: a Java front-end and enhancement for Prolog">InterProlog</a> 
   libraries. 
   </p>
-  
+  -->
   
   
   <h2>Conclusions</h2> 
@@ -461,7 +463,17 @@ person(mary)::experience return(term(E)). %return value specified by means of th
   </p>
 
   <p>
-	 We hope that both the JPC and LogicObjects libraries will be useful to the Prolog and Java community. In this spirit, we are releasing our work as <a href="https://github.com/java-prolog-connectivity/" title="JPC at GitHub">open-source software</a>.
+	  JPC and LogicObjects are currently compatible with 
+	  <a href="http://www.swi-prolog.org/" title="SWI Prolog">SWI</a>, 
+	  <a href="http://www.dcc.fc.up.pt/~vsc/Yap/" title="YAP Prolog">YAP</a> and 
+	  <a href="http://xsb.sourceforge.net/" title="XSB Prolog">XSB</a> 
+	  Prolog by means of drivers developed on top of the 
+	  <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a>, 
+	  <a href="http://sewiki.iai.uni-bonn.de/research/pdt/developers/cookbook/standalone_prolog_connector" title="Standalone PDT connector">PDT Connector</a> and 
+	  <a href="http://www.declarativa.com/interprolog/" title="InterProlog: a Java front-end and enhancement for Prolog">InterProlog</a> 
+	  libraries.
+  
+	 We hope that both JPC and LogicObjects will be useful to the Prolog and Java community. In this spirit, we are releasing our work as <a href="https://github.com/java-prolog-connectivity/" title="JPC at GitHub">open-source software</a>.
   </p>
 
 
