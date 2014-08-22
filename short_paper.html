@@ -346,16 +346,40 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
   The <code>@LMethod</code> annotation on line 7 provides mapping information regarding a specific routine.
   In this case, the <code>salary()</code> Java method is mapped to a predicate having the same name.
   As arguments, it will have the unbound logic variable <code>LSolution</code>.
-  Therefore, an invocation of the <code>salary()</code> method on a person with name <code>"mary"</code> will be interpreted as querying the Prolog goal <code>person(mary)::salary(LSolution)</code>.
+  Therefore, an invocation of the <code>salary()</code> method on a person with name <code>"mary"</code> will be interpreted as querying the Prolog goal:
+  
+  
+  <div class="codeEditor"><pre data-editor="prolog" data-show-gutter="false">
+person(mary)::salary(LSolution).</pre></div>
+  
+  
+  
+  
+  Where <code>person(mary)</code> corresponds to the conversion to a term of the receiver of the message (an instance of <code>Person</code>), <code>salary(LSolution)</code> is the conversion to a predicate of the method <code>salary()</code> and <code><a href="http://logtalk.org/manuals/userman/messages.html" title="Logtalk message sending operator">::</a></code> is the message sending operator in Logtalk.
   </p>
   
   
   
   <p>
   LogicObjects provides several heuristics for determining the return value in Java of a routine implemented on the Prolog side.
-  One of them consists of inspecting the names of the unbound logic variables. In case it encounters an occurrence of a variable named <code>LSolution</code>, it will consider as the return value of the method the conversion to a Java object of the term bound to that variable. 
-  Also note that by default a query is interpreted as deterministic. Hence, only its first solution is considered. However, this can be customised by means of other Java annotations (e.g., to compose all the solutions in a container such as an instance of <code>java.util.List</code>).
+  One of them consists of inspecting the names of the unbound logic variables. In case it encounters an occurrence of a variable named <code>LSolution</code> (line 7), it will consider as the return value of the method the conversion to a Java object of the term bound to that variable. 
+  Also note that by default a query is interpreted as deterministic. Hence, only its first solution is considered. However, this can be customised by means of other Java annotation (e.g., to compose all the solutions in a container such as an instance of <code>java.util.List</code>).
   </p>
+  
+  <p>
+  In addition to the <code>@LObject</code> and <code>@LMethod</code> annotations illustrated in the <code>Person</code> class, other useful annotations are:
+  </p>
+  
+  <div class="divList">
+  <ul>
+	<li><code>@LSolution</code>: Allows to specify the term representation of the object to return.</li>
+	<li><code>@LComposition</code>: If present, all solutions will be composed into one single object.</li>
+	<li><code>@LQuery</code>: Allows to map a method to an arbitrary query.</li>
+  </ul>
+  </div>
+  
+  However, we have left a detailed explanation of these annotations outside the scope of this short article.
+  
   
   <p>
   An instance of the <code>Person</code> class can be obtained by means of the static method <code>LogicObjects.newLogicObject</code>, as shown in the following code snippet:
@@ -368,20 +392,6 @@ import static org.logicobjects.newLogicObject;
 
 Person person = newLogicObject(Person.class, "mary");
 System.out.println("Salary: " + person.salary()); //automatic delegation to Prolog</pre></div>
-
-  <p>
-  In addition to the <code>@LObject</code> and <code>@LMethod</code> annotations illustrated in the <code>Person</code> class, there are other useful annotations such as:
-  </p>
-  
-  <div class="divList">
-  <ul>
-	<li><code>@LSolution</code>: Allows to specify the term representation of the object to return.</li>
-	<li><code>@LComposition</code>: If present, all solutions will be composed into one single object.</li>
-	<li><code>@LQuery</code>: Allows to map a method to an arbitrary query.</li>
-  </ul>
-  </div>
-  
-  However, we have left a detailed explanation of these annotations outside the scope of this short article.
   
 
   <h3>Integration from the Prolog Perspective</h3> 
