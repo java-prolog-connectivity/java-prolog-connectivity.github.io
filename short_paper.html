@@ -350,9 +350,7 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
   
   
   <div class="codeEditor"><pre data-editor="prolog" data-show-gutter="false">
-person(mary)::salary(LSolution).</pre></div>
-  
-  
+person(mary)::salary(LSolution)</pre></div>
   
   
   Where <code>person(mary)</code> corresponds to the conversion to a term of the receiver of the message (an instance of <code>Person</code>); <code>salary(LSolution)</code> is the conversion to a predicate of the method <code>salary()</code> and <code><a href="http://logtalk.org/manuals/userman/messages.html" title="Logtalk message sending operator">::</a></code> is the message sending operator in Logtalk.
@@ -363,7 +361,7 @@ person(mary)::salary(LSolution).</pre></div>
   <p>
   LogicObjects provides several heuristics for determining the return value in Java of a routine implemented on the Prolog side.
   One of them consists of inspecting the names of the unbound logic variables. In case it encounters an occurrence of a variable named <code>LSolution</code> (line 7), it will consider as the return value of the method the conversion to a Java object of the term bound to that variable. 
-  Also note that by default a query is interpreted as deterministic. Hence, only its first solution is considered. However, this can be customised by means of other Java annotation (e.g., to compose all the solutions in a container such as an instance of <code>java.util.List</code>).
+  Also note that by default a query is interpreted as deterministic. Hence, only its first solution is considered. However, this can be customised by means of other Java annotation (e.g., to compose all the solutions in a container object such as an instance of <code>java.util.List</code>).
   </p>
   
   <p>
@@ -374,7 +372,7 @@ person(mary)::salary(LSolution).</pre></div>
   <ul>
 	<li><code>@LComposition</code>: If present, all solutions will be composed into one single object.</li>
 	<li><code>@LSolution</code>: Allows to specify the term representation of an object corresponding to a single solution.</li>
-	<li><code>@LQuery</code>: Allows to map a method to an arbitrary query.</li>
+	<li><code>@LQuery</code>: Allows to map a Java method to an arbitrary Prolog query.</li>
   </ul>
   </div>
   
@@ -394,6 +392,7 @@ Person person = newLogicObject(Person.class, "mary");
 System.out.println("Salary: " + person.salary()); //automatic delegation to Prolog</pre></div>
   
 
+
   <h3>Integration from the Prolog Perspective</h3> 
 
   <p>
@@ -410,25 +409,56 @@ System.out.println("Salary: " + person.salary()); //automatic delegation to Prol
 
   <p>
   Any Logtalk object importing the <code>jobject</code> <a href="http://logtalk.org/manuals/userman/categories.html" title="Logtalk categories"> category</a> will delegate automatically to the Java side any message that it does not understand. 
-  For example, a Logtalk call <code>person(mary)::experience</code> will be interpreted in Java as <code>new Person("mary").experience()</code>.
+  For example, a Logtalk method call <code>person(mary)::experience</code> will be interpreted in Java as:
+
+
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="false">
+new Person("mary").experience()</pre></div>   
+
+
+Where <code>new Person("mary")</code> corresponds to the conversion to a Java object of the term <code>person(mary)</code> and the method <code>experience()</code> the looked up method when receiving a message with the same name on the logic side.
+
   </p>
 
+
   <p>
-  If the return value of a Java method is required on the Prolog side, distinct mechanisms are available, all of them relying on the notion of a <emph>return specifier</emph>.
-  A return specifier is a compound term assigning a semantics to the value returned from a Java method.
-  The following Logtalk method invocations are equivalent, all of them employing the <code>term(ReturnedValue)</code> return specifier:
+  Java methods returning values impose a defiance to the transparency of our approach.
+  While returning values is a natural concept in Java, it does not exist in Prolog.
+  Therefore, an important problem to solve is how a programmer can specify that a Java method return value is required on the Prolog side.
+  We provide three different alternative mechanisms for this.
+  They are illustrated by means of the following equivalent message calls on the <code>person(mary)</code> Logtalk object: 
   </p>
   
-<div class="codeEditor"><pre data-editor="prolog" data-show-gutter="true">
-person(mary)::experience(return(term(E))). %return value specified as an argument of the method.
-jobject(person(mary), term(E))::experience. %return value specified as an argument of the jobject/2 Logtalk object.
-person(mary)::experience return(term(E)). %return value specified by means of the return operator.</pre></div>
+  <div class="codeEditor"><pre data-editor="prolog" data-show-gutter="true">
+  person(mary)::experience(return(ReturnSpecifier)). %return value specified as an argument of the method.
+  jobject(person(mary), ReturnSpecifier)::experience. %return value specified as an argument of the jobject/2 Logtalk object.
+  person(mary)::experience return(ReturnSpecifier). %return value specified by means of the return operator.</pre></div>
   
   <p>
-  In the previous example, the object returned from the Java routine will be converted to a term according to the default JPC conversion context.
-  However, several possible ways of interpreting this return value are possible by means of choosing other return specifiers.
-  The following list describes some of the most important ones:
-</p>
+  On line 1, the return value is part of the message sending. Arguments matching <code>return(_)</code> are ignored since they do not correspond to a Java method parameter, but to the Java method return value.
+  On line 2, the return value is an argument of the auxiliar Logtalk object <code>jobject/2</code>, which has as first argument the receiver of the message and the second argument corresponds to the return value.
+  This alternative has the advantage than the message sending does not require to be polluted with a return value.
+  As the last alternative on line 3, the return value is captured by means of the <code>return</code> operator. This has the advantage that the return value is not present as an argument neither of the receiver nor the message.
+  None of these approaches is perfect, since they make explicit the concept of a returned value on the Prolog side.
+  We believe, however, that giving several alternatives alleviate this problem to a certain extent.
+  </p>
+  
+  
+  <p>
+  Finally, note that the object returned from a Java method can be reified as a term in many different ways (e.g., a term containing the object serialisation data, or a simple numeric identifier pointing to a Java reference, etc). 
+  Therefore, an integration approach should not impose a single reification strategy.
+  We provide a solution to this problem by means of introducing the notion of a <emph>return specifier<emph>.
+  Then, the programmer can provide a term describing the meaning of the object returned from the Java world.
+  
+  </p>
+  
+  
+  <p>
+  For example, if we invoke the Java method <code>experience()</code> from the Prolog side, we should have written as the return specifier <code>term(R)</code>.
+  This means that the object returned from the Java method should be converted to a term according to the default JPC conversion context.
+  However, several possible ways of interpreting a return value are possible by means of choosing other return specifiers.
+  The following list describes some of them:
+  </p>
   
   
   <div class="divList">
@@ -440,7 +470,10 @@ person(mary)::experience return(term(E)). %return value specified by means of th
 	<li><code>strong(jref(R))</code>: <code>R</code> is an opaque term representation of a Java reference. The reference remains valid as long as the reference representation is not explicitly forgotten.</li>
   </ul>
   </div>
-
+  
+  <p>
+  We have left outside the scope of this article a complete description of all the possible return specifiers.
+  </p>
 
 <!-- 
   <h2>Compatibility</h2> 
@@ -481,8 +514,10 @@ person(mary)::experience return(term(E)). %return value specified by means of th
 	  <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a>, 
 	  <a href="http://sewiki.iai.uni-bonn.de/research/pdt/developers/cookbook/standalone_prolog_connector" title="Standalone PDT connector">PDT Connector</a> and 
 	  <a href="http://www.declarativa.com/interprolog/" title="InterProlog: a Java front-end and enhancement for Prolog">InterProlog</a> 
-	  libraries.
+	  libraries. We envision the development of native drivers and extended support for other Prolog engines in the short term.
+  </p>
   
+  <p>
 	 We hope that both JPC and LogicObjects will be useful to the Prolog and Java community. In this spirit, we are releasing our work as <a href="https://github.com/java-prolog-connectivity/" title="JPC at GitHub">open-source software</a>.
   </p>
 
