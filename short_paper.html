@@ -15,7 +15,7 @@
     <script type="text/javascript">//<![CDATA[
   (function ($) {
     $(document).ready(function(){
-		
+	  $('.JSOnlyContent').show();
       $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
       $.prettifyCodeSnippets("eclipse");
       //$.prettifyCodeSnippets("solarized_light");
@@ -100,7 +100,7 @@
 
 
 
-<div id="table_of_content">
+<div id="table_of_content" class="JSOnlyContent" style="display: none;">
   <strong>Contents</strong>
   <ol id="table_of_content_entries"></ol>
 </div>
@@ -273,7 +273,7 @@ public class PersonConverter implements FromTermConverter&lt;Compound, Person&gt
 
 <div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
 JpcBuilder builder = JpcBuilder.create().registerConverter(new PersonConverter(), 
-														   new Functor("person"), 1).asTerm()); //person(_)
+                                                           new Functor("person"), 1).asTerm()); //person(_)
 Jpc jpc = builder.build(); //custom conversion context
 //the term bound to P is automatically converted to an instance of the Person class
 Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectObject("P").oneSolutionOrThrow(); </pre></div>
