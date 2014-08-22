@@ -82,7 +82,7 @@
   
       <div id="fn:inescporto">
   	    (2)
-		<a title="Center for Research in Advanced Computing Systems" href="http://cracs.fc.up.pt/">Center for Research in Advanced Computing Systems</a>
+		<a title="Center for Research in Advanced Computing Systems" href="http://cracs.fc.up.pt/">Center for Research in Advanced Computing Systems</a>,
   	    <a title="INESC-TEC" href="http://www.inescporto.pt/">INESC-TEC</a>.
       </div>
 
@@ -127,7 +127,7 @@
   <!--However, it is often difficult to develop real-life applications with only a logic language-->
   <sup> <a rel="footnote" href="#fn:2014-jelia-calejo">3</a> 
   </sup> <sup> <a rel="footnote" href="#fn:conf/lpe/WielemakerA02">4</a> </sup>.
-  On the other hand, object-oriented languages have demonstrated their usefulness for modelling a wide range of concepts (e.g., user interfaces) found in many business scenarios 
+  On the other hand, object-oriented languages have demonstrated their usefulness for modelling a wide range of concepts (e.g., GUIs) found in many business scenarios 
   <sup> <a rel="footnote" href="#fn:Meyer:1988ys">5</a> </sup>.
   The availability of continuously growing software ecosystems around, widely used, modern object-oriented languages, including advanced IDEs and rich sets of libraries, has significantly contributed to their success.
   </p>
@@ -290,7 +290,7 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
   <p>
   The low-level inter-language conversion framework provided by JPC is a convenient building block for facilitating the implementation of more advanced integration libraries.
   LogicObjects is a high-level integration framework for Java and Prolog built on top of it.
-  It allows to define hybrid entities which partial implementations in Java and Prolog.
+  It allows to define hybrid entities with partial implementations in Java and Prolog.
   Although to a certain extent LogicObjects is compatible with plain Prolog, to get the best out of it, it is recommended to install on the Prolog side <a href="http://logtalk.org/" title="Logtalk: An open source object-oriented logic programming language">Logtalk</a>, an object-oriented layer for Prolog.
   </p>
 
@@ -367,9 +367,22 @@ import static org.logicobjects.newLogicObject;
 ...
 
 Person person = newLogicObject(Person.class, "mary");
-System.out.println("Salary: " + person.salary());</pre></div>
+System.out.println("Salary: " + person.salary()); //automatic delegation to Prolog</pre></div>
 
-
+  <p>
+  In addition to the <code>@LObject</code> and <code>@LMethod</code> annotations illustrated in the <code>Person</code> class, there are other useful annotations such as:
+  </p>
+  
+  <div class="divList">
+  <ul>
+	<li><code>@LSolution</code>: Allows to specify the term representation of the object to return.</li>
+	<li><code>@LComposition</code>: If present, all solutions will be composed into one single object.</li>
+	<li><code>@LQuery</code>: Allows to map a method to an arbitrary query.</li>
+  </ul>
+  </div>
+  
+  However, we have left a detailed explanation of these annotations outside the scope of this short article.
+  
 
   <h3>Integration from the Prolog Perspective</h3> 
 
@@ -386,8 +399,8 @@ System.out.println("Salary: " + person.salary());</pre></div>
 :- end_object.</pre></div>
 
   <p>
-  Any Logtalk object importing the <code>jobject</code> category, will delegate automatically to the Java side any message that it does not understood. 
-  For example, a Logtalk call <code>person(mary)::experience</code>, will be interpreted in Java as <code>new Person("mary").experience()</code>.
+  Any Logtalk object importing the <code>jobject</code> <a href="http://logtalk.org/manuals/userman/categories.html" title="Logtalk categories"> category</a> will delegate automatically to the Java side any message that it does not understand. 
+  For example, a Logtalk call <code>person(mary)::experience</code> will be interpreted in Java as <code>new Person("mary").experience()</code>.
   </p>
 
   <p>
