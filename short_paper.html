@@ -82,7 +82,8 @@
   
       <div id="fn:inescporto">
   	    (2)
-  	    <a title="Center for Research in Advanced Computing Systems" href="http://www.inescporto.pt/">Center for Research in Advanced Computing Systems, INESC-TEC</a>.
+		<a title="Center for Research in Advanced Computing Systems" href="http://cracs.fc.up.pt/">Center for Research in Advanced Computing Systems</a>
+  	    <a title="INESC-TEC" href="http://www.inescporto.pt/">INESC-TEC</a>.
       </div>
 
     </div> <!-- end of affiliations -->
@@ -120,14 +121,15 @@
   <h2>Introduction</h2> 
 
   <p>
-  Logic languages are convenient for reasoning over problems of declarative nature, such as expert and planning systems 
+  Logic languages excel for problems that can defined declaratively, such as applications that require symbolic computation such as expert and planning systems.
   <sup> <a rel="footnote" href="#fn:rus95">1</a> </sup> <sup> <a rel="footnote" href="#fn:Sterling:1994:APA:175753">2</a> </sup>.
-  However, it is often difficult to develop real-life applications with only a logic language
+  However, it is often difficult to develop complete applications that require e.g. GUIs, heavy numerical computations, or low-level operating-system and network access
+  <!--However, it is often difficult to develop real-life applications with only a logic language-->
   <sup> <a rel="footnote" href="#fn:2014-jelia-calejo">3</a> 
   </sup> <sup> <a rel="footnote" href="#fn:conf/lpe/WielemakerA02">4</a> </sup>.
   On the other hand, object-oriented languages have demonstrated their usefulness for modelling a wide range of concepts (e.g., user interfaces) found in many business scenarios 
   <sup> <a rel="footnote" href="#fn:Meyer:1988ys">5</a> </sup>.
-  The availability of continuously growing software ecosystems around modern object-oriented languages, including advanced IDEs and rich sets of libraries, has significantly contributed to their success.
+  The availability of continuously growing software ecosystems around, widely used, modern object-oriented languages, including advanced IDEs and rich sets of libraries, has significantly contributed to their success.
   </p>
 
   <p>
@@ -352,7 +354,7 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
   <p>
   LogicObjects provides several heuristics for determining the return value in Java of a routine implemented on the Prolog side.
   One of them consists of inspecting the names of the unbound logic variables. In case it encounters an occurrence of a variable named <code>LSolution</code>, it will consider as the return value of the method the conversion to a Java object of the term bound to that variable. 
-  Also Note that by default a query is interpreted as deterministic. Hence, only its first solution is considered. However, this can be customised by means of other Java annotations (e.g., to compose all the solutions in a container such as an instance of <code>java.util.List</code>).
+  Also note that by default a query is interpreted as deterministic. Hence, only its first solution is considered. However, this can be customised by means of other Java annotations (e.g., to compose all the solutions in a container such as an instance of <code>java.util.List</code>).
   </p>
   
   <p>
@@ -435,18 +437,18 @@ person(mary)::experience return(term(E)). %return value specified by means of th
   <h2>Conclusions</h2> 
 
   <p>
-  LogicObjects enable a fine-grained integration (i.e., at the entity level) of routines written in both Java and Prolog.
-  It is an example of the kind of advanced integration frameworks that can be built on top of the notion of inter-language conversions implemented by the JPC library.
+  LogicObjects enable a fine-grained integration (i.e., at the entity level) of routines written in Java and Prolog.
+  It is an example of the advanced integration frameworks that can be built on top of the notion of inter-language conversions implemented by the JPC library.
   </p>
   
   <p>
-  There are many other powerful JPC and LogicObjects features in addition to the ones described in this article.
-  Some of them are a broad set of heuristics for interpreting the solution to a Prolog query as a Java object, autoloading of Prolog artefacts or the automatic progragation and handling of inter-language exceptions.
+  There are other powerful JPC and LogicObjects features in addition to the ones described here.
+  Other features include a comprehensive set of heuristics for interpreting the solution to a Prolog query as a Java object, autoloading of Prolog artefacts, and the automatic progragation and handling of inter-language exceptions.
   A description of these and others advanced features can be found in the JPC and LogicObjects <a href="http://java-prolog-connectivity.github.com/" title="JPC and LogicObjects online documentation">documentation</a>.
   </p>
 
   <p>
-	 We hope that both the JPC and LogicObjects libraries will be useful to the Prolog and Java community. In this spirit, they are, and will remain, open-source software.
+	 We hope that both the JPC and LogicObjects libraries will be useful to the Prolog and Java community. In this spirit, we are releasing our work as <a href="https://github.com/java-prolog-connectivity/" title="JPC at GitHub">open-source software</a>.
   </p>
 
 
