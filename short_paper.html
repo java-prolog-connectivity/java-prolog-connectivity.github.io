@@ -121,15 +121,15 @@
   <h2>Introduction</h2> 
 
   <p>
-  Logic languages excel for problems that can defined declaratively, such as applications that require symbolic computation such as expert and planning systems.
+  Logic languages excel for problems that can be defined declaratively, such as applications that require symbolic computation (e.g., expert and planning systems).
   <sup> <a rel="footnote" href="#fn:rus95">1</a> </sup> <sup> <a rel="footnote" href="#fn:Sterling:1994:APA:175753">2</a> </sup>.
-  However, it is often difficult to develop complete applications that require e.g. GUIs, heavy numerical computations, or low-level operating-system and network access
+  However, it is often difficult to develop complete applications that require e.g. GUIs, heavy numerical computations, or low-level operating system and network access
   <!--However, it is often difficult to develop real-life applications with only a logic language-->
   <sup> <a rel="footnote" href="#fn:2014-jelia-calejo">3</a> 
   </sup> <sup> <a rel="footnote" href="#fn:conf/lpe/WielemakerA02">4</a> </sup>.
   On the other hand, object-oriented languages have demonstrated their usefulness for modelling a wide range of concepts (e.g., GUIs) found in many business scenarios 
   <sup> <a rel="footnote" href="#fn:Meyer:1988ys">5</a> </sup>.
-  The availability of continuously growing software ecosystems around, widely used, modern object-oriented languages, including advanced IDEs and rich sets of libraries, has significantly contributed to their success.
+  The availability of continuously growing software ecosystems around widely used modern object-oriented languages, including advanced IDEs and rich sets of libraries, has significantly contributed to their success.
   </p>
 
   <p>
@@ -161,7 +161,7 @@
   <h2>Preparing the Ground: Inter-Language Conversions with JPC</h2> 
 
   <p>
-  The core of our approach is built on top of an extensible and fine-grained mechanism for mapping artefacts between the Prolog and Java wolds: 
+  The core of our approach is built on top of an extensible and fine-grained mechanism for mapping artefacts between the Prolog and Java worlds: 
   the <a href="http://java-prolog-connectivity.github.com/" title="The JPC library">JPC</a> (Java-Prolog Connectivity) library.
   <!--
   A concrete implementation of this mechanism is provided by means of the <a href="http://java-prolog-connectivity.github.com/" title="The JPC library">JPC</a> (Java-Prolog Connectivity) library.
@@ -172,7 +172,7 @@
   <p>
   JPC's design has been inspired by a well-known library for accomplishing context-dependent conversions between Java and <a href="http://json.org/" title="JSON">JSON</a> artefacts: <a href="https://code.google.com/p/google-gson/" title="Google's Gson">Google's Gson</a> library.
   The goal of Gson is to provide an intuitive, minimalistic interface for facilitating the specification and execution of Java-JSON bidirectional conversions.
-  As part of our design philosohpy we extrapolete several design goals of Gson to our domain (i.e., Java-Prolog conversions), amongst others:
+  As part of our design philosophy we extrapolate several design goals of Gson to our domain (i.e., Java-Prolog conversions), amongst others:
   </p>
 
 
@@ -188,13 +188,13 @@
   </ul>
   </div>
 
-  <p>In the rest of this section we overview how JPC accomplish some of these goals.</p>
+  <p>In the rest of this section we overview how JPC accomplishes some of these goals.</p>
 
   <h3>Conversion Contexts</h3>
 
   <p>
   A conversion context is a scoped bidirectional conversion strategy reified by means of the <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> class.
-  Being encapsulated into an entity, multiple conversion contexts can be employed in the same program, facilitating the co-existance of different mappings when required.
+  Being encapsulated into an entity, multiple conversion contexts can be employed in the same program, facilitating the co-existence of different mappings when required.
   New conversion contexts can be easily created by means of a <a href="/javadocs/org/jpc/JpcBuilder.html" title="JpcBuilder class"><code>context builder</code></a>.
   The instantiation of a default conversion context (i.e., a context including only pre-defined conversions) is shown in the code snippet below:
   </p>
@@ -243,7 +243,7 @@ Type type = new TypeToken&lt;List&lt;Integer&gt;&gt;(){}.getType(); //reificatio
 list = jpc.fromTerm(listTerm, type); //list of integers</pre></div>
 
   <p>
-  Depending on the target conversion type, the Prolog atoms list <code>['1', '2']</code> (line 1) is converted to a a string array (line 2), a list of strings (line 3) or a list of integers (line 5).
+  Depending on the target conversion type, the Prolog atoms list <code>['1', '2']</code> (line 1) is converted into a a string array (line 2), a list of strings (line 3) or a list of integers (line 5).
   </p>
   
   
@@ -267,7 +267,7 @@ public class PersonConverter implements FromTermConverter&lt;Compound, Person&gt
 }</pre></div>
 
   <p>
-  The following code snippet illustrates how a custom conversion context extended with the <code>PersonConverter</code> can be employed to facilitate the interpretation of a query result as a Java object with a minimum anount of code:
+  The following code snippet illustrates how a custom conversion context extended with the <code>PersonConverter</code> can be employed to facilitate the interpretation of a query result as a Java object with a minimum amount of code:
   </p>
 
 
@@ -295,8 +295,8 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
   </p>
 
   <p>
-  Figure one shows the definition of a <code>Person</code> entity.
-  This entity has a dual nature. In the Java world, it takes the form of an instance of the <code>Person</code> class. On the Prolog world, it is reified as the Logtalk <a href="http://logtalk.org/manuals/userman/features.html#features_parametric" title="Logtalk parametric objects"> parametric object</a> <code>person/1</code>.
+  Figure 1 shows the definition of a <code>Person</code> entity.
+  This entity has a dual nature. In the Java world, it takes the form of an instance of the <code>Person</code> class. In the Prolog world, it is reified as the Logtalk <a href="http://logtalk.org/manuals/userman/features.html#features_parametric" title="Logtalk parametric objects"> parametric object</a> <code>person/1</code>.
   In this example, the implementation is scattered over the two worlds (the method <code>experience()</code> is defined in Java and the predicate <code>salary/1</code> in Prolog). 
   However, it is also possible to create entities that are completely defined either in Java or Prolog, but still transparently accessible from the foreign language.
   </p>
@@ -339,7 +339,7 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
   <p>
   The <code>@LObject</code> annotation on line 1 provides mapping information to LogicObjects.
   The <code>name</code> attribute indicates that an instance of the <code>Person</code> class is reified as a compound with name <code>person</code>.
-  The <code>args</code> attribute signals than the argument of such compound is the term representation of the instance variable <code>name</code>.
+  The <code>args</code> attribute signals that the argument of such a compound is the term representation of the instance variable <code>name</code>.
   </p>
 
   <p>
@@ -353,15 +353,15 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
 person(mary)::salary(LSolution)</pre></div>
   
   
-  Where <code>person(mary)</code> corresponds to the conversion to a term of the receiver of the message (an instance of <code>Person</code>); <code>salary(LSolution)</code> is the conversion to a predicate of the method <code>salary()</code> and <code><a href="http://logtalk.org/manuals/userman/messages.html" title="Logtalk message sending operator">::</a></code> is the message sending operator in Logtalk.
+  where <code>person(mary)</code> corresponds to the conversion to a term of the receiver of the message (an instance of <code>Person</code>); <code>salary(LSolution)</code> is the conversion to a predicate of the method <code>salary()</code> and <code><a href="http://logtalk.org/manuals/userman/messages.html" title="Logtalk message sending operator">::</a></code> is the Logtalk message sending operator.
   </p>
   
   
   
   <p>
   LogicObjects provides several heuristics for determining the return value in Java of a routine implemented on the Prolog side.
-  One of them consists of inspecting the names of the unbound logic variables. In case it encounters an occurrence of a variable named <code>LSolution</code> (line 7), it will consider as the return value of the method the conversion to a Java object of the term bound to that variable. 
-  Also note that by default a query is interpreted as deterministic. Hence, only its first solution is considered. However, this can be customised by means of other Java annotation (e.g., to compose all the solutions in a container object such as an instance of <code>java.util.List</code>).
+  One of them consists in inspecting the names of the unbound logic variables. In case it encounters an occurrence of a variable named <code>LSolution</code> (line 7), it will consider as the return value of the method the conversion to a Java object of the term bound to that variable. 
+  Also note that by default a query is interpreted as deterministic. Hence, only its first solution is considered. However, this can be customised by means of another Java annotation (e.g., to compose all the solutions in a container object such as an instance of <code>java.util.List</code>).
   </p>
   
   <p>
@@ -370,7 +370,7 @@ person(mary)::salary(LSolution)</pre></div>
   
   <div class="divList">
   <ul>
-	<li><code>@LComposition</code>: If present, all solutions will be composed into one single object.</li>
+	<li><code>@LComposition</code>: If present in a method, all solutions will be composed into one single object.</li>
 	<li><code>@LSolution</code>: Allows to specify the term representation of an object corresponding to a single solution.</li>
 	<li><code>@LQuery</code>: Allows to map a Java method to an arbitrary Prolog query.</li>
   </ul>
@@ -416,7 +416,7 @@ System.out.println("Salary: " + person.salary()); //automatic delegation to Prol
 new Person("mary").experience()</pre></div>   
 
 
-Where <code>new Person("mary")</code> corresponds to the conversion to a Java object of the term <code>person(mary)</code> and the method <code>experience()</code> the looked up method when receiving a message with the same name on the logic side.
+where <code>new Person("mary")</code> corresponds to the conversion to a Java object of the term <code>person(mary)</code> and the method <code>experience()</code> the looked-up method when receiving a message with the same name on the logic side.
 
   </p>
 
@@ -435,12 +435,12 @@ Where <code>new Person("mary")</code> corresponds to the conversion to a Java ob
   person(mary)::experience return(ReturnSpecifier). %return value specified by means of the return operator.</pre></div>
   
   <p>
-  On line 1, the return value is part of the message sending. Arguments matching <code>return(_)</code> are ignored since they do not correspond to a Java method parameter, but to the Java method return value.
-  On line 2, the return value is an argument of the auxiliar Logtalk object <code>jobject/2</code>, which has as first argument the receiver of the message and the second argument corresponds to the return value.
-  This alternative has the advantage than the message sending does not require to be polluted with a return value.
+  On line 1, the return value is part of the message term. Arguments matching <code>return(_)</code> are ignored since they correspond not to a Java method parameter, but to the Java method return value.
+  On line 2, the return value is an argument of the auxiliary Logtalk object <code>jobject/2</code>, which has as first argument the receiver of the message, and the second argument corresponds to the return value.
+  This alternative has the advantage that the message term does not require to be polluted with a return value.
   As the last alternative on line 3, the return value is captured by means of the <code>return</code> operator. This has the advantage that the return value is not present as an argument neither of the receiver nor the message.
   None of these approaches is perfect, since they make explicit the concept of a returned value on the Prolog side.
-  We believe, however, that giving several alternatives alleviate this problem to a certain extent.
+  We believe, however, that providing several alternatives alleviate this problem to a certain extent.
   </p>
   
   
@@ -454,8 +454,12 @@ Where <code>new Person("mary")</code> corresponds to the conversion to a Java ob
   
   
   <p>
-  For example, if we invoke the Java method <code>experience()</code> from the Prolog side, we should have written as the return specifier <code>term(R)</code>.
-  This means that the object returned from the Java method should be converted to a term according to the default JPC conversion context.
+  For example, if we invoke the Java method <code>experience()</code> from the Prolog side, we should write <code>term(R)</code> as the return specifier, as in the following example:
+  
+  <div class="codeEditor"><pre data-editor="prolog" data-show-gutter="false">
+  person(mary)::experience(return(term(R))).</pre></div>
+  
+  This means that the object returned from the Java method should be converted into a term according to the default JPC conversion context.
   However, several possible ways of interpreting a return value are possible by means of choosing other return specifiers.
   The following list describes some of them:
   </p>
@@ -466,8 +470,8 @@ Where <code>new Person("mary")</code> corresponds to the conversion to a Java ob
 	<li><code>term(R)</code>: <code>R</code> is the default conversion to a term of the returned object.</li>
 	<li><code>jserialized(R)</code>: <code>R</code> is a term representation of the serialisation of the returned object.</li>
 	<li><code>jref(R)</code>: <code>R</code> is an opaque term representation of a Java reference. The reference remains valid as long as the term exists somewhere in the Prolog database.</li>
-	<li><code>weak(jref(R))</code>: <code>R</code> is an opaque term representation of a Java reference. The reference remains valid as long as the reference is not garbage-collected on the Java world.</li>
-	<li><code>strong(jref(R))</code>: <code>R</code> is an opaque term representation of a Java reference. The reference remains valid as long as the reference representation is not explicitly forgotten.</li>
+	<li><code>weak(jref(R))</code>: <code>R</code> is an opaque term representation of a Java reference. The reference remains valid as long as the reference is not garbage-collected in the Java world.</li>
+	<li><code>strong(jref(R))</code>: <code>R</code> is an opaque term representation of a Java reference. The reference remains valid as long as the reference symbol is not explicitly forgotten.</li>
   </ul>
   </div>
   
@@ -495,14 +499,14 @@ Where <code>new Person("mary")</code> corresponds to the conversion to a Java ob
   <h2>Conclusions</h2> 
 
   <p>
-  LogicObjects enable a fine-grained integration (i.e., at the entity level) of routines written in Java and Prolog.
+  LogicObjects enables a fine-grained integration (i.e., at the entity level) of routines written in Java and Prolog.
   It is an example of the advanced integration frameworks that can be built on top of the notion of inter-language conversions implemented by the JPC library.
   </p>
   
   <p>
   There are other powerful JPC and LogicObjects features in addition to the ones described here.
-  Other features include a comprehensive set of heuristics for interpreting the solution to a Prolog query as a Java object, autoloading of Prolog artefacts, and the automatic progragation and handling of inter-language exceptions.
-  A description of these and others advanced features can be found in the JPC and LogicObjects <a href="http://java-prolog-connectivity.github.com/" title="JPC and LogicObjects online documentation">documentation</a>.
+  Those include a comprehensive set of heuristics for interpreting the solution to a Prolog query as a Java object, autoloading of Prolog artefacts, and the automatic propagation and handling of inter-language exceptions.
+  A description of these and other advanced features can be found in the JPC and LogicObjects <a href="http://java-prolog-connectivity.github.com/" title="JPC and LogicObjects online documentation">documentation</a>.
   </p>
 
   <p>
