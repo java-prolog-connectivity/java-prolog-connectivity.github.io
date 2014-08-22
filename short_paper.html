@@ -289,7 +289,7 @@ Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectOb
 
   <p>
   The low-level inter-language conversion framework provided by JPC is a convenient building block for facilitating the implementation of more advanced integration libraries.
-  LogicObjects is a high-level integration framework for Java and Prolog built on top of it.
+  LogicObjects is a high-level integration framework for Java and Prolog built on top of JPC.
   It allows to define hybrid entities with partial implementations in Java and Prolog.
   Although to a certain extent LogicObjects is compatible with plain Prolog, to get the best out of it, it is recommended to install on the Prolog side <a href="http://logtalk.org/" title="Logtalk: An open source object-oriented logic programming language">Logtalk</a>, an object-oriented layer for Prolog.
   </p>
@@ -372,8 +372,8 @@ person(mary)::salary(LSolution).</pre></div>
   
   <div class="divList">
   <ul>
-	<li><code>@LSolution</code>: Allows to specify the term representation of the object to return.</li>
 	<li><code>@LComposition</code>: If present, all solutions will be composed into one single object.</li>
+	<li><code>@LSolution</code>: Allows to specify the term representation of an object corresponding to a single solution.</li>
 	<li><code>@LQuery</code>: Allows to map a method to an arbitrary query.</li>
   </ul>
   </div>
@@ -382,7 +382,7 @@ person(mary)::salary(LSolution).</pre></div>
   
   
   <p>
-  An instance of the <code>Person</code> class can be obtained by means of the static method <code>newLogicObject</code>, as shown in the following code snippet:
+  An instance of a class with a partial implementation in Prolog can be obtained by means of the static method <code>newLogicObject</code>, as shown in the following code snippet:
   </p>
 
 
