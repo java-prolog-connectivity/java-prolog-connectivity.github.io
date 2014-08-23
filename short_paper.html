@@ -276,7 +276,7 @@ JpcBuilder builder = JpcBuilder.create().registerConverter(new PersonConverter()
                                                            new Functor("person"), 1).asTerm()); //person(_)
 Jpc jpc = builder.build(); //custom conversion context
 //the term bound to P is automatically converted to an instance of the Person class
-Person person = engine.createQuery("cool_person(P)", jpc).&lt;Person&gt;selectObject("P").oneSolutionOrThrow(); </pre></div>
+Person person = engine.query("cool_person(P)", jpc).&lt;Person&gt;selectObject("P").oneSolutionOrThrow(); </pre></div>
 
   <p>
   Note that at the moment of registering the converter, it is associated with the compound term <code>person(_)</code> (line 2).
