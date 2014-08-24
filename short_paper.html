@@ -121,7 +121,7 @@
   <h2>Introduction</h2> 
 
   <p>
-  Logic languages excel for problems that can be defined declaratively, such as applications that require symbolic computation (e.g., expert and planning systems).
+  Logic languages excel for problems that can defined declaratively, e.g. applications that require symbolic computation such as expert and planning systems.
   <sup> <a rel="footnote" href="#fn:rus95">1</a> </sup> <sup> <a rel="footnote" href="#fn:Sterling:1994:APA:175753">2</a> </sup>.
   However, it is often difficult to develop complete applications that require e.g. GUIs, heavy numerical computations, or low-level operating system and network access
   <!--However, it is often difficult to develop real-life applications with only a logic language-->
@@ -253,7 +253,7 @@ list = jpc.fromTerm(listTerm, type); //list of integers</pre></div>
   A conversion context can be extended with custom converters.
   Such a converter is just a class implementing the <code>FromTermConverter</code> and/or <code>ToTermConverter</code> interfaces.
   When registered into a conversion context, a converter adds to the pre-defined conversions a new mapping of artefacts.
-  As an example, consider a converter that knows how to convert a Prolog term to an instance of the <code>Person</code> class:
+  As an example, consider a converter that knows how to convert a Prolog compound term to an instance of the <code>Person</code> class:
   </p>
 
 <div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
@@ -272,8 +272,8 @@ public class PersonConverter implements FromTermConverter&lt;Compound, Person&gt
 
 
 <div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
-JpcBuilder builder = JpcBuilder.create().registerConverter(new PersonConverter(), 
-                                                           new Functor("person"), 1).asTerm()); //person(_)
+JpcBuilder builder = JpcBuilder.create().register(new PersonConverter(), 
+                                                  new Functor("person"), 1).asTerm()); //person(_)
 Jpc jpc = builder.build(); //custom conversion context
 //the term bound to P is automatically converted to an instance of the Person class
 Person person = engine.query("cool_person(P)", jpc).&lt;Person&gt;selectObject("P").oneSolutionOrThrow(); </pre></div>
@@ -304,7 +304,7 @@ Person person = engine.query("cool_person(P)", jpc).&lt;Person&gt;selectObject("
 
   <div class="divImg">
     <img src="img/examples/interaction_person.svg" alt="The Person entity." style="padding-bottom:0.5em;" height="250" />
-    <div id="imglabel:interaction_person" >Fig 1. - A dual representation of a Person entity.</div>
+    <div id="imglabel:interaction_person" >Fig 1. - A dual representation of the Person entity.</div>
   </div>
 
   <p>
@@ -391,6 +391,9 @@ import static org.logicobjects.newLogicObject;
 Person person = newLogicObject(Person.class, "mary");
 System.out.println("Salary: " + person.salary()); //automatic delegation to Prolog</pre></div>
   
+  <p>
+  	The first argument is the class to instantiate. Remaining arguments correspond to the class constructor arguments.
+  </p>
 
 
   <h3>Integration from the Prolog Perspective</h3> 
@@ -432,14 +435,14 @@ where <code>new Person("mary")</code> corresponds to the conversion to a Java ob
   <div class="codeEditor"><pre data-editor="prolog" data-show-gutter="true">
   person(mary)::experience(return(ReturnSpecifier)). %return value specified as an argument of the method.
   jobject(person(mary), ReturnSpecifier)::experience. %return value specified as an argument of the jobject/2 Logtalk object.
-  person(mary)::experience return(ReturnSpecifier). %return value specified by means of the return operator.</pre></div>
+  person(mary)::experience return ReturnSpecifier. %return value specified by means of the return operator.</pre></div>
   
   <p>
   On line 1, the return value is part of the message term. Arguments matching <code>return(_)</code> are ignored since they correspond not to a Java method parameter, but to the Java method return value.
   On line 2, the return value is an argument of the auxiliary Logtalk object <code>jobject/2</code>, which has as first argument the receiver of the message, and the second argument corresponds to the return value.
   This alternative has the advantage that the message term does not require to be polluted with a return value.
   As the last alternative on line 3, the return value is captured by means of the <code>return</code> operator. This has the advantage that the return value is not present as an argument neither of the receiver nor the message.
-  None of these approaches is perfect, since they make explicit the concept of a returned value on the Prolog side.
+  None of these approaches is perfect, since they make explicit the foreign concept of a returned value on the Prolog side.
   We believe, however, that providing several alternatives alleviate this problem to a certain extent.
   </p>
   
@@ -448,19 +451,18 @@ where <code>new Person("mary")</code> corresponds to the conversion to a Java ob
   Finally, note that the object returned from a Java method can be reified as a term in many different ways (e.g., a term containing the object serialisation data, or a simple numeric identifier pointing to a Java reference, etc). 
   Therefore, an integration approach should not impose a single reification strategy.
   We provide a solution to this problem by means of introducing the notion of a <emph>return specifier<emph>.
-  Then, the programmer can provide a term describing the meaning of the object returned from the Java world.
+  By employing return specifiers, the programmer can provide a term describing the meaning of the object returned from the Java world.
   
   </p>
   
   
   <p>
-  For example, if we invoke the Java method <code>experience()</code> from the Prolog side, we should write <code>term(R)</code> as the return specifier, as in the following example:
+  For example, if we invoke the Java method <code>experience()</code> from the Prolog side, we should write <code>term(R)</code> as the return specifier, which means that the object returned from the Java method should be converted into a term according to the default JPC conversion context. This is illustrated by the following example:
   
   <div class="codeEditor"><pre data-editor="prolog" data-show-gutter="false">
   person(mary)::experience(return(term(R))).</pre></div>
   
-  This means that the object returned from the Java method should be converted into a term according to the default JPC conversion context.
-  However, several possible ways of interpreting a return value are possible by means of choosing other return specifiers.
+  Several possible ways of interpreting a return value are possible by means of choosing distinct return specifiers.
   The following list describes some of them:
   </p>
   
@@ -499,7 +501,7 @@ where <code>new Person("mary")</code> corresponds to the conversion to a Java ob
   <h2>Conclusions</h2> 
 
   <p>
-  LogicObjects enables a fine-grained integration (i.e., at the entity level) of routines written in Java and Prolog.
+  LogicObjects enables a fine-grained, (semi-)automatic integration (i.e., at the entity level) of routines written in Java and Prolog.
   It is an example of the advanced integration frameworks that can be built on top of the notion of inter-language conversions implemented by the JPC library.
   </p>
   
@@ -518,7 +520,7 @@ where <code>new Person("mary")</code> corresponds to the conversion to a Java ob
 	  <a href="http://www.swi-prolog.org/packages/jpl/" title="JPL: A bidirectional Prolog/Java interface">JPL</a>, 
 	  <a href="http://sewiki.iai.uni-bonn.de/research/pdt/developers/cookbook/standalone_prolog_connector" title="Standalone PDT connector">PDT Connector</a> and 
 	  <a href="http://www.declarativa.com/interprolog/" title="InterProlog: a Java front-end and enhancement for Prolog">InterProlog</a> 
-	  libraries. We envision the development of native drivers and extended support for other Prolog engines in the short term.
+	  libraries. We envision the development of native drivers and support for other Prolog engines in the short term.
   </p>
   
   <p>
