@@ -450,13 +450,12 @@ where <code>new Person("mary")</code> corresponds to the conversion to a Java ob
   <p>
   Finally, note that the object returned from a Java method can be reified as a term in many different ways (e.g., a term containing the object serialisation data, or a simple numeric identifier pointing to a Java reference, etc). 
   Therefore, an integration approach should not impose a single reification strategy.
-  We provide a solution to this problem by means of introducing the notion of a <emph>return specifier<emph>.
-  By employing return specifiers, the programmer can provide a term describing the meaning of the object returned from the Java world.
-  
+  We provide a solution to this problem by means of introducing the notion of <em>return specifiers</em>.
   </p>
   
   
   <p>
+  By employing return specifiers, a programmer can provide a term describing the meaning of an object returned from the Java world.
   For example, if we invoke the Java method <code>experience()</code> from the Prolog side, we should write <code>term(R)</code> as the return specifier, which means that the object returned from the Java method should be converted into a term according to the default JPC conversion context. This is illustrated by the following example:
   
   <div class="codeEditor"><pre data-editor="prolog" data-show-gutter="false">
