@@ -67,7 +67,8 @@
 <h2>Introduction</h2> 
 
 <p>
-JPC is a Java-Prolog interoperability library providing different layers of integration abstractions.
+JPC is a Java-Prolog interoperability library based on the notion of inter-language conversions.
+It provides different layers of integration abstractions.
 This guide presents the different JPC features supporting the integration of Java-Prolog systems, assuming a general understanding of the <a href="architecture.html" title="JPC architecture">JPC architecture</a>.
 </p>
 
@@ -336,7 +337,7 @@ Figure 3 illustrates its main components and a typical interaction with a user o
 
 <p>
 In order to facilitate the configuration of a <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> instance, there is also a <a href="/javadocs/org/jpc/JpcBuilder.html" title="JpcBuilder class"><code>JpcBuilder</code></a> class with a straightforward fluent API for configuring its properties. This configuration involves the registration of custom conversion artefacts (e.g., <a href="#implementingConverters" title="Converters">converters</a>, <a href="#implementingTypeSolvers" title="Type solvers">type solvers</a> and <a href="#implementingFactories" title="Factories">factories</a>).
-The example below shows how to configure a builder to create a <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> context that knows how to convert objects from the <a href="/london_underground.html" title="London underground example"><code>London underground case study</code></a>.
+The example below shows how to configure a builder to create a custom <a href="/javadocs/org/jpc/Jpc.html" title="Jpc class"><code>Jpc</code></a> context that knows how to convert objects from the <a href="/london_underground.html" title="London underground example"><code>London underground case study</code></a>.
 </p>
 
 
@@ -347,8 +348,20 @@ public static final Jpc jpc = JpcBuilder.create()
     .register(new LineConverter())
     .register(new StationConverter()).build();</pre></div>
 
+
+
 <p>
-In addition to custom conversions, JPC is bundled with a predefined catalog of converters that support a considerable number of common conversions. This minimises the amount of code to be written when defining new conversions.
+Examples of conversions employing this custom JPC context are shown below:
+</p>
+
+<div class="codeEditor"><pre id="metroCustomConversions" data-editor="java" data-show-gutter="true">
+Term term = new Compound("station", asList(new Atom("central-park"))); //a Prolog term representing the station with name "central-park"
+Station station = jpc.fromTerm(term); //a Java object representing the station with name "central-park"
+assertEquals(term, jpc.toTerm(station));</pre></div>
+
+
+<p>
+In addition to allowing custom conversions, JPC is bundled with a predefined catalog of converters that support a considerable number of common conversions. This minimises the amount of code to be written when defining new conversions.
 </p>
 
 
@@ -374,7 +387,7 @@ public class StationConverter implements
 
 	@Override public Station fromTerm(Compound term, Type type, Jpc context) {
 		String stationName = ((Atom)term.arg(1)).getName();
-		return new StationJpc(stationName);
+		return new Station(stationName);
 	}
 	
 }</pre></div>
@@ -615,7 +628,98 @@ If the programmer always specify the intended conversion type the possible ambig
 </p>
 
 
-<h3 id="customConversions">Custom Conversions</h3> 
+
+
+<h3 id="termQuantifiedConverterExample">Term-Quantified Converters</h3> 
+
+<p>
+A JPC context can associate converters to arbitrary Prolog terms. 
+This provides a convenient mechanism for limiting the application scope of converters.
+This is better explained with an example.
+Consider the following <code>HelloConverter</code> that knows how to converter from compounds to the string "&lt;Greeting&gt; &lt;Name&gt;"; where &lt;Greeting&gt; is the name of the compound and &lt;Name&gt; its first argument.
+</p>
+
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+class HelloConverter implements FromTermConverter&lt;Compound, String&gt; {
+	
+	@Override public String fromTerm(Compound term, Type targetType, Jpc context) {
+		return ((Atom)term.getName()).getName() + " " + ((Atom)term.arg(1)).getName();
+	}
+	
+}</pre></div>
+
+<p>
+If we would like to restrict this converter to be applied only to terms subsumed by the term <code>hello(_)</code>, we could write:
+</p>
+
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+JpcBuilder builder = JpcBuilder.create();
+Compound helloCompound = new Compound("hello",  asList(Var.ANONYMOUS_VAR));
+builder.register(new HelloConverter(), helloCompound);
+Jpc jpc = builder.build();</pre></div>
+
+<p>
+Below a usage example of this custom conversion context:
+</p>
+
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+Compound helloWorldCompound = new Compound("hello",  asList(new Atom("world")));
+assertEquals("hello world", jpc.fromTerm(helloWorldCompound));</pre></div>
+
+
+
+<h2 id="highLevelAPI">The High-Level Querying API</h2> 
+
+<p>
+JPC provides features that abstract programmers from explicit conversions from and to Prolog terms.
+Below an example of an alternative implementation of the <code>Station</code> interface that makes use of such high-level API.
+</p>
+
+<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
+public class StationHLApi implements Station {
+
+	public static final String STATION_FUNCTOR_NAME = "station";
+
+	private final String name;
+	private final PrologEngine prologEngine;
+
+	public StationHLApi(String name) {
+		this.name = name;
+		prologEngine = getPrologEngine(getClass());
+	}
+
+	@Override
+	public Station connected(Line line) {
+		String stationVarName = "Station";
+		Term message = jpc.compound("connected", asList(new Var(stationVarName), line));
+		Term objectMessage = jpc.compound("::", asList(this, message));
+		Query query = getPrologEngine().query(objectMessage, jpc);
+		return query.&lt;Station&gt;selectObject(stationVarName).oneSolution();
+	}
+	
+	@Override
+	public List&lt;Station&gt; nearby() {
+		String stationVarName = "Station";
+		Term message = new Compound("nearby", asList(new Var(stationVarName)));
+		Term objectMessage = jpc.compound("::", asList(this, message));
+		Query query = getPrologEngine().query(objectMessage, jpc);
+		return query.&lt;Station&gt;selectObject(stationVarName).allSolutions();
+	}
+	
+    ... // other methods declared in the Station interface.
+}</pre></div>
+
+	
+	
+
+<p>
+In the previous implementation, we assume a custom Jpc context that knows how to convert between instances of <code>Station</code> and Prolog terms.
+By means of this context, the code of the class is not polluted with explicit inter-language conversion operations.
+For example, on line 19 the expression <code>query.&lt;Station&gt;selectObject(stationVarName).oneSolution()</code> returns the transformation to a Java object of the term that has been bound to the logic variable <code>stationVarName</code> in the first solution to the query.
+Similarly, on line 28 the operation of gathering all the solutions to the query and transforming them to a Java list of stations is accomplished in just one line of code.
+</p>
+
+
 
 <!-- 
 <a href="#conversionContext" title="List class"><code>List</code></a>
@@ -659,56 +763,21 @@ Internally, this relies on the concrete implementation of the chosen JPC driver.
 
 -->
 
-<h3 id="termQuantifiedConverterExample">Term-Quantified Converters</h3> 
 
 <!-- 
-In section \ref{termQuantifiedConverters} we discussed that the domain of Prolog to Java artefact converters is, in some cases, better quantified using terms.
-Listing \ref{lst:helloWorldConverter} shows a straightforward implementation of the \lstinline{HelloConverter} mentioned in that section: it returns a Java \lstinline{String} containing the name of the compound to convert, a white space, and the compound first argument (line 3).
-
-<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
-class HelloConverter implements FromTermConverter&lt;Compound, String&gt; {
-	
-	@Override public String fromTerm(Compound term, Type targetType, Jpc context) {
-		return ((Atom)term.getName()).getName() + " " + ((Atom)term.arg(1)).getName();
-	}
-	
-}</pre></div>
-
-<p>
-Listing \ref{lst:termQuantifiedConverter} shows a concrete example of the registration and usage of this converter.
-In line 3, we make use of the \lstinline{JpcBuilder} class to register the \lstinline{HelloConverter} converter.
-Note that we pass both an instance of the converter and the term quantifying its domain (\lstinline{hello(_)}).
-This is internally translated to an assert in the embedded JPC Prolog database, where the \lstinline{HelloConverter} converter is associated to a domain term with functor \lstinline{hello/1}.
-In line 6 we verify that the result of converting the compound term \lstinline{hello(world)} is the Java \lstinline{String} ``\lstinline{hello world}'', as specified by the domain quantified converter.
-</p>
-
-<div class="codeEditor"><pre data-editor="java" data-show-gutter="true">
-JpcBuilder builder = JpcBuilder.create();
-Compound helloCompound = new Compound("hello",  asList(Var.ANONYMOUS_VAR));
-builder.register(new HelloConverter(), helloCompound);
-Jpc jpc = builder.build();
-Compound helloWorldCompound = new Compound("hello",  asList(new Atom("world")));
-assertEquals("hello world", jpc.fromTerm(helloWorldCompound));</pre></div>
-
+<h2>Exception Handling</h2> 
 -->
 
+<!-- 
+<h2>Reference Management</h2> 
+-->
 
-
-
-
-<h2 id="highLevelAPI">The High-Level Querying API</h2> 
+<h2>Other Features</h2> 
 
 <p>
-Methods that abstract from the term representation of arbitrary Java objects are part of the JPC high-level API.
+There are several other JPC's features that have not been discussed here. Some examples are related to inter-language exception handling, preservation of object identity in conversions, and the Prolog-side JPC's API.
+These and other features will be discussed in a future version of this tutorial.
 </p>
-
-<h2>Exception Management</h2> 
-
-
-
-<h2>Reference Management</h2> 
-
-
 
 </div> <!-- end of content -->
 
