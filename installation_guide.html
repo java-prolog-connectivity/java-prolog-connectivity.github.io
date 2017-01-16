@@ -339,8 +339,11 @@ If you prefer to not modify such environment variable, alternatively you may use
 <h5>Linux Installation Instructions</h5>
 
 <p>
-Locate the directory where the JVM library <code> libjvm</code> is located and add it to the <code>LD_LIBRARY_PATH</code> environment variable.
+Locate the directory where the JVM library <code>libjvm</code> is located.
 The path should be similar to <code>$JAVA_HOME/jre/lib/amd64/server</code> (assuming a 64 bits installation).
+In several Linux distributions you will have to add that path to the <code>LD_LIBRARY_PATH</code> environment variable.
+That is not correct for Ubuntu. For Ubuntu, you can create a <code>swipl.conf</code> file in the <code>/etc/ld.so.conf.d</code> directory.
+In that file, write the path to the directory containing the JVM library.
 </p>
 
 <!--
