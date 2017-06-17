@@ -113,8 +113,9 @@ Maven <a href="http://maven.apache.org/download.cgi" title="Apache Maven Downloa
 </p>
 
 <p>
-JPC is still in alpha version so it is not yet in the <a href="http://search.maven.org/" title="Maven central repository">Maven central repository</a> but in the <a href="https://oss.sonatype.org/content/repositories/snapshots/com/github/java-prolog-connectivity/jpc/" title="JPC at the Sonatype Spanshots repository">Sonatype Snapshots repository</a>. 
-To access this repository, you will need to add this to your Maven configuration file <code>~/.m2/settings.xml</code>:
+Although JPC is still in alpha version, it is already available in the <a href="http://search.maven.org/#search%7Cga%7C1%7Cjava-prolog-connectivity" title="Maven central repository">Maven Central repository</a>.
+However, some JPC related components (experimental drivers or extensions) may only be available in the Maven Snapshots repository.
+To access components in the Snapshots repository, you may need to add the following to your Maven configuration file <code>~/.m2/settings.xml</code>:
 </p>
 
 <div class="codeEditor"><pre data-editor="xml" data-show-gutter="true">
@@ -132,7 +133,6 @@ To access this repository, you will need to add this to your Maven configuration
      &lt;/repositories&gt;
    &lt;/profile&gt;
 &lt;/profiles&gt;</pre></div>
-
 
 
 
@@ -252,7 +252,7 @@ In order to include JPC into a project, add the following dependency to your <a 
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc&lt;/artifactId&gt;
-  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;0.0.1-alpha&lt;/version&gt;
 &lt;/dependency&gt;</pre></div>
 
 
@@ -295,7 +295,7 @@ Add this dependency to your POM:
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc-jpl&lt;/artifactId&gt;
-  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;0.0.1-alpha&lt;/version&gt;
 &lt;/dependency&gt;</pre></div>
 
 
@@ -476,7 +476,7 @@ You can download some usage examples of JPC adding the following dependency to y
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.java-prolog-connectivity&lt;/groupId&gt;
   &lt;artifactId&gt;jpc-examples&lt;/artifactId&gt;
-  &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;0.0.1-alpha&lt;/version&gt;
 &lt;/dependency&gt;</pre></div>
 
 
